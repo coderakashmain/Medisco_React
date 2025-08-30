@@ -13,12 +13,15 @@ export const useDistrictsContext = () => {
 const Districts = ({ children }) => {
   const [districtsList, setDistrictsList] = useState([]);
   const [state,setState] = useState('');
+  const [districtLoading,setDistrictLoading] = useState(false);
  
 
   useEffect(() => {
     
     const getDistricts = async () => {
      if (!state) return;
+     setDistrictLoading(true);
+     setDistrictsList([]);
       try {
         const response = await axios.get("/api/admin/cities",{
             params : {state}
@@ -27,6 +30,8 @@ const Districts = ({ children }) => {
     
       } catch (error) {
         console.error("Error fetching districts:", error.response?.data || error.message);
+      }finally{
+        setDistrictLoading(false)
       }
     };
 
@@ -37,8 +42,9 @@ const Districts = ({ children }) => {
     districtsList,
     setDistrictsList,
     setState,
-    state
-  }), [districtsList, state, setDistrictsList, setState]);
+    state,
+    districtLoading
+  }), [districtsList, state, setDistrictsList, districtLoading,setState]);
 
   return (
     <districtsContext.Provider value={value}>

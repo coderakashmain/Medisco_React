@@ -179,41 +179,6 @@ var Madula = (function () {
  
 
 
-  const serviceList = [
-    "Hospitals",
-    "Diagnosis Centers / Pathologies",
-    "Ayurvedic Centers",
-    "Medical Stores",
-    "Wellness Centers",
-    "SPA",
-    "Yoga Centers",
-    "Rehabilitation Centers",
-    "GYM",
-  ];
-
-  serviceList.forEach((service) => {
-    const serviceDropdown = document.querySelector(".service-dropdown-box ul");
-    const serviceSelect = document.getElementById("service-list");
-    const serviceItem = document.createElement("li");
-    serviceItem.className =
-      "px-15 py-7 ext-black  hover:bg-primary hover:text-white cursor-pointer";
-    serviceItem.textContent = service;
-    serviceDropdown.appendChild(serviceItem);
-    serviceSelect.innerHTML += `<option class="py-7 px-10 bg-[#F4F4FF] text-sm" value="${service}">${service}</option>`;
-  });
-
-  var serVicesDropdown = function (e) {
-    e.stopPropagation();
-    $(".service-dropdown-box").toggleClass("dropdown-active");
-  };
-
-  $(document).on("click", ".service-dropdown-out-box ", serVicesDropdown);
-
-  $(document).on("click", function (e) {
-    if (!$(e.target).closest(".service-dropdown-out-box").length) {
-      $(".service-dropdown-box").removeClass("dropdown-active");
-    }
-  });
 
 
   

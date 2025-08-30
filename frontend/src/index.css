@@ -1,4 +1,7 @@
 /*! tailwindcss v4.0.14 | MIT License | https://tailwindcss.com */
+@import url("https://fonts.googleapis.com/css?family=Abhaya+Libre:400,500,600,700,800|Great+Vibes|Hind:300,400,500,600,700|Lato:100,300,400,700,900|Montserrat:100,200,300,400,500,600,700,800,900|Nunito:200,300,400,600,700,800,900|Open+Sans:300,400,600,700,800|PT+Sans:400,700|Playfair+Display:400,700,900|Poppins:100,200,300,400,500,600,700,800,900|Raleway:100,200,300,400,500,600,700,800,900|Roboto+Slab:100,300,400,700|Roboto:100,300,400,500,700,900|Rubik:300,400,500,700,900");
+@import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&amp;family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&amp;family=Lobster&amp;family=Montserrat:ital,wght@0,100..900;1,100..900&amp;family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&amp;family=Nunito:ital,wght@0,200..1000;1,200..1000&amp;family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap');
+
 @layer theme, base, components, utilities;
 @layer theme {
   :root, :host {
@@ -2038,22 +2041,22 @@
     background-image: radial-gradient(var(--tw-gradient-stops));
   }
   .bg-\[url\(\.\.\/img\/bannr-bg-img\.png\)\] {
-    background-image: url(../img/bannr-bg-img.png);
+    background-image: url(./assets/img/bannr-bg-img.png);
   }
   .bg-\[url\(\.\.\/img\/bg-hero\.png\)\] {
-    background-image: url(../img/bg-hero.png);
+    background-image: url(./assets/img/bg-hero.png);
   }
   .bg-\[url\(\.\.\/img\/bg-line-2\.png\)\] {
-    background-image: url(../img/bg-line-2.png);
+    background-image: url(./assets/img/bg-line-2.png);
   }
   .bg-\[url\(\.\.\/img\/footer-bg\.png\)\] {
-    background-image: url(../img/footer-bg.png);
+    background-image: url(./assets/img/footer-bg.png);
   }
   .bg-\[url\(\.\.\/img\/graph\.png\)\] {
-    background-image: url(../img/graph.png);
+    background-image: url(./assets/img/graph.png);
   }
   .bg-\[url\(\.\.\/img\/three-shaps-line\.png\)\] {
-    background-image: url(../img/three-shaps-line.png);
+    background-image: url(./assets/img/three-shaps-line.png);
   }
   .bg-none {
     background-image: none;
@@ -6211,8 +6214,7 @@ input[type=number] {
     transform: rotate(360deg);
   }
 }
-@import url("https://fonts.googleapis.com/css?family=Abhaya+Libre:400,500,600,700,800|Great+Vibes|Hind:300,400,500,600,700|Lato:100,300,400,700,900|Montserrat:100,200,300,400,500,600,700,800,900|Nunito:200,300,400,600,700,800,900|Open+Sans:300,400,600,700,800|PT+Sans:400,700|Playfair+Display:400,700,900|Poppins:100,200,300,400,500,600,700,800,900|Raleway:100,200,300,400,500,600,700,800,900|Roboto+Slab:100,300,400,700|Roboto:100,300,400,500,700,900|Rubik:300,400,500,700,900");
-@import url('https://fonts.googleapis.com/css2?family=Abhaya+Libre:wght@400;500;600;700;800&amp;family=Lato:ital,wght@0,100;0,300;0,400;0,700;0,900;1,100;1,300;1,400;1,700;1,900&amp;family=Lobster&amp;family=Montserrat:ital,wght@0,100..900;1,100..900&amp;family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&amp;family=Nunito:ital,wght@0,200..1000;1,200..1000&amp;family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&amp;display=swap');
+
 @layer components {
   .row {
     display: flex;
@@ -7077,7 +7079,7 @@ input[type=number] {
     height: calc(var(--spacing) * 8);
     --tw-translate-y: calc(calc(1/2 * 100%) * -1);
     translate: var(--tw-translate-x) var(--tw-translate-y);
-    background-image: url(../img/down-arrow.svg);
+    background-image: url(./assets/img/down-arrow.svg);
     background-repeat: no-repeat;
     --tw-content: '';
     content: var(--tw-content);
@@ -7259,7 +7261,7 @@ input[type=number] {
     width: calc(var(--spacing) * 10);
     height: calc(var(--spacing) * 10);
     rotate: -90deg;
-    background-image: url(../img/down-arrow.svg);
+    background-image: url(./assets/img/down-arrow.svg);
     background-repeat: no-repeat;
     padding-right: calc(var(--spacing) * 3);
     vertical-align: middle;
@@ -7635,7 +7637,7 @@ input[type=number] {
     z-index: 0;
     height: calc(var(--spacing) * 0);
     width: 100%;
-    background-image: url(../img/graph-1.png);
+    background-image: url(./assets/img/graph-1.png);
     --tw-content: '';
     content: var(--tw-content);
   }

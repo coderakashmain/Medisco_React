@@ -37,20 +37,21 @@ import logonew4 from '../assets/img/logo-new-4.png'
 import logo4 from '../assets/img/logo-new-4.png'
 import brandlogo5 from '../assets/img/brand-logo-5.png'
 import { useServiceListContex } from '../Context/Services';
-import { NavLink } from 'react-router-dom';
+import { NavLink, useNavigate } from 'react-router-dom';
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
+import Loading from '../components/Loading';
 
 const Home = () => {
-  const [searchData,setSearchData] = useState({
-    state : '',
-    district : '',
-    service : ''
+  const [searchData, setSearchData] = useState({
+    state: '',
+    district: '',
+    service: ''
   })
-
+  const navigate = useNavigate();
   const { services } = useServiceListContex();
   const { statesList } = useStatesContext();
-  const {districtsList,setState,state} = useDistrictsContext();
+  const { districtsList, setState, districtLoading } = useDistrictsContext();
   let bgColor = [
     "rgb(240,93,193)",
     "#58CBF2",
@@ -239,7 +240,10 @@ const Home = () => {
 
       <section className="lg:pt-100 md:pt-90 pt-50 sm:hide" id="search-space ">
         <div className="container ">
-          <form action="#" id="search-form w-[100%] ">
+          <form onSubmit={(e) => {
+            e.preventDefault();
+            navigate(`/search_result/${searchData.state}/${searchData.district}/${searchData.service}`)
+          }} id="search-form w-[100%] ">
             <h2
               className="text-center text-secondary pb-70 xxl:text-6xl xl:text-5xl md:text-4xl sm:text-3xl text-3xl font-extrabold"
             >
@@ -247,61 +251,62 @@ const Home = () => {
             </h2>
             <div className='w-full flex flex-row flex-wrap gap-10'>
 
-    
-            <div
-              className="search-form-box flex  m-auto   flex-row w-[50%] justify-center flex-nowrap align-center gap-20 "
-            >
-              
+
+              <div
+                className="search-form-box flex  m-auto   flex-row w-[50%] justify-center flex-nowrap align-center gap-20 "
+              >
+
                 <div className="border border-lightgary p-7 rounded flex justify-center items-center gap-10 flex-grow md:w-[50%]   ">
                   <i className="fa-solid fa-location-dot text-gary"></i>
                   <select name="states" id="states" className='bg-white outline-none flex-grow py-5' onChange={(e) => {
-                    setSearchData({...searchData,state : e.target.value});
+                    setSearchData({ ...searchData, state: e.target.value });
                     setState(e.target.value)
-                    }}   defaultValue="">
+                  }} defaultValue="">
                     <option  >Search By State</option>
                     {statesList.status && statesList.data.map((state, index) => (
-                      <option key={index}   value={state}>{state}</option>
+                      <option key={index} value={state}>{state}</option>
 
                     ))}
-                   
+
                   </select>
-                  
+
                 </div>
                 <div className="border border-lightgary p-7 rounded flex justify-center  items-center gap-10 flex-grow  md:w-[50%] ">
                   <i className="fa-solid fa-location-dot text-gary"></i>
-                 
-                  <select name="states" id="states" className='bg-white outline-none  py-5 flex-grow' 
-                  onChange={(e)=> setSearchData({...searchData,district : e.target.value})}
-                  defaultValue="">
+
+                  <select disabled={districtLoading} name="states" id="states" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
+                    onChange={(e) => setSearchData({ ...searchData, district: e.target.value })}
+                    defaultValue="">
                     <option  >Search By City</option>
                     {districtsList.status && districtsList.data.map((district, index) => (
                       <option key={index} value={district}>{district}</option>
 
                     ))}
                   </select>
+                  {districtLoading && (<Loading size='20px' />)}
                 </div>
-              
-            </div>
 
-            <div className="flex flex-row w-[45%]  justify-center align-center m-auto   gap-10  rounded  ">
-              <div className="  flex justify-center items-center w-full gap-10 p-10 border border-lightgary flex-grow rounded">
-                <i className="fa-solid fa-magnifying-glass text-gary"></i>
-
-                <input
-                  type="text"
-                  placeholder="Search By Service"
-                  className="bg-white outline-none flex-grow"
-                  value={searchData.service}
-                   onChange={(e)=> setSearchData({...searchData,service : e.target.value})}
-                />
               </div>
-              <button type="submit" className="cursor-pointer bg-primary px-20 py-10 text-white rounded "><i className="fa fa-search"></i>
-              </button>
+
+              <div className="flex flex-row w-[45%]  justify-center align-center m-auto   gap-10  rounded  ">
+                <div className="  flex justify-center items-center w-full gap-10 p-10 border border-lightgary flex-grow rounded">
+                  <i className="fa-solid fa-magnifying-glass text-gary"></i>
+
+                  <input
+                    type="text"
+                    placeholder="Search By Service"
+                    className="bg-white outline-none flex-grow"
+                    value={searchData.service}
+                    onChange={(e) => setSearchData({ ...searchData, service: e.target.value })}
+                  />
+                </div>
+                <button type="submit" className="cursor-pointer button bg-primary px-20 py-10 text-white rounded "><i className="fa fa-search"></i>
+                </button>
 
 
 
+              </div>
             </div>
-                    </div>
           </form>
         </div>
       </section>

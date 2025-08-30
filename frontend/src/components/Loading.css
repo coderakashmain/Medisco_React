@@ -1,4 +1,15 @@
-.sub-loader{
-    background: #646464ad;
-    z-index: 100;
+.small-loader {
+  border: calc(var(--spacing) * 3) solid #e3e3e3; 
+  border-top: calc(var(--spacing) * 3)solid #3498db; 
+ 
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

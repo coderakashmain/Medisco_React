@@ -1,12 +1,12 @@
 import React from 'react'
 import './Loading.css'
 
-const Loading = () => {
+const Loading = React.memo(({size = '30px'}) => {
   return (
-    <div className='sub-loader fixed top-0 left-0 w-screen h-screen flex align-center justify-center '>
-      
+    <div  className='sub-loader flex items-center justify-center  '>
+         <div style={{height : size,width : size}} className="small-loader  rounded-full"></div>
     </div>
   )
-}
+})
 
 export default Loading

@@ -1,4 +1,5 @@
 import React from 'react'
+import logo from '../assets/img/logo.png'
 
 const Footer = () => {
   return (
@@ -46,7 +47,7 @@ const Footer = () => {
             <div className="lg:col-span-3 sm:col-span-6 col-span-12">
               <div className="footre-logo">
                 <a href="index-2.html"
-                  ><img src="../assets/img/logo.png" alt="img"
+                  ><img src={logo} alt="img"
                 /></a>
                 <p
                   className="pt-14 pb-30 text-base leading-30 text-gary font-normal"

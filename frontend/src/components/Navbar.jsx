@@ -1,4 +1,4 @@
-import React, { useEffect, useState ,useRef} from 'react'
+import React, { useEffect, useState, useRef } from 'react'
 import logo from '../assets/img/logo.png'
 import { NavLink } from 'react-router-dom'
 import axios from 'axios'
@@ -13,14 +13,15 @@ const Navbar = () => {
   const { districtsList, setState, state } = useDistrictsContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [logingP,setLoginP] = useState(false);
-  const [signInP,setSignIn] = useState(false);
-  const [otpVerify,setOtpVerify] = useState(false);
-  const [forgotePassword,setForgotePassword] = useState(false);
-  const [dropDownOpen,setDropdownOpen] = useState(false);
+  const [logingP, setLoginP] = useState(false);
+  const [signInP, setSignIn] = useState(false);
+  const [otpVerify, setOtpVerify] = useState(false);
+  const [forgotePassword, setForgotePassword] = useState(false);
+  const [dropDownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
+  const [passwordShow,setPasswordShow] = useState(false);
 
- 
+
   const [loginData, setLoginData] = useState({
     email: '',
     password: '',
@@ -33,7 +34,7 @@ const Navbar = () => {
   // console.log("This is state",state)
 
   const [userdetails, setUserdetails] = useState({
-    service_type:'',
+    service_type: '',
     organization_name: '',
     contact_person: '',
     contact_email: '',
@@ -43,39 +44,39 @@ const Navbar = () => {
     city: '',
     address: '',
     pincode: null,
-    longitude : null,
-    latitude : null
+    longitude: null,
+    latitude: null
 
 
 
   })
 
-//User registration
+  //User registration
 
-const hanldeRegistration =  async(e)=>{
-  e.preventDefault();
-   
-  if(!userdetails.service_type || !userdetails.organization_name || !userdetails.contact_person ||!userdetails.contact_email || !userdetails.contact_mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
-   ){
-    console.warn("Please Enter all the fileds.")
-    setError("Please fill the all Boxes");
-    return;
-   }
- 
-  setError('');
-  setLoading(true);
+  const hanldeRegistration = async (e) => {
+    e.preventDefault();
 
-  try{
-    const response = await axios.post('/api/user/register',userdetails);
-    setOtpVerify(true);
-  }catch(error){
-    setError(error.response?.data?.error?.message || "Something went wrong");
-    console.error("Registration  failed:", error.response?.data || error.message);
-  }finally{
-    setLoading(false);
+    if (!userdetails.service_type || !userdetails.organization_name || !userdetails.contact_person || !userdetails.contact_email || !userdetails.contact_mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
+    ) {
+      console.warn("Please Enter all the fileds.")
+      setError("Please fill the all Boxes");
+      return;
+    }
+
+    setError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('/api/user/register', userdetails);
+      setOtpVerify(true);
+    } catch (error) {
+      setError(error.response?.data?.error?.message || "Something went wrong");
+      console.error("Registration  failed:", error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+
   }
-
-}
 
 
 
@@ -123,9 +124,9 @@ const hanldeRegistration =  async(e)=>{
     }
   };
 
-//data change event
+  //data change event
 
-    const handleChange = (e) => {
+  const handleChange = (e) => {
     const value = e.target.value;
     const name = e.target.name;
 
@@ -139,21 +140,21 @@ const hanldeRegistration =  async(e)=>{
 
   //Dropdown event
 
-  useEffect(()=>{
-    const handleEvent = (e)=>{
-      if(
+  useEffect(() => {
+    const handleEvent = (e) => {
+      if (
         dropdownRef.current && !dropdownRef.current.contains(e.target)
-      ){
+      ) {
         setDropdownOpen(false)
       }
-      
+
     }
 
-    document.addEventListener('mousedown',handleEvent);
+    document.addEventListener('mousedown', handleEvent);
 
-    return ()=>  document.removeEventListener('mousedown',handleEvent);
+    return () => document.removeEventListener('mousedown', handleEvent);
 
-  },[])
+  }, [])
 
   return (
     <header
@@ -176,17 +177,17 @@ const hanldeRegistration =  async(e)=>{
             <nav className="navbar lg:block hidden">
               <ul className="navbar-links">
                 <li className="navbar-dropdown">
-                  <a href=''>Home</a>
+                  <a href='/'>Home</a>
                 </li>
                 <li className="navbar-dropdown">
-                  <a href="#about">About</a>
+                  <a href="/#about">About</a>
                 </li>
                 <li className="navbar-dropdown">
-                  <a href="#pricing">Plans</a>
+                  <a href="/#pricing">Plans</a>
                 </li>
 
                 <li className="navbar-dropdown service-dropdown-out-box dropdown-out-box  relative ">
-                  <a href="#services">Services</a>
+                  <a href="/#services">Services</a>
                   <div className="service-dropdown-box dropdown-box  absolute top-[100%] left-[-100%] w-[30vw]    bg-white font-normal  z-99 mt-5 flex flex-col  shadow">
                     <ul>
                     </ul>
@@ -202,29 +203,31 @@ const hanldeRegistration =  async(e)=>{
             <div className="flex gap-15 align-center">
               <div className="header-menu-right h-full flex items-center gap-15">
                 <div
-                 ref={dropdownRef}
-                onClick={()=>{
+                  ref={dropdownRef}
+                  onClick={() => {
                     setDropdownOpen(!dropDownOpen)
-                }}
-                className="header-auth dropdown-out-box  gap-10 items-center text-secondary font-semibold cursor-pointer relative block m-auto text-nowrap">
+                  }}
+                  className="header-auth dropdown-out-box  gap-10 items-center text-secondary font-semibold cursor-pointer relative block m-auto text-nowrap">
 
                   <span className="hover:text-primary text-xs">Join as Service Provider</span>
                   <div className={`${dropDownOpen ? 'dropdown-active' : ''} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
                     <ul>
                       <li
-                       onClick={()=>{
-                        setDropdownOpen(false)
-                        setSignIn(!signInP)}}
-                      className="register-btn font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user-plus w-25 "></i> Register</li>
+                        onClick={() => {
+                          setDropdownOpen(false)
+                          setSignIn(!signInP)
+                        }}
+                        className="register-btn font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user-plus w-25 "></i> Register</li>
 
 
 
                       <li
-                   
-                        onClick={()=>{
+
+                        onClick={() => {
                           setDropdownOpen(false)
-                          setLoginP(!logingP)}}
-                      className="login-btn font-normal text-sm text-black px-10 hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user w-25 "></i> Log In</li>
+                          setLoginP(!logingP)
+                        }}
+                        className="login-btn font-normal text-sm text-black px-10 hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user w-25 "></i> Log In</li>
 
                     </ul>
 
@@ -242,7 +245,7 @@ const hanldeRegistration =  async(e)=>{
                       <form onSubmit={loginUser}>
 
                         <div className=" sticky">
-                          <button onClick={()=>setLoginP(false)} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
+                          <button onClick={() => setLoginP(false)} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
                           <div className="text-center mb-40">
                             <a href="index.html" className="mb-5 inline-block">
                               <img src={logo} alt="logo" className="max-w-[160px]" />
@@ -252,21 +255,21 @@ const hanldeRegistration =  async(e)=>{
                           </div>
                         </div>
 
-                        <div className="mb-6 flex bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
-                          {/* <!-- <label for="email" className="block text-sm font-medium text-dark mb-2">User Id</label> --> */}
+                        <div style={{alignItems : 'center'}} className="mb-6 flex bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
+
                           <span className="flex align-center justify-between text-gary"> <i className="fa-solid fa-user flex align-center justify-between "></i></span>
                           <input type="email" value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} name="userid" id="userid" placeholder="User Id" className="w-full  outline-none focus:border-primary focus-visible:shadow-none" />
                         </div>
-                        <div className="mb-6 flex  bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
-                          {/* <!-- <label for="password" className="block text-sm font-medium text-dark mb-2">Password</label> --> */}
-                          <span className="flex align-center justify-between text-gary  ">
-                            <i className="fa-solid fa-lock"></i>
+                        <div style={{alignItems : 'center'}} className="mb-6 flex   bg-[#F4F4FF] gap-10 border border-lightgary   rounded p-10 mb-20">
 
-                          </span>
-                          <input type="password" value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} name="password" id="password" placeholder="Enter password" className="login-password w-full outline-none focus:border-primary focus-visible:shadow-none" />
-                          <span className="password-eye flex align-center justify-between  text-gary  cursor-pointer">
-                            <i className="fa-solid fa-eye"></i>
-                          </span>
+
+                          <i className="fa-solid fa-lock text-gary  "></i>
+
+
+                          <input type={passwordShow ? 'text' : 'password'} value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} name="password" id="password" placeholder="Enter password" className="login-password w-full outline-none focus:border-primary focus-visible:shadow-none" />
+
+                          <i onClick={()=>setPasswordShow(!passwordShow)} className={`fa-solid ${passwordShow ?"fa-eye-slash" : 'fa-eye' }  text-gary  cursor-pointer`}></i>
+
                         </div>
                         <div className="flex  justify-between items-center mb-20">
                           <div className="form-check flex align-center justify-center gap-10">
@@ -275,10 +278,10 @@ const hanldeRegistration =  async(e)=>{
                             } name="remember" id="remember" className="h-4 w-4 rounded border border-[#E9EDF4] bg-white checked:bg-primary checked:border-primary focus:ring-0" />
                             <label htmlFor="remember" className="text-sm text-body-color ">Remember me</label>
                           </div>
-                          <button onClick={()=>{
+                          <button onClick={() => {
                             setForgotePassword(true)
                             setLoginP(false);
-                            }} className="text-sm text-primary hover:underline font-semibold cursor-pointer">
+                          }} className="text-sm text-primary hover:underline font-semibold cursor-pointer">
                             Forgot Password?
                           </button>
                         </div>
@@ -289,10 +292,10 @@ const hanldeRegistration =  async(e)=>{
 
                           <p className="text-center text-sm text-body-color">Don't have an account? </p>
                           <p className=" switch-register cursor-pointer text-center font-semibold text-sm text-primary hover:underline block"
-                          onClick={()=>{
-                            setSignIn(true);
-                            setLoginP(false);
-                          }}
+                            onClick={() => {
+                              setSignIn(true);
+                              setLoginP(false);
+                            }}
                           >Sign Up</p>
                         </div>
 
@@ -315,16 +318,16 @@ const hanldeRegistration =  async(e)=>{
                         <div className="sticky pt-30 pb-10 top-0 left-0 bg-white">
 
                           <button
-                          onClick={()=>setSignIn(false)}
-                          className='close-btn  registration-close'><i className="fa-solid fa-xmark"></i></button>
+                            onClick={() => setSignIn(false)}
+                            className='close-btn  registration-close'><i className="fa-solid fa-xmark"></i></button>
                           <div className="text-center mb-40">
                             <a href="" className="mb-5 inline-block">
                               <img src={logo} alt="logo" className="max-w-[160px]" />
                             </a>
-                         <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
-                               
+                            <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
+
                             <p className="text-base text-body-color text-gary text-sm">Register Here </p>
-                           {error && (<p className='text-xs text-[#FC4F4F]'>{error}</p>)}
+                            {error && (<p className='text-xs text-[#FC4F4F]'>{error}</p>)}
                           </div>
                         </div>
 
@@ -396,7 +399,7 @@ const hanldeRegistration =  async(e)=>{
 
                         <p className=" text-sm mb-10">City *</p>
                         <select
-                                 value={userdetails.city}
+                          value={userdetails.city}
                           onChange={handleChange}
                           className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
                           defaultValue=""
@@ -447,17 +450,17 @@ const hanldeRegistration =  async(e)=>{
 
 
                         <div className="mb-10">
-                          <button type="submit" 
-                          disabled ={loading}
-                          className={` ${loading ? 'opacity-50' : ''} button w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Continue</button>
+                          <button type="submit"
+                            disabled={loading}
+                            className={` ${loading ? 'opacity-50' : ''} button w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Continue</button>
                         </div>
                         <div className="flex  items-center gap-10  mt-10">
                           <p className="text-center text-sm text-body-color">Already have an account? </p>
                           <p className="switch-login text-center font-semibold text-primary text-sm text-primary hover:underline cursor-pointer block"
-                          onClick={()=>{
-                            setLoginP(true);
-                            setSignIn(false);
-                          }}
+                            onClick={() => {
+                              setLoginP(true);
+                              setSignIn(false);
+                            }}
                           >Log In</p>
                         </div>
 
@@ -474,7 +477,7 @@ const hanldeRegistration =  async(e)=>{
 
                 {/* <!-- Verify email popUp --> */}
 
-           {otpVerify && (     <div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+                {otpVerify && (<div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
 
 
                   <div className="container flex items-center justify-center relative h-full   ">
@@ -483,8 +486,8 @@ const hanldeRegistration =  async(e)=>{
 
                         <div className=" sticky">
                           <button
-                          onClick={()=>setOtpVerify(false)}
-                          className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
+                            onClick={() => setOtpVerify(false)}
+                            className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
                           <div className="text-center mb-40">
                             <a href="" className="mb-5 inline-block">
                               <img src={logo} alt="logo" className="max-w-[160px]" />
@@ -529,10 +532,10 @@ const hanldeRegistration =  async(e)=>{
 
                 </div>)}
 
-              {/* Forgate password section  */}
-              {forgotePassword&& (
-                <ForgotePassword setForgotePassword={setForgotePassword}/>
-              )}
+                {/* Forgate password section  */}
+                {forgotePassword && (
+                  <ForgotePassword setForgotePassword={setForgotePassword} />
+                )}
 
 
                 <div className="header-search-button search-box-outer  ">
