@@ -1,25 +1,34 @@
 import React, { useEffect, useState, useRef } from 'react'
 import logo from '../assets/img/logo.png'
-import { NavLink } from 'react-router-dom'
+import { NavLink, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useServiceListContex } from '../Context/Services'
 import { useStatesContext } from '../Context/States'
 import { useDistrictsContext } from '../Context/Districts'
 import ForgotePassword from '../pages/ForgotePassword'
+import { useUserDataContext } from '../Context/Userdata'
+
 
 const Navbar = () => {
   const { services } = useServiceListContex();
   const { statesList } = useStatesContext();
+  const navigate = useNavigate();
+  const { userdata, setUserdata } = useUserDataContext();
   const { districtsList, setState, state } = useDistrictsContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [loginError, setLoginError] = useState('');
   const [logingP, setLoginP] = useState(false);
   const [signInP, setSignIn] = useState(false);
   const [otpVerify, setOtpVerify] = useState(false);
   const [forgotePassword, setForgotePassword] = useState(false);
   const [dropDownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const [passwordShow,setPasswordShow] = useState(false);
+  const [passwordShow, setPasswordShow] = useState(false);
+  const [OTPValue, setOTPValue] = useState(null);
+  const [OTPError, setOTPError] = useState('');
+  const [userId, setuserId] = useState(null);
+  const [message, setMessage] = useState('');
 
 
   const [loginData, setLoginData] = useState({
@@ -31,7 +40,7 @@ const Navbar = () => {
 
 
 
-  // console.log("This is state",state)
+
 
   const [userdetails, setUserdetails] = useState({
     service_type: '',
@@ -51,10 +60,12 @@ const Navbar = () => {
 
   })
 
+
   //User registration
 
   const hanldeRegistration = async (e) => {
     e.preventDefault();
+
 
     if (!userdetails.service_type || !userdetails.organization_name || !userdetails.contact_person || !userdetails.contact_email || !userdetails.contact_mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
     ) {
@@ -68,9 +79,53 @@ const Navbar = () => {
 
     try {
       const response = await axios.post('/api/user/register', userdetails);
+      const userdata = response.data;
+      setuserId(response.data.data.user_id);
+      setUserdata(JSON.stringify(userdata))
       setOtpVerify(true);
     } catch (error) {
       setError(error.response?.data?.error?.message || "Something went wrong");
+      console.error("Registration  failed:", error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+
+  }
+
+
+  //Verify Otp
+
+
+
+
+
+  const hanldeOtpvelidation = async (e) => {
+    e.preventDefault();
+
+
+
+    if (!OTPValue
+    ) {
+      console.warn("Please Enter OTP")
+      setOTPError("Please fill the all Boxes");
+      return;
+    }
+    setMessage('');
+    setOTPError('');
+    setLoading(true);
+
+    try {
+      const response = await axios.post('/api/user/verify-email', { user_id: userId, otp: OTPValue });
+      sessionStorage.setItem('userdata', response.data);
+      setMessage('Otp Verified.')
+
+      otpVerify(false);
+      navigate('/dashboard')
+
+
+
+    } catch (error) {
+      setOTPError(error.response?.data?.error?.otp || "Something went wrong");
       console.error("Registration  failed:", error.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -83,22 +138,29 @@ const Navbar = () => {
 
 
 
-
-
-
-
-
-
   //User login Api
 
 
   const loginUser = async (e) => {
     e.preventDefault();
 
-    if (!loginData.email || !loginData.password) return;
+
+
+    if (!loginData.email) {
+      setLoginError("Please fill the all Boxes");
+      console.warn("Please Enter Email Id.")
+      return;
+    }
+    if (!loginData.password) {
+      setLoginError("Please fill the all Boxes");
+      console.warn("Please Enter Password.")
+      return;
+    }
+
+    setMessage('');
     setLoading(true)
 
-
+    setLoginError('');
 
     try {
       const response = await axios.post(
@@ -108,16 +170,21 @@ const Navbar = () => {
           password: loginData.password
         }
       );
-
-
+      const userData = response.data;
+      setUserdata(JSON.stringify(userData))
+      setMessage("Login Successfully")
       if (loginData.remember) {
-        localStorage.setItem('userdata', response.data);
+        localStorage.setItem('userdata', JSON.stringify(userData));
       } else {
-        sessionStorage.setItem('userdata', response.data);
+        sessionStorage.setItem('userdata', JSON.stringify(userData));
       }
+
+      setLoginP(false)
+      navigate('/dashboard')
 
     } catch (error) {
       console.error("Login failed:", error.response?.data || error.message);
+      setLoginError(error.response?.data?.error?.message || "Something went wrong");
     }
     finally {
       setLoading(false);
@@ -177,7 +244,7 @@ const Navbar = () => {
             <nav className="navbar lg:block hidden">
               <ul className="navbar-links">
                 <li className="navbar-dropdown">
-                  <a href='/'>Home</a>
+                  <NavLink to='/'>Home</NavLink>
                 </li>
                 <li className="navbar-dropdown">
                   <a href="/#about">About</a>
@@ -202,38 +269,46 @@ const Navbar = () => {
 
             <div className="flex gap-15 align-center">
               <div className="header-menu-right h-full flex items-center gap-15">
-                <div
-                  ref={dropdownRef}
-                  onClick={() => {
-                    setDropdownOpen(!dropDownOpen)
-                  }}
-                  className="header-auth dropdown-out-box  gap-10 items-center text-secondary font-semibold cursor-pointer relative block m-auto text-nowrap">
+                {userdata ? (<NavLink className='font-semibold' to="/dashboard">DashBoard</NavLink>) :
 
-                  <span className="hover:text-primary text-xs">Join as Service Provider</span>
-                  <div className={`${dropDownOpen ? 'dropdown-active' : ''} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
-                    <ul>
-                      <li
+                  (
+                    <div
+
+                      className="header-auth dropdown-out-box  gap-10 items-center text-secondary font-semibold cursor-pointer relative block m-auto text-nowrap">
+
+                      <span
+                        ref={dropdownRef}
                         onClick={() => {
-                          setDropdownOpen(false)
-                          setSignIn(!signInP)
+                          setDropdownOpen(!dropDownOpen)
                         }}
-                        className="register-btn font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user-plus w-25 "></i> Register</li>
+                        className="hover:text-primary text-xs">Join as Service Provider</span>
+                      <div className={`${dropDownOpen ? 'dropdown-active' : ''} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
+                        <ul>
+                          <li
+                            onClick={() => {
+                              setDropdownOpen(false)
+                              setSignIn(!signInP)
+                            }}
+                            className="register-btn font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user-plus w-25 "></i> Register</li>
 
 
 
-                      <li
+                          <li
 
-                        onClick={() => {
-                          setDropdownOpen(false)
-                          setLoginP(!logingP)
-                        }}
-                        className="login-btn font-normal text-sm text-black px-10 hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user w-25 "></i> Log In</li>
+                            onClick={() => {
+                              setDropdownOpen(false)
+                              setLoginP(!logingP)
+                            }}
+                            className="login-btn font-normal text-sm text-black px-10 hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user w-25 "></i> Log In</li>
 
-                    </ul>
+                        </ul>
 
 
-                  </div>
-                </div>
+                      </div>
+                    </div>
+                  )
+                }
+
 
                 {/* <!-- Login popUp --> */}
 
@@ -252,15 +327,17 @@ const Navbar = () => {
                             </a>
                             <h3 className="text-2xl font-semibold text-secondary">Welcome Back!</h3>
                             <p className="text-base text-body-color text-gary text-sm">Log in to your account</p>
+                            {loginError && (<p className='text-xs text-[#FC4F4F]'>{loginError}</p>)}
+                            {message && (<p className='text-xs text-primary'>{message}</p>)}
                           </div>
                         </div>
 
-                        <div style={{alignItems : 'center'}} className="mb-6 flex bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
+                        <div style={{ alignItems: 'center' }} className="mb-6 flex bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
 
                           <span className="flex align-center justify-between text-gary"> <i className="fa-solid fa-user flex align-center justify-between "></i></span>
                           <input type="email" value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} name="userid" id="userid" placeholder="User Id" className="w-full  outline-none focus:border-primary focus-visible:shadow-none" />
                         </div>
-                        <div style={{alignItems : 'center'}} className="mb-6 flex   bg-[#F4F4FF] gap-10 border border-lightgary   rounded p-10 mb-20">
+                        <div style={{ alignItems: 'center' }} className="mb-6 flex   bg-[#F4F4FF] gap-10 border border-lightgary   rounded p-10 mb-20">
 
 
                           <i className="fa-solid fa-lock text-gary  "></i>
@@ -268,7 +345,7 @@ const Navbar = () => {
 
                           <input type={passwordShow ? 'text' : 'password'} value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} name="password" id="password" placeholder="Enter password" className="login-password w-full outline-none focus:border-primary focus-visible:shadow-none" />
 
-                          <i onClick={()=>setPasswordShow(!passwordShow)} className={`fa-solid ${passwordShow ?"fa-eye-slash" : 'fa-eye' }  text-gary  cursor-pointer`}></i>
+                          <i onClick={() => setPasswordShow(!passwordShow)} className={`fa-solid ${passwordShow ? "fa-eye-slash" : 'fa-eye'}  text-gary  cursor-pointer`}></i>
 
                         </div>
                         <div className="flex  justify-between items-center mb-20">
@@ -482,7 +559,7 @@ const Navbar = () => {
 
                   <div className="container flex items-center justify-center relative h-full   ">
                     <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
-                      <form action="#">
+                      <form onSubmit={hanldeOtpvelidation}>
 
                         <div className=" sticky">
                           <button
@@ -494,16 +571,14 @@ const Navbar = () => {
                             </a>
                             <h3 className="text-2xl font-semibold text-secondary">Verify Your Email</h3>
                             <p className="text-base text-body-color text-gary text-sm">OTP send to your email id {userdetails?.contact_email}. Please check you email  and verify the OTP.</p>
+                            {OTPError && (<p className='text-xs text-[#FC4F4F]'>{OTPError}</p>)}
+                            {message && (<p className='text-xs text-primary'>{message}</p>)}
                           </div>
                         </div>
 
                         <div className="mb-6 flex  bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
-                          {/* <!-- <label for="password" className="block text-sm font-medium text-dark mb-2">Password</label> -->
-                         <!-- <span className="flex align-center justify-between  text-gary ">
-                             <i className="fa-solid fa-lock"></i>
 
-                         </span> --> */}
-                          <input type="number" name="otp" id="otp" placeholder="OTP" className="w-full outline-none focus:border-primary focus-visible:shadow-none" />
+                          <input onChange={(e) => setOTPValue(e.target.value)} value={OTPValue} type="number" name="otp" id="otp" placeholder="OTP" className="w-full outline-none focus:border-primary focus-visible:shadow-none" />
                         </div>
                         <div className="flex  justify-between items-center mb-20">
                           <div className="form-check flex align-center text-sm justify-center gap-10">
@@ -515,13 +590,8 @@ const Navbar = () => {
                           </p>
                         </div>
                         <div className="mb-10">
-                          <button type="submit" className="button active w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer">Verify</button>
+                          <button disabled={loading} type="submit" className={`${loading ? "opacity-50" : ""} button active w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Verify</button>
                         </div>
-                        {/* <!-- <div className="flex  items-center gap-10  mt-10">
-
-                      <p className="text-center text-sm text-body-color">Don't have an account? </p>
-                      <p  className=" switch-register cursor-pointer text-center font-semibold text-sm text-primary hover:underline block">Sign Up</p>
-                    </div> --> */}
 
 
 
@@ -583,7 +653,7 @@ const Navbar = () => {
           <div className="mobile-nav" id="mobile-nav">
             <div className="res-log mb-30">
               <a href="index-2.html">
-                <img alt="logo" src="../assets/img/logo.png" className="w-auto" />
+                <img alt="logo" src={logo} className="w-auto" />
               </a>
             </div>
             <ul>

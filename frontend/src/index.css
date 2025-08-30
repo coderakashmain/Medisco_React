@@ -1026,6 +1026,9 @@
   .max-h-\[90vh\] {
     max-height: 90vh;
   }
+  .h-\[70vh\] {
+    height: 70vh;
+  }
   .min-h-screen {
     min-height: 100vh;
   }
@@ -4967,6 +4970,23 @@
       display: flex;
     }
   }
+  .lg\:flex-wrap {
+    @media (width >= 992px) {
+    flex-wrap: wrap !important;
+    }
+  }
+  .lg\:flex-col {
+    @media (width >= 992px) {
+  flex-direction: column;
+  
+    }
+  }
+  .lg\:flex-row {
+    @media (width >= 992px) {
+  flex-direction: row;
+
+    }
+  }
   .lg\:size-100 {
     @media (width >= 992px) {
       width: calc(var(--spacing) * 100);
@@ -5117,6 +5137,11 @@
   .lg\:pb-50 {
     @media (width >= 992px) {
       padding-bottom: calc(var(--spacing) * 50);
+    }
+  }
+  .lg\:pb-80 {
+    @media (width >= 992px) {
+      padding-bottom: calc(var(--spacing) * 80);
     }
   }
   .lg\:pb-100 {
@@ -6525,7 +6550,7 @@ input[type=number] {
   .search-popup .close-search {
     position: absolute;
     top: 6%;
-    left: 94%;
+    right: 5%;
     margin-inline: auto;
     width: calc(var(--spacing) * 50);
     height: calc(var(--spacing) * 50);
@@ -8111,13 +8136,7 @@ input[type=number] {
     --tw-duration: 500ms;
     transition-duration: 500ms;
   }
-  .search-popup .close-search {
-    top: 5%;
-    right: 5% ;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+  
   @media (max-width: 1400px) {
     #scroll-percentage {
       width: calc(var(--spacing) * 50);

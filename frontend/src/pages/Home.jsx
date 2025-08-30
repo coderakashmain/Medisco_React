@@ -81,7 +81,7 @@ const Home = () => {
   return (
     <>
       <section className="bg-[#F4F4FF] pt-100 overflow-hidden">
-        <div className="container pb-80">
+        <div className="container lg:pb-80">
           <div className="grid grid-cols-12 items-center">
             <div className="lg:col-span-6 col-span-12">
               <div className="relative">
@@ -249,11 +249,11 @@ const Home = () => {
             >
               Find the Service You Want
             </h2>
-            <div className='w-full flex flex-row flex-wrap gap-10'>
+            <div className='w-full flex lg:flex-row flex-col lg:flex-wrap gap-10'>
 
 
               <div
-                className="search-form-box flex  m-auto   flex-row w-[50%] justify-center flex-nowrap align-center gap-20 "
+                className="search-form-box flex m-auto    flex-row w-[50%] justify-center  flex-nowrap align-center gap-20 "
               >
 
                 <div className="border border-lightgary p-7 rounded flex justify-center items-center gap-10 flex-grow md:w-[50%]   ">
@@ -324,72 +324,49 @@ const Home = () => {
               Services We Offered.
             </h2>
           </div>
-          <Swiper
-            spaceBetween={0}
-            slidesPerView={3}
-            navigation={{
-              nextEl: ".services-swiper-button-next",
-              prevEl: ".services-swiper-button-prev",
-            }}
+  
 
-            autoplay={{
-              delay: 3000,
-              disableOnInteraction: false,
-            }}
-            loop={true}
-            modules={[Navigation, Pagination, Autoplay]}
-            breakpoints={{
-              0: { slidesPerView: 1 },
-              768: { slidesPerView: 2 },
-              992: { slidesPerView: 3 },
-              1200: { slidesPerView: 4 },
-            }}
-            className="services-slider"
-          >
-            {services.status && services?.data.map((service, index) => {
-              let color = bgColor[index % bgColor.length];
-              return (
-                <SwiperSlide key={index}>
-                  <div className="services-box shadow-[0px_0px_15px_0px_rgba(0,0,0,0.07)] relative xxl:p-40 p-30 xxl:m-15 m-10 before:w-full before:h-0 before:bg-primary before:absolute before:bottom-0 before:left-0 group-hover:before:h-full before:duration-500">
-                    {/* <i
-                      className={`bg-[${color}] group-hover:bg-white size-90 flex items-center justify-center mb-25 relative rounded-full`}
-                      style={{ boxShadow: `0px 0px 24px 0px ${color}40` }}
-                    >
-                      <i className={`fa-solid ${service.serviceIcon} text-white text-2xl`}></i>
-                    </i> */}
-                    <div className={`w-90 h-90 rounded-full overflow-hidden bg-[${color}] flex items-center justify-center mb-25 relative `}>
 
-                      <img src={`https://api.medisco.in/${service.service_image}`} alt="" className={` group-hover:bg-white w-80 h-80  aspect-square object-contain  `} />
-                    </div>
+          <div class="swiper services-slider">
+            <div class="swiper-wrapper services-list-box">
+              {services.status && services?.data.map((service, index) => {
+                let color = bgColor[index % bgColor.length];
+                return (
+                  <div key={index} class="swiper-slide group">
+                    <div className="services-box shadow-[0px_0px_15px_0px_rgba(0,0,0,0.07)] relative xxl:p-40 p-30 xxl:m-15 m-10 before:w-full before:h-0 before:bg-primary before:absolute before:bottom-0 before:left-0 group-hover:before:h-full before:duration-500">
 
-                    <h4 className="xl:text-xl font-sora text-secondary font-medium leading-[1.2]">
+                      <div className={`w-90 h-90 rounded-full overflow-hidden bg-[${color}] group-hover:bg-white flex items-center justify-center mb-25 relative `}>
+
+                        <img src={`https://api.medisco.in/${service.service_image}`} alt="" className={`  w-60 h-60  aspect-square object-contain  `} />
+                      </div>
+
+                      <h4 className="xl:text-xl font-sora text-secondary font-medium leading-[1.2] text-wrap break-words">
+                        <NavLink
+                          to={`/servicedetails/${service.service_id}/${service.service_name}}`}
+                          className="xxl:text-2xl text-wrap break-words text-xl font-bold font-sora relative text-secondary group-hover:text-white duration-500"
+                        >
+                          {service.service_name}
+                        </NavLink>
+                      </h4>
+
+
+
+                      <p className="pt-10 pb-20 relative text-base leading-32 text-[#6f6f6f] font-normal group-hover:text-white duration-500">
+                        {sliceText(service.service_description, 50)}
+
+                      </p>
+
                       <NavLink
-                        to={service?.id}
-                        className="xxl:text-2xl text-xl font-bold font-sora relative text-secondary group-hover:text-white duration-500"
+                        to={`/servicedetails/${service.service_id}/${service.service_name}}`}
+                        className="service-read-more relative font-bold text-secondary font-sora group-hover:text-white duration-500"
                       >
-                        {service.service_name}
+                        Read More <i className="fa-solid fa-arrow-right ml-12 relative"></i>
                       </NavLink>
-                    </h4>
-
-
-
-                    <p className="pt-10 pb-20 relative text-base leading-32 text-[#6f6f6f] font-normal group-hover:text-white duration-500">
-                      {sliceText(service.service_description, 50)}
-
-                    </p>
-
-                    <NavLink
-                      to={service.id}
-                      className="service-read-more relative font-bold text-secondary font-sora group-hover:text-white duration-500"
-                    >
-                      Read More <i className="fa-solid fa-arrow-right ml-12 relative"></i>
-                    </NavLink>
+                    </div>
                   </div>
-                </SwiperSlide>
-              );
-            })}
-
-            {/* Custom Navigation Buttons */}
+                );
+              })}
+            </div>
             <div className="swiper-button">
               <div className="services-swiper-button-next">
                 <i className="fa-solid fa-arrow-right"></i>
@@ -398,7 +375,7 @@ const Home = () => {
                 <i className="fa-solid fa-arrow-left"></i>
               </div>
             </div>
-          </Swiper>
+          </div>
         </div>
       </section>
 

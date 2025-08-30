@@ -56,30 +56,14 @@ const ForgotePassword = React.memo(({setForgotePassword}) => {
                             </div>
     
                             <div className="mb-6 flex  bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
-                              {/* <!-- <label for="password" className="block text-sm font-medium text-dark mb-2">Password</label> -->
-                             <!-- <span className="flex align-center justify-between  text-gary ">
-                                 <i className="fa-solid fa-lock"></i>
-    
-                             </span> --> */}
+                              
                               <input type="email" name="email" id="email" value={email} onChange={(e)=> setEmail(e.target.value)} placeholder="Email" className="w-full outline-none focus:border-primary focus-visible:shadow-none" />
                             </div>
-                            {/* <div className="flex  justify-between items-center mb-20">
-                              <div className="form-check flex align-center text-sm justify-center gap-10">
-    
-                                Don't Recieve OTP ? Resend OTP in<span>60s</span>
-                              </div>
-                              <p className="text-sm text-primary hover:underline cursor-pointer font-semibold">
-                                Resend OTP
-                              </p>
-                            </div> */}
+                         
                             <div className="mb-10">
                               <button disabled={loading} type="submit" className={` ${loading? 'opacity-50' : ''} button active w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Verify</button>
                             </div>
-                            {/* <!-- <div className="flex  items-center gap-10  mt-10">
-    
-                          <p className="text-center text-sm text-body-color">Don't have an account? </p>
-                          <p  className=" switch-register cursor-pointer text-center font-semibold text-sm text-primary hover:underline block">Sign Up</p>
-                        </div> --> */}
+                            
     
     
     
