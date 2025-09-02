@@ -176,12 +176,32 @@ var Madula = (function () {
     });
   };
 
+  
+
  
 
 
 
 
-  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   var handleAnimateElements = function () {
     $(window).on("scroll", function () {
       $(".progressbar").each(function () {

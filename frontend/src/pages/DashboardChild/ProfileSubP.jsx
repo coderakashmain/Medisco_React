@@ -9,8 +9,8 @@ import { useUserDataContext } from '../../Context/Userdata';
 
 const ProfileSubP = () => {
   const { userdata } = useUserDataContext();
-
-  console.log(userdata)
+console.log(userdata);
+  if(!userdata) return null;
   return (
     <section className='h-full w-full p-20 pb-40 sm:p-10'>
 
@@ -21,7 +21,7 @@ const ProfileSubP = () => {
           </div>
           <div className='flex flex-col  align-center justify-center gap-5'>
             <h2 className='font-bold'>Organisation name</h2>
-            <p className='text-xs text-gary'>{userdata.data.role}</p>
+            <p className='text-xs text-gary'>{userdata?.data?.role}</p>
           </div>
         </div>
         <div>
@@ -39,12 +39,12 @@ const ProfileSubP = () => {
 
           <li>
             <label htmlFor="parson-name">Parson Name</label>
-            <input type="text" value={userdata.data.fullname} className='rounded outline-none p-7 text-sm px-10 ' disabled id="parson-name" />
+            <input type="text" value={userdata?.data?.fullname} className='rounded outline-none p-7 text-sm px-10 ' disabled id="parson-name" />
 
           </li>
           <li>
             <label htmlFor="email">Email </label>
-            <input type="email" value={userdata.data.email} className='rounded outline-none p-7 text-sm px-10 ' disabled id='email' />
+            <input type="email" value={userdata?.data?.email} className='rounded outline-none p-7 text-sm px-10 ' disabled id='email' />
 
           </li>
           <li>
@@ -62,13 +62,9 @@ const ProfileSubP = () => {
             <input type="text" className='rounded outline-none p-7 text-sm px-10' disabled id='City' />
 
           </li>
+        
           <li>
-            <label htmlFor="state">Address</label>
-            <input type="text" className='rounded outline-none p-7 text-sm px-10' disabled id='address' />
-
-          </li>
-          <li>
-            <label htmlFor="state">Address</label>
+            <label htmlFor="address">Address</label>
             <input type="text" className='rounded outline-none p-7 text-sm px-10' disabled id='address' />
 
           </li>
@@ -80,6 +76,9 @@ const ProfileSubP = () => {
 
         </ul>
       </div>
+
+
+
       <div className='mt-40'>
         <h3 className='text-sm font-bold'>My email Adress</h3>
         <div className='flex justify-between'>
@@ -87,7 +86,7 @@ const ProfileSubP = () => {
           <div className='mt-20 flex gap-10  items-center'>
             <MuiAvatar sx={{ height: 35, width: 35, bgcolor: '#F4F4FF', color: 'var(--color-primary)' }}><MailIcon sx={{ height: 20, width: 20 }} /></MuiAvatar>
             <div>
-              <p className='text-sm'>{userdata.data.email}</p>
+              <p className='text-sm'>{userdata?.data?.email}</p>
               <p className='text-xs text-gary'>1 month ago</p>
             </div>
 

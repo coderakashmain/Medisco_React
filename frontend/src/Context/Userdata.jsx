@@ -25,10 +25,10 @@ const Userdata = ({ children }) => {
         setUserdata,
         setUserDataLoading,
         userDataloading
-    }), [userdata, setUserdata,setUserDataLoading,userDataloading])
+    }), [userdata, ,,userDataloading])
 
 
-console.log(userdata)
+
 
     return (
         <userDataContext.Provider value={value}>

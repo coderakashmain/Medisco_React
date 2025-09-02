@@ -3,7 +3,7 @@ import logo from '../assets/img/logo.png'
 import { useUserDataContext } from '../Context/Userdata';
 import axios from 'axios';
 import FallbackLoader from '../components/FallbackLoader';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
     const [message, setMessage] = useState('');
@@ -13,7 +13,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
     const { userdata, setUserdata } = useUserDataContext();
     const host = import.meta.env.VITE_HOST;
     const navigate = useNavigate();
-
+    const location = useLocation();
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
@@ -79,7 +79,8 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
             localStorage.setItem('userdata', JSON.stringify(userData));
 
             setLoginP(false)
-            navigate('/dashboard')
+            window.location.href = '/dashboard';
+           
             setLoginData({
                 ...loginData,
                 email: '',

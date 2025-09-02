@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
@@ -28,19 +27,14 @@ import chooseuslogo from '../assets/img/choose-us-logo.png'
 import circleimage from '../assets/img/circle-image.png'
 import pricingplanshap from '../assets/img/pricing-plan-shap.png'
 import pricingplanshap1 from '../assets/img/pricing-plan-shap-1.png'
-import quotes from '../assets/img/quotes.png'
-import reviewimg1 from '../assets/img/review-img-1.jpg'
-import reviewimg2 from '../assets/img/review-img-2.jpg'
-import logo1 from '../assets/img/logo-1.png'
-import logonew2 from '../assets/img/logo-new-2.png'
-import logonew4 from '../assets/img/logo-new-4.png'
-import logo4 from '../assets/img/logo-new-4.png'
-import brandlogo5 from '../assets/img/brand-logo-5.png'
 import { useServiceListContex } from '../Context/Services';
 import { createSearchParams, NavLink, useNavigate } from 'react-router-dom';
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
 import Loading from '../components/Loading';
+import ServicesSlider from '../components/ServicesSlider ';
+import ReviewSlider from '../components/ReviewSlider';
+import BrandSlider from '../components/BrandSlider';
 
 const Home = () => {
   const [searchData, setSearchData] = useState({
@@ -280,7 +274,7 @@ const Home = () => {
                   <select disabled={districtLoading} name="states" id="states" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
                     onChange={(e) => setSearchData({ ...searchData, district: e.target.value })}
                     defaultValue="">
-                    <option  className='text-sm' >Search By City</option>
+                    <option className='text-sm' >Search By City</option>
                     {districtsList.status && districtsList.data.map((district, index) => (
                       <option className='text-sm' key={index} value={district}>{district}</option>
 
@@ -328,57 +322,8 @@ const Home = () => {
             </h2>
           </div>
 
-
-
-          <div className="swiper services-slider">
-            <div className="swiper-wrapper services-list-box">
-              {services.status && services?.data.map((service, index) => {
-                let color = bgColor[index % bgColor.length];
-                return (
-                  <div key={index} className="swiper-slide group">
-                    <div className="services-box shadow-[0px_0px_15px_0px_rgba(0,0,0,0.07)] relative xxl:p-40 p-30 xxl:m-15 m-10 before:w-full before:h-0 before:bg-primary before:absolute before:bottom-0 before:left-0 group-hover:before:h-full before:duration-500">
-
-                      <div className={`w-90 h-90 rounded-full overflow-hidden bg-[${color}] group-hover:bg-white flex items-center justify-center mb-25 relative `}>
-
-                        <img src={`https://api.medisco.in/${service.service_image}`} alt="" className={`  w-60 h-60  aspect-square object-contain  `} />
-                      </div>
-
-                      <h4 className="xl:text-xl font-sora text-secondary font-medium leading-[1.2] text-wrap break-words">
-                        <NavLink
-                          to={`/servicedetails/${service.service_id}/${service.service_name}}`}
-                          className="xxl:text-2xl text-wrap break-words text-xl font-bold font-sora relative text-secondary group-hover:text-white duration-500"
-                        >
-                          {service.service_name}
-                        </NavLink>
-                      </h4>
-
-
-
-                      <p className="pt-10 pb-20 relative text-base leading-32 text-[#6f6f6f] font-normal group-hover:text-white duration-500">
-                        {sliceText(service.service_description, 50)}
-
-                      </p>
-
-                      <NavLink
-                        to={`/servicedetails/${service.service_id}/${service.service_name}}`}
-                        className="service-read-more relative font-bold text-secondary font-sora group-hover:text-white duration-500"
-                      >
-                        Read More <i className="fa-solid fa-arrow-right ml-12 relative"></i>
-                      </NavLink>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-            <div className="swiper-button">
-              <div className="services-swiper-button-next">
-                <i className="fa-solid fa-arrow-right"></i>
-              </div>
-              <div className="services-swiper-button-prev">
-                <i className="fa-solid fa-arrow-left"></i>
-              </div>
-            </div>
-          </div>
+            <ServicesSlider services={services}/>
+        
         </div>
       </section>
 
@@ -1083,168 +1028,16 @@ const Home = () => {
               What Our Members Say
             </h2>
           </div>
-          <div
-            className="swiper review-slider swiper-initialized swiper-horizontal swiper-pointer-events swiper-free-mode swiper-backface-hidden relative lg:before:absolute lg:before:w-px lg:before:h-full lg:before:bg-[#bfbfbf] lg:before:left-1/2"
-          >
-            <div className="swiper-wrapper">
-              <div className="swiper-slide">
-                <div className="relative">
-                  <ul className="flex text-sm gap-4 mb-10">
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                  </ul>
-                  <p
-                    className="md:text-2xl sm:text-xl text-lg leading-34 font-medium pb-21 text-gary"
-                  >
-                    MeDiSco helped me save on my monthly medicines. The discount card
-                    works instantly at my local pharmacy—super convenient and
-                    affordable!
-                  </p>
-                  <div className="flex items-center gap-x-15">
-                    <img
-                      src={reviewimg1}
-                      alt="img"
-                      className="rounded-full"
-                    />
-                    <div>
-                      <h5
-                        className="text-base font-bold pb-4 text-secondary font-sora leading-[1.2]"
-                      >
-                        Ananya Sharma
-                      </h5>
-                      <span>College Student</span>
-                    </div>
-                  </div>
-                  <img
-                    src={quotes}
-                    alt="quotes"
-                    className="absolute right-[0%] bottom-[3%] bg-transparent mt-50"
-                  />
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <div className="relative">
-                  <ul className="flex text-sm gap-4 mb-10">
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                  </ul>
-                  <p
-                    className="md:text-2xl sm:text-xl text-lg leading-34 font-medium pb-21 text-gary"
-                  >
-                    I don’t have insurance, but with MeDiSco, I still manage to save a
-                    lot on doctor visits and diagnostic tests. Highly recommended!
-                  </p>
-                  <div className="flex items-center gap-x-15">
-                    <img
-                      src={reviewimg2}
-                      alt="img"
-                      className="rounded-full"
-                    />
-                    <div>
-                      <h5
-                        className="text-base font-bold pb-4 text-secondary font-sora leading-[1.2]"
-                      >
-                        Rajesh Kumar
-                      </h5>
-                      <span>Small Business Owner</span>
-                    </div>
-                  </div>
-                  <img
-                    src={quotes}
-                    alt="quotes"
-                    className="absolute right-[0%] bottom-[3%] bg-transparent mt-50"
-                  />
-                </div>
-              </div>
-              <div className="swiper-slide">
-                <div className="relative">
-                  <ul className="flex text-sm gap-4 mb-10">
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                    <li><i className="fa-solid fa-star text-yellow text-lg"></i></li>
-                  </ul>
-                  <p
-                    className="md:text-2xl sm:text-xl text-lg leading-34 font-medium pb-21 text-gary"
-                  >
-                    My family uses the Premium Plan. We’ve saved thousands on
-                    treatments and even got discounts on dental and vision care.
-                  </p>
-                  <div className="flex items-center gap-x-15">
-                    <img
-                      src={team3}
-                      alt="img"
-                      className="rounded-full"
-                    />
-                    <div>
-                      <h5
-                        className="text-base font-bold pb-4 text-secondary font-sora leading-[1.2]"
-                      >
-                        Rupesh Mehta
-                      </h5>
-                      <span>Working Professional</span>
-                    </div>
-                  </div>
-                  <img
-                    src={quotes}
-                    alt="quotes"
-                    className="absolute right-[0%] bottom-[3%] bg-transparent mt-50"
-                  />
-                </div>
-              </div>
-            </div>
-            <div
-              className="lg:absolute relative bg-[#F4F4FF] z-[1] size-78 rounded-full left-1/2 lg:top-1/2 [transform:translate(-50%,-50%)] max-lg:mt-48"
-            >
-              <div className="swiper-button-next">
-                <i className="fa-solid fa-chevron-right"></i>
-              </div>
-              <div className="swiper-button-prev">
-                <i className="fa-solid fa-chevron-left"></i>
-              </div>
-            </div>
-          </div>
+          <ReviewSlider/>
+        
         </div>
       </section>
+      <div className='overflow-hidden'>
 
-      <div className="container xl:pb-120 lg:pb-100 md:pb-80 pb-60">
-        <div className="swiper brand-slide">
-          <div className="swiper-wrapper">
-            <div className="swiper-slide">
-              <img src={logo1} alt="img" />
-            </div>
-            <div className="swiper-slide">
-              <img src={logonew2} alt="img" />
-            </div>
-            <div className="swiper-slide">
-              <img src={logonew4} alt="img" />
-            </div>
-            <div className="swiper-slide">
-              <img src={logo1} alt="img" />
-            </div>
-
-            <div className="swiper-slide">
-              <img src={logo4} alt="img" />
-            </div>
-
-            <div className="swiper-slide">
-              <img src={logo1} alt="img" />
-            </div>
-
-            <div className="swiper-slide">
-              <img src={brandlogo5} alt="img" />
-            </div>
-
-          </div>
-        </div>
+      <BrandSlider/>
       </div>
+
+      
 
     </>
   )

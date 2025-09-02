@@ -175,8 +175,12 @@
   ol, ul, menu {
     list-style: none;
   }
-  img, svg, video, canvas, audio, iframe, embed, object {
+   video, canvas, audio, iframe, embed, object {
     display: block;
+
+  }
+  img, svg{
+   display: inline-block;
     vertical-align: middle;
   }
   img, video {
@@ -821,12 +825,13 @@
   .box-content {
     box-sizing: content-box;
   }
-  .line-clamp-none {
-    overflow: visible;
-    display: block;
-    -webkit-box-orient: horizontal;
-    -webkit-line-clamp: unset;
-  }
+    .line-clamp-none {
+      overflow: visible;
+      display: block;
+      -webkit-box-orient: horizontal;
+      -webkit-line-clamp: unset;
+       line-clamp: unset;  
+    }
   .\!block {
     display: block !important;
   }
@@ -3242,12 +3247,12 @@
     -webkit-user-select: all;
     user-select: all;
   }
-  .\[hostname\:port\] {
+  /* .\[hostname\:port\] {
     hostname: port;
   }
   .\[key\:string\] {
     key: string;
-  }
+  } */
   .backface-hidden {
     backface-visibility: hidden;
   }
@@ -6078,6 +6083,7 @@ input::-webkit-outer-spin-button, input::-webkit-inner-spin-button {
 }
 input[type=number] {
   -moz-appearance: textfield;
+  appearance: textfield;
 }
 .leading-page-1 {
   position: absolute;
@@ -6693,7 +6699,7 @@ input[type=number] {
     background-color: var(--color-white);
     --tw-font-weight: var(--font-weight-normal);
     font-weight: var(--font-weight-normal);
-    color: #55555;
+    color: #5555;
   }
   .ui-slider-horizontal .ui-slider-handle {
     top: -0.5em;
@@ -6716,17 +6722,17 @@ input[type=number] {
     height: .4em;
   }
 }
-.services-slider .swiper-button {
+.services-slider-box .swiper-button {
   position: absolute;
-  top: calc(var(--spacing) * 0);
+  top: calc(var(--spacing) * -115);
   right: 10%;
-  z-index: 111;
+  z-index: 11;
   display: block;
   height: calc(var(--spacing) * 60);
   width: calc(var(--spacing) * 130);
   border-radius: calc(infinity * 1px);
 }
-.services-slider .services-swiper-button-prev, .services-slider .services-swiper-button-next {
+.services-slider-box .services-swiper-button-prev, .services-slider-box .services-swiper-button-next {
   position: absolute;
   top: calc(var(--spacing) * 0);
   z-index: 10;
@@ -6799,16 +6805,16 @@ input[type=number] {
   transition-duration: 500ms;
 }
 @media (max-width: 1200px) {
-  .services-slider .swiper-button {
+  .services-slider-box .swiper-button {
     top: calc(var(--spacing) * 20);
   }
 }
-.services-slider .services-swiper-button-next {
+.services-slider-box .services-swiper-button-next {
   right: calc(var(--spacing) * 10);
   left: auto;
 }
 @media (max-width: 768px) {
-  .services-slider .swiper-button {
+  .services-slider-box .swiper-button {
     position: relative;
     top: calc(var(--spacing) * 5);
     right: auto;
@@ -6983,24 +6989,24 @@ input[type=number] {
     border-width: 1px;
     border-color: transparent;
   }
-  .services-slider .services-swiper-button-prev:hover {
+  .services-slider-box .services-swiper-button-prev:hover {
     background-color: var(--color-primary);
     color: var(--color-white);
     --tw-duration: 500ms;
     transition-duration: 500ms;
   }
-  .services-slider .services-swiper-button-next:hover {
+  .services-slider-box .services-swiper-button-next:hover {
     background-color: var(--color-primary);
     color: var(--color-white);
     --tw-duration: 500ms;
     transition-duration: 500ms;
   }
-  .services-slider .services-swiper-button-prev:hover i {
+  .services-slider-box .services-swiper-button-prev:hover i {
     color: var(--color-white);
     --tw-duration: 500ms;
     transition-duration: 500ms;
   }
-  .services-slider .services-swiper-button-next:hover i {
+  .services-slider-box .services-swiper-button-next:hover i {
     color: var(--color-white);
     --tw-duration: 500ms;
     transition-duration: 500ms;

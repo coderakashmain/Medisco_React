@@ -20,7 +20,7 @@ import { useLocationContext } from '../Context/LocationProvider ';
 const Navbar = () => {
   const { services } = useServiceListContex();
   const { statesList } = useStatesContext();
-  const {userLocation} = useLocationContext();
+  const { userLocation } = useLocationContext();
   const navigate = useNavigate();
   const location = useLocation();
   const { userdata, setUserdata } = useUserDataContext();
@@ -122,6 +122,7 @@ const Navbar = () => {
       const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
       sessionStorage.setItem('userdata', response.data);
       setMessage('Otp Verified.')
+      setOTPError('');
 
       otpVerify(false);
       navigate('/dashboard')
@@ -129,7 +130,8 @@ const Navbar = () => {
 
 
     } catch (error) {
-      setOTPError(error.response?.data?.error?.otp || "Something went wrong");
+      setMessage('');
+      setOTPError(error.response?.data?.error?.message || "Something went wrong");
       console.error("Registration  failed:", error.response?.data || error.message);
     } finally {
       setLoading(false);
@@ -210,11 +212,11 @@ const Navbar = () => {
                   <HashLink smooth to="/#about">About</HashLink>
                 </li>
                 <li className="navbar-dropdown">
-                  <HashLink smooth  to="/#section-pricing">Plans</HashLink>
+                  <HashLink smooth to="/#section-pricing">Plans</HashLink>
                 </li>
 
                 <li className="navbar-dropdown service-dropdown-out-box dropdown-out-box  relative ">
-                  <HashLink  smooth to="/#services">Services</HashLink>
+                  <HashLink smooth to="/#services">Services</HashLink>
                   <div className="service-dropdown-box dropdown-box  absolute top-[100%] left-[-100%] w-[30vw]    bg-white font-normal  z-99 mt-5 flex flex-col  shadow">
                     <ul>
                     </ul>
@@ -303,7 +305,7 @@ const Navbar = () => {
                             <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
 
                             <p className="text-base text-body-color text-gary text-sm">Register Here </p>
-                            {error && (<p className='text-xs text-[#FC4F4F]'>{error}</p>)}
+                            {error && (<p className='text-xs text-[#FC4F4F] pt-10'>{error}</p>)}
                           </div>
                         </div>
 
@@ -402,18 +404,7 @@ const Navbar = () => {
                           onChange={handleChange}
                           type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
 
-                        {/* <p className=" text-sm mb-10">Latitude *</p>
-                        <input
-                          name='latitude'
-                          value={userdetails.latitude}
-                          onChange={handleChange}
-                          type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
-                        <p className=" text-sm mb-10">Longitude *</p>
-                        <input
-                          name='longitude'
-                          value={userdetails.longitude}
-                          onChange={handleChange}
-                          type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" /> */}
+
 
                         <p className=" text-sm mb-10">Password *</p>
                         <input
@@ -470,8 +461,8 @@ const Navbar = () => {
                             </a>
                             <h3 className="text-2xl font-semibold text-secondary">Verify Your Email</h3>
                             <p className="text-base text-body-color text-gary text-sm">OTP send to your email id {userdetails?.contact_email}. Please check you email  and verify the OTP.</p>
-                            {OTPError && (<p className='text-xs text-[#FC4F4F]'>{OTPError}</p>)}
-                            {message && (<p className='text-xs text-primary'>{message}</p>)}
+                            {OTPError && (<p className='text-xs text-[#FC4F4F] pt-10'>{OTPError}</p>)}
+                            {message && (<p className='text-xs text-primary pt-10'>{message}</p>)}
                           </div>
                         </div>
 
