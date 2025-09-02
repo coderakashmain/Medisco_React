@@ -483,6 +483,9 @@
   .z-99 {
     z-index: 99;
   }
+  .z-999 {
+    z-index: 999;
+  }
   .z-\[1\] {
     z-index: 1;
   }
@@ -1032,6 +1035,9 @@
   .min-h-screen {
     min-height: 100vh;
   }
+  .min-h-252 {
+    min-height: calc(var(--spacing) * 252);
+  }
   .\!w-400 {
     width: calc(var(--spacing) * 400) !important;
   }
@@ -1071,8 +1077,20 @@
   .w-90 {
     width: calc(var(--spacing) * 90);
   }
+  .w-250 {
+    width: calc(var(--spacing) * 250);
+  }
+  .w-300 {
+    width: calc(var(--spacing) * 300);
+  }
+  .min-w-250 {
+    min-width: calc(var(--spacing) * 250);
+  }
   .w-\[31\%\] {
     width: 31%;
+  }
+  .w-\[25\%\] {
+    width: 25%;
   }
   .w-\[35\%\] {
     width: 35%;

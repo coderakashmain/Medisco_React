@@ -1,20 +1,22 @@
-import { useState ,lazy, Suspense} from 'react'
+import { useState, lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import './App.css'
 import HomeContext from './Router/HomeContext';
-import Home from './pages/home';
+import Home from './pages/Home';
 import Services from './Context/Services';
 import States from './Context/States';
 import Districts from './Context/Districts';
 import Loading from './components/Loading';
 import Userdata from './Context/Userdata';
 import FallbackLoader from './components/FallbackLoader';
+import GlobalRouter from './Router/GlobalRouter';
+import { LocationProvider } from './Context/LocationProvider ';
 
 
-
-
-
-
+const ProfileSubP = lazy(() => import("./pages/DashboardChild/ProfileSubP"));
+const ServicesSubP = lazy(() => import("./pages/DashboardChild/ServicesSubP"));
+const Photos = lazy(() => import("./pages/DashboardChild/Photos"));
+const Statistics = lazy(() => import("./pages/DashboardChild/Statistics"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const ServiceDetails = lazy(() => import("./pages/ServiceDetails"));
 const NotFound = lazy(() => import("./pages/NotFound"));
@@ -26,46 +28,74 @@ const SearchList = lazy(() => import("./pages/SearchList"));
 
 function App() {
 
-  const router = createBrowserRouter( [
-   
+  const router = createBrowserRouter([
     {
-      path : '/',
-      element : <><Userdata><Services><States><Districts><HomeContext/></Districts></States></Services></Userdata></>,
-      children : [
+      path: '/',
+      element: <><LocationProvider><Userdata><Services><States><Districts><GlobalRouter /></Districts></States></Services></Userdata></LocationProvider></>,
+      children: [
         {
-          path : '*',
-          element : <><Suspense fallback={<FallbackLoader/>}><NotFound/></Suspense></>
+          path: '',
+          element: <><HomeContext /></>,
+          children: [
+            {
+              path: '*',
+              element: <><Suspense fallback={<FallbackLoader />}><NotFound /></Suspense></>
+            },
+            {
+              path: '',
+              element: <><Home /></>
+            },
+            {
+              path: '/search_result',
+              element: <><Suspense fallback={<FallbackLoader />}><SearchList /></Suspense></>
+            },
+
+            {
+              path: '/servicedetails/:service_id/:service_name',
+              element: <><Suspense fallback={<FallbackLoader />}><ServiceDetails /></Suspense></>
+            },
+             {
+          path: '/dashboard',
+          element: <><Suspense fallback={<FallbackLoader />}><Dashboard /></Suspense></>,
+          children : [
+            {
+              path : '',
+              element : <><Suspense fallback={<FallbackLoader  size="20vh"/>}><ProfileSubP /></Suspense></>
+            },
+            {
+              path : 'services',
+              element : <><Suspense fallback={<FallbackLoader size="20vh" />}><ServicesSubP/></Suspense></>
+            },
+            {
+              path : 'photos',
+              element : <><Suspense fallback={<FallbackLoader  size="20vh"/>}><Photos/></Suspense></>
+            },
+            {
+              path : 'statistics',
+              element : <><Suspense fallback={<FallbackLoader size="20vh" />}><Statistics/></Suspense></>
+            },
+            
+          ]
+        }
+          ]
         },
         {
-          path : '',
-          element : <><Home/></>
+          path: '/reset-password',
+          element: <><Suspense fallback={<FallbackLoader />}><ResetPassword /></Suspense></>
         },
-        {
-          path : '/search_result/:state/:district/:service',
-          element :<><Suspense fallback={<FallbackLoader/>}><SearchList/></Suspense></>
-        },
-        {
-          path : '/dashboard',
-          element :<><Suspense fallback={<FallbackLoader/>}><Dashboard/></Suspense></>
-        },
-        {
-          path : '/servicedetails/:service_id/:service_name',
-          element :<><Suspense fallback={<FallbackLoader/>}><ServiceDetails/></Suspense></>
-        },
+       
       ]
-    },
-    {
-      path : '/reset-password',
-      element : <><Suspense fallback={<FallbackLoader/>}><ResetPassword/></Suspense></>
     }
+
+
   ])
 
 
   return (
- 
+
     <RouterProvider router={router} />
- 
-     
+
+
 
   )
 }

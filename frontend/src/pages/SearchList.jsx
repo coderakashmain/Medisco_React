@@ -1,5 +1,5 @@
 import React, { lazy, useState } from 'react'
-import { replace, useParams } from 'react-router-dom'
+import { createSearchParams, replace, useLocation, useNavigate, useParams } from 'react-router-dom'
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
 import photo1card from '../assets/img/photo-1-card.png'
@@ -7,7 +7,9 @@ import photo1card from '../assets/img/photo-1-card.png'
 const Loading = lazy(()=> import('../components/Loading'))
 
 const SearchList = () => {
-    const { state, district, service } = useParams();
+    const navigate = useNavigate();
+    const { search } = useLocation();
+    const params = new URLSearchParams(search);
     const { statesList } = useStatesContext();
     const { districtsList, setState, districtLoading } = useDistrictsContext();
     const [searchData, setSearchData] = useState({
@@ -16,7 +18,7 @@ const SearchList = () => {
         service: ''
     })
 
-    console.log(searchData)
+
 
 
     return (
@@ -29,9 +31,16 @@ const SearchList = () => {
 
                     <form onSubmit={(e) => {
                         e.preventDefault();
-                        navigate(`/search_result/${searchData.state}/${searchData.district}/${searchData.service}`,{
-                            replace : true
-                        })
+                        navigate(
+                            {
+                                pathname :  "/search_result",
+                              search: `?${createSearchParams(searchData)}`
+                               
+                            },
+                            {
+                                 replace : true
+                            }
+                        )
                     }} id="search-form w-[100%] ">
                         <h2
                             className="text-center text-secondary pb-70 xxl:text-6xl xl:text-5xl md:text-4xl sm:text-3xl text-3xl font-extrabold"
@@ -45,12 +54,12 @@ const SearchList = () => {
                                 className="search-form-box flex  m-auto   flex-row w-[50%] justify-center flex-nowrap align-center gap-20 "
                             >
 
-                                <div className="border border-lightgary p-7 rounded flex justify-center items-center gap-10 flex-grow md:w-[50%]   ">
+                                <div className="border border-lightgary p-7 rounded flex justify-center w-[50%] items-center gap-10 flex-grow md:w-[50%]   ">
                                     <i className="fa-solid fa-location-dot text-gary"></i>
                                     <select name="states" id="states" className='outline-none flex-grow py-5' onChange={(e) => {
                                         setSearchData({ ...searchData, state: e.target.value });
                                         setState(e.target.value)
-                                    }} defaultValue={state}>
+                                    }} defaultValue={params.get("state")}>
                                         <option  >Search By State</option>
                                         {statesList.status && statesList.data.map((state, index) => (
                                             <option key={index} value={state}>{state}</option>
@@ -60,12 +69,12 @@ const SearchList = () => {
                                     </select>
 
                                 </div>
-                                <div className="border border-lightgary p-7 rounded flex justify-center  items-center gap-10 flex-grow  md:w-[50%] ">
+                                <div className="border border-lightgary p-7 rounded flex justify-center w-[50%] items-center gap-10 flex-grow  md:w-[50%] ">
                                     <i className="fa-solid fa-location-dot text-gary"></i>
 
                                     <select disabled={districtLoading} name="states" id="states" className={`outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
                                         onChange={(e) => setSearchData({ ...searchData, district: e.target.value })}
-                                        defaultValue={district}>
+                                        defaultValue={params.get("district")}>
                                         <option  >Search By City</option>
                                         {districtsList.status && districtsList.data.map((district, index) => (
                                             <option key={index} value={district}>{district}</option>
@@ -83,10 +92,10 @@ const SearchList = () => {
 
                                     <input
                                         type="text"
-                                        defaultValue={service}
+                                        
                                         placeholder="Search By Service"
                                         className=" outline-none flex-grow"
-                                        value={searchData.service}
+                                         value={searchData.service || params.get("service") || ""} 
                                         onChange={(e) => setSearchData({ ...searchData, service: e.target.value })}
                                     />
                                 </div>

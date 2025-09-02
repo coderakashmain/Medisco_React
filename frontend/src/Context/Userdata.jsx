@@ -8,11 +8,12 @@ const Userdata = ({ children }) => {
     const [userdata, setUserdata] = useState();
     const [userDataloading,setUserDataLoading] = useState(false);
 
+
+
     useEffect(() => {
         setUserDataLoading(true);
         const locadata = localStorage.getItem('userdata');
-        const sessiondata = sessionStorage.getItem('userdata');
-        const data = locadata || sessiondata;
+        const data = locadata;
         if (data) {
             setUserdata(JSON.parse(data))
         }
@@ -26,9 +27,9 @@ const Userdata = ({ children }) => {
         userDataloading
     }), [userdata, setUserdata,setUserDataLoading,userDataloading])
 
-    console.log("This is userdata", userdata);
 
-    console.log(userdata)
+console.log(userdata)
+
     return (
         <userDataContext.Provider value={value}>
             {children}

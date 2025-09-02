@@ -3,7 +3,7 @@ import logo from '../assets/img/logo.png'
 
 const Footer = () => {
   return (
-    <footer className="lg:pt-120 md:pt-80 pt-60 relative bg-[#F4F4FF]">
+    <footer className="lg:pt-120 md:pt-80 pt-60 relative bg-[#F4F4FF] " id ='contact'>
       <div className="container">
         <div
           className="bg-primary max-lg:flex-wrap max-lg:gap-20 sm:p-50 p-20 flex items-center rounded-[20px] w-full lg:justify-between"
@@ -277,7 +277,7 @@ const Footer = () => {
           <p className="text-base leading-30 text-gary font-normal">
             Copyright © <span className="current-year"> 2024 </span>
             <span className="text-primary"
-              ><a href="https://dexignlab.com/"> Dexignlab.</a></span
+              ><a href="https://medisco.in/"> Medisco.</a></span
             >
             All Rights Reserved.
           </p>

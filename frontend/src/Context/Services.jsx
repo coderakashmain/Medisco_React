@@ -13,14 +13,15 @@ export const useServiceListContex = ()=>{
 
 const Services = ({children}) => {
      const [services, setServices] = useState([]);
+     const host = import.meta.env.VITE_HOST;
 
      useEffect(()=>{
     
     const getServices = async()=>{
 
         try{
-           const response = await axios.get("/api/admin/services"); 
-           
+           const response = await axios.get(`${host}/user/services`); 
+   
            setServices(response.data)
         }
         catch(err){

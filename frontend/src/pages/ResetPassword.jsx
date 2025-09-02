@@ -1,22 +1,27 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { useSearchParams } from "react-router-dom";
+import logo from '../assets/img/logo.png'
 
 const ResetPassword = () => {
     const [searchParams] = useSearchParams();
     const token = searchParams.get("token");
+    const [message,setMessage] = useState('');
+    const [error,setError]=useState('');
+    const [laoding,setLoading] = useState(false);
+    const [password,setPasswrod] = useState('');
 
     if (!token) {
         return <p className='pt-80 text-center font-bold text-xl'>Token not found.</p>;
     }
 
-    console.log("Token from URL:", token);
+
     return (
         <section id='reset-password bg-secondary h-screen w-full'>
          
 
 
-                    {/* <div className="container flex items-center justify-center relative h-full   ">
-                        <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
+                    <div className="container flex items-center justify-center relative h-full   ">
+                        <div className="reset-password-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
                             <form onSubmit={hanldeOtpvelidation}>
 
                                 <div className=" sticky">
@@ -28,7 +33,7 @@ const ResetPassword = () => {
                                             <img src={logo} alt="logo" className="max-w-[160px]" />
                                         </a>
                                         <h3 className="text-2xl font-semibold text-secondary">Reset your Password.</h3>
-                                        <p className="text-base text-body-color text-gary text-sm">OTP send to your email id {userdetails?.contact_email}. Please check you email  and verify the OTP.</p>
+                                        <p className="text-base text-body-color text-gary text-sm">Enter your password here.</p>
                                         {OTPError && (<p className='text-xs text-[#FC4F4F]'>{OTPError}</p>)}
                                         {message && (<p className='text-xs text-primary'>{message}</p>)}
                                     </div>
@@ -56,7 +61,7 @@ const ResetPassword = () => {
                             </form>
                         </div>
 
-                    </div> */}
+                    </div>
 
                 
 

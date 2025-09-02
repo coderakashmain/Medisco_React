@@ -1,41 +1,45 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState, useRef, Suspense, lazy } from 'react'
 import logo from '../assets/img/logo.png'
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { useServiceListContex } from '../Context/Services'
 import { useStatesContext } from '../Context/States'
 import { useDistrictsContext } from '../Context/Districts'
 import ForgotePassword from '../pages/ForgotePassword'
 import { useUserDataContext } from '../Context/Userdata'
+import Avatar from './Avatar'
+import profilelog from '../assets/img/text-profile.png'
+import Loading from './Loading'
+import FallbackLoader from './FallbackLoader'
+import { HashLink } from 'react-router-hash-link';
+const Login = lazy(() => import("../pages/Login"));
+import { useLocationContext } from '../Context/LocationProvider ';
+
 
 
 const Navbar = () => {
   const { services } = useServiceListContex();
   const { statesList } = useStatesContext();
+  const {userLocation} = useLocationContext();
   const navigate = useNavigate();
+  const location = useLocation();
   const { userdata, setUserdata } = useUserDataContext();
   const { districtsList, setState, state } = useDistrictsContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
-  const [loginError, setLoginError] = useState('');
   const [logingP, setLoginP] = useState(false);
   const [signInP, setSignIn] = useState(false);
   const [otpVerify, setOtpVerify] = useState(false);
   const [forgotePassword, setForgotePassword] = useState(false);
   const [dropDownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
-  const [passwordShow, setPasswordShow] = useState(false);
   const [OTPValue, setOTPValue] = useState(null);
   const [OTPError, setOTPError] = useState('');
   const [userId, setuserId] = useState(null);
   const [message, setMessage] = useState('');
+  const [ProfileDropdown, setProfileDropdown] = useState(false);
+  const host = import.meta.env.VITE_HOST;
 
-
-  const [loginData, setLoginData] = useState({
-    email: '',
-    password: '',
-    remember: false
-  })
 
 
 
@@ -53,12 +57,12 @@ const Navbar = () => {
     city: '',
     address: '',
     pincode: null,
-    longitude: null,
-    latitude: null
-
-
+    longitude: `${userLocation?.lng}` || '23.23432',
+    latitude: `${userLocation?.lat}` || '43.2345'
 
   })
+
+
 
 
   //User registration
@@ -78,7 +82,7 @@ const Navbar = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/user/register', userdetails);
+      const response = await axios.post(`${host}/user/register`, userdetails);
       const userdata = response.data;
       setuserId(response.data.data.user_id);
       setUserdata(JSON.stringify(userdata))
@@ -115,7 +119,7 @@ const Navbar = () => {
     setLoading(true);
 
     try {
-      const response = await axios.post('/api/user/verify-email', { user_id: userId, otp: OTPValue });
+      const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
       sessionStorage.setItem('userdata', response.data);
       setMessage('Otp Verified.')
 
@@ -138,58 +142,6 @@ const Navbar = () => {
 
 
 
-  //User login Api
-
-
-  const loginUser = async (e) => {
-    e.preventDefault();
-
-
-
-    if (!loginData.email) {
-      setLoginError("Please fill the all Boxes");
-      console.warn("Please Enter Email Id.")
-      return;
-    }
-    if (!loginData.password) {
-      setLoginError("Please fill the all Boxes");
-      console.warn("Please Enter Password.")
-      return;
-    }
-
-    setMessage('');
-    setLoading(true)
-
-    setLoginError('');
-
-    try {
-      const response = await axios.post(
-        "/api/user/login",
-        {
-          email: loginData.email,
-          password: loginData.password
-        }
-      );
-      const userData = response.data;
-      setUserdata(JSON.stringify(userData))
-      setMessage("Login Successfully")
-      if (loginData.remember) {
-        localStorage.setItem('userdata', JSON.stringify(userData));
-      } else {
-        sessionStorage.setItem('userdata', JSON.stringify(userData));
-      }
-
-      setLoginP(false)
-      navigate('/dashboard')
-
-    } catch (error) {
-      console.error("Login failed:", error.response?.data || error.message);
-      setLoginError(error.response?.data?.error?.message || "Something went wrong");
-    }
-    finally {
-      setLoading(false);
-    }
-  };
 
   //data change event
 
@@ -223,10 +175,18 @@ const Navbar = () => {
 
   }, [])
 
+  //Logout 
+  const handleLogout = (() => {
+    window.location.href = "/";
+    localStorage.removeItem('userdata');
+    setUserdata(null);
+  })
+
   return (
     <header
       className="z-99 sticky-header main-bar-wraper navbar-expand-lg duretion-500"
     >
+      {loading && (<FallbackLoader fixed={true} size='100vh' />)}
       <div className="main-bar">
         <div className="container">
           <div className="bottom-bar">
@@ -244,17 +204,17 @@ const Navbar = () => {
             <nav className="navbar lg:block hidden">
               <ul className="navbar-links">
                 <li className="navbar-dropdown">
-                  <NavLink to='/'>Home</NavLink>
+                  <HashLink smooth to='/'>Home</HashLink>
                 </li>
                 <li className="navbar-dropdown">
-                  <a href="/#about">About</a>
+                  <HashLink smooth to="/#about">About</HashLink>
                 </li>
                 <li className="navbar-dropdown">
-                  <a href="/#pricing">Plans</a>
+                  <HashLink smooth  to="/#section-pricing">Plans</HashLink>
                 </li>
 
                 <li className="navbar-dropdown service-dropdown-out-box dropdown-out-box  relative ">
-                  <a href="/#services">Services</a>
+                  <HashLink  smooth to="/#services">Services</HashLink>
                   <div className="service-dropdown-box dropdown-box  absolute top-[100%] left-[-100%] w-[30vw]    bg-white font-normal  z-99 mt-5 flex flex-col  shadow">
                     <ul>
                     </ul>
@@ -262,14 +222,24 @@ const Navbar = () => {
                 </li>
 
                 <li className="navbar-dropdown">
-                  <a href="#">contact</a>
+                  <HashLink smooth to="/#contact">contact</HashLink>
                 </li>
               </ul>
             </nav>
 
             <div className="flex gap-15 align-center">
-              <div className="header-menu-right h-full flex items-center gap-15">
-                {userdata ? (<NavLink className='font-semibold' to="/dashboard">DashBoard</NavLink>) :
+              <div className="header-menu-right h-full flex items-center gap-15 cursor-pointer">
+                {userdata ? (<div className='font-semibold relative' onClick={() => setProfileDropdown(!ProfileDropdown)} >
+                  <Avatar username='prayash' profile_pic={profilelog} size={35} />
+                  <div className={`${ProfileDropdown ? 'dropdown-active' : ''} absolute top-[100%] right-0  opacity-0   bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
+                    <ul>
+                      <li onClick={() => {
+                        navigate('/dashboard')
+                      }} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Dashborad</li>
+                      <li onClick={handleLogout} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Log Out</li>
+                    </ul>
+                  </div>
+                </div>) :
 
                   (
                     <div
@@ -312,78 +282,7 @@ const Navbar = () => {
 
                 {/* <!-- Login popUp --> */}
 
-                {logingP && (<div className=" login-popup   fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
-
-
-                  <div className="container flex items-center justify-center relative h-full   ">
-                    <div className="login-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
-                      <form onSubmit={loginUser}>
-
-                        <div className=" sticky">
-                          <button onClick={() => setLoginP(false)} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
-                          <div className="text-center mb-40">
-                            <a href="index.html" className="mb-5 inline-block">
-                              <img src={logo} alt="logo" className="max-w-[160px]" />
-                            </a>
-                            <h3 className="text-2xl font-semibold text-secondary">Welcome Back!</h3>
-                            <p className="text-base text-body-color text-gary text-sm">Log in to your account</p>
-                            {loginError && (<p className='text-xs text-[#FC4F4F]'>{loginError}</p>)}
-                            {message && (<p className='text-xs text-primary'>{message}</p>)}
-                          </div>
-                        </div>
-
-                        <div style={{ alignItems: 'center' }} className="mb-6 flex bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
-
-                          <span className="flex align-center justify-between text-gary"> <i className="fa-solid fa-user flex align-center justify-between "></i></span>
-                          <input type="email" value={loginData.email} onChange={(e) => setLoginData({ ...loginData, email: e.target.value })} name="userid" id="userid" placeholder="User Id" className="w-full  outline-none focus:border-primary focus-visible:shadow-none" />
-                        </div>
-                        <div style={{ alignItems: 'center' }} className="mb-6 flex   bg-[#F4F4FF] gap-10 border border-lightgary   rounded p-10 mb-20">
-
-
-                          <i className="fa-solid fa-lock text-gary  "></i>
-
-
-                          <input type={passwordShow ? 'text' : 'password'} value={loginData.password} onChange={(e) => setLoginData({ ...loginData, password: e.target.value })} name="password" id="password" placeholder="Enter password" className="login-password w-full outline-none focus:border-primary focus-visible:shadow-none" />
-
-                          <i onClick={() => setPasswordShow(!passwordShow)} className={`fa-solid ${passwordShow ? "fa-eye-slash" : 'fa-eye'}  text-gary  cursor-pointer`}></i>
-
-                        </div>
-                        <div className="flex  justify-between items-center mb-20">
-                          <div className="form-check flex align-center justify-center gap-10">
-                            <input type="checkbox" checked={loginData.remember} onChange={(e) =>
-                              setLoginData({ ...loginData, remember: e.target.checked })
-                            } name="remember" id="remember" className="h-4 w-4 rounded border border-[#E9EDF4] bg-white checked:bg-primary checked:border-primary focus:ring-0" />
-                            <label htmlFor="remember" className="text-sm text-body-color ">Remember me</label>
-                          </div>
-                          <button onClick={() => {
-                            setForgotePassword(true)
-                            setLoginP(false);
-                          }} className="text-sm text-primary hover:underline font-semibold cursor-pointer">
-                            Forgot Password?
-                          </button>
-                        </div>
-                        <div className="mb-10">
-                          <button type="submit" disabled={loading} className={`button ${loading ? 'opacity-50' : ''} button w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Log In</button>
-                        </div>
-                        <div className="flex  items-center gap-10  mt-10">
-
-                          <p className="text-center text-sm text-body-color">Don't have an account? </p>
-                          <p className=" switch-register cursor-pointer text-center font-semibold text-sm text-primary hover:underline block"
-                            onClick={() => {
-                              setSignIn(true);
-                              setLoginP(false);
-                            }}
-                          >Sign Up</p>
-                        </div>
-
-
-
-                      </form>
-                    </div>
-
-                  </div>
-
-                </div>)}
+                {logingP && (<Suspense fallback={<Loading size="10px" />}><Login setLoginP={setLoginP} setForgotePassword={setForgotePassword} setSignIn={setSignIn} /></Suspense>)}
 
                 {/* <!-- Registration popUp --> */}
 
@@ -503,7 +402,7 @@ const Navbar = () => {
                           onChange={handleChange}
                           type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
 
-                        <p className=" text-sm mb-10">Latitude *</p>
+                        {/* <p className=" text-sm mb-10">Latitude *</p>
                         <input
                           name='latitude'
                           value={userdetails.latitude}
@@ -514,7 +413,7 @@ const Navbar = () => {
                           name='longitude'
                           value={userdetails.longitude}
                           onChange={handleChange}
-                          type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
+                          type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" /> */}
 
                         <p className=" text-sm mb-10">Password *</p>
                         <input

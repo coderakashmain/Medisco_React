@@ -37,7 +37,7 @@ import logonew4 from '../assets/img/logo-new-4.png'
 import logo4 from '../assets/img/logo-new-4.png'
 import brandlogo5 from '../assets/img/brand-logo-5.png'
 import { useServiceListContex } from '../Context/Services';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { createSearchParams, NavLink, useNavigate } from 'react-router-dom';
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
 import Loading from '../components/Loading';
@@ -50,7 +50,7 @@ const Home = () => {
   })
   const navigate = useNavigate();
   const { services } = useServiceListContex();
-  const { statesList } = useStatesContext();
+  const { statesList, stateLoading } = useStatesContext();
   const { districtsList, setState, districtLoading } = useDistrictsContext();
   let bgColor = [
     "rgb(240,93,193)",
@@ -80,7 +80,7 @@ const Home = () => {
 
   return (
     <>
-      <section className="bg-[#F4F4FF] pt-100 overflow-hidden">
+      <section className="bg-[#F4F4FF] pt-100 overflow-hidden" >
         <div className="container lg:pb-80">
           <div className="grid grid-cols-12 items-center">
             <div className="lg:col-span-6 col-span-12">
@@ -242,44 +242,47 @@ const Home = () => {
         <div className="container ">
           <form onSubmit={(e) => {
             e.preventDefault();
-            navigate(`/search_result/${searchData.state}/${searchData.district}/${searchData.service}`)
+            navigate({
+              pathname: "/search_result",
+              search: `?${createSearchParams(searchData)}`
+            });
           }} id="search-form w-[100%] ">
             <h2
               className="text-center text-secondary pb-70 xxl:text-6xl xl:text-5xl md:text-4xl sm:text-3xl text-3xl font-extrabold"
             >
-              Find the Service You Want
+              Find The Service You Want
             </h2>
-            <div className='w-full flex lg:flex-row flex-col lg:flex-wrap gap-10'>
+            <div className='w-full flex lg:flex-row flex-col flex-wrap gap-10'>
 
 
               <div
                 className="search-form-box flex m-auto    flex-row w-[50%] justify-center  flex-nowrap align-center gap-20 "
               >
 
-                <div className="border border-lightgary p-7 rounded flex justify-center items-center gap-10 flex-grow md:w-[50%]   ">
+                <div className="border border-lightgary p-7 rounded flex justify-center items-center gap-10 w-[50%] flex-grow md:w-[50%]   ">
                   <i className="fa-solid fa-location-dot text-gary"></i>
-                  <select name="states" id="states" className='bg-white outline-none flex-grow py-5' onChange={(e) => {
+                  <select name="states" id="states-box" className='bg-white outline-none w-[100%]  py-5' onChange={(e) => {
                     setSearchData({ ...searchData, state: e.target.value });
                     setState(e.target.value)
                   }} defaultValue="">
-                    <option  >Search By State</option>
+                    <option className='text-sm' value="">Search By State</option>
                     {statesList.status && statesList.data.map((state, index) => (
-                      <option key={index} value={state}>{state}</option>
+                      <option className='text-sm' key={index} value={state}>{state}</option>
 
                     ))}
-
+                    {stateLoading && (<option disabled>Loading...</option>)}
                   </select>
 
                 </div>
-                <div className="border border-lightgary p-7 rounded flex justify-center  items-center gap-10 flex-grow  md:w-[50%] ">
+                <div className="border border-lightgary p-7 rounded flex justify-center  items-center gap-10 w-[50%] flex-grow  md:w-[50%] ">
                   <i className="fa-solid fa-location-dot text-gary"></i>
 
                   <select disabled={districtLoading} name="states" id="states" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
                     onChange={(e) => setSearchData({ ...searchData, district: e.target.value })}
                     defaultValue="">
-                    <option  >Search By City</option>
+                    <option  className='text-sm' >Search By City</option>
                     {districtsList.status && districtsList.data.map((district, index) => (
-                      <option key={index} value={district}>{district}</option>
+                      <option className='text-sm' key={index} value={district}>{district}</option>
 
                     ))}
                   </select>
@@ -288,7 +291,7 @@ const Home = () => {
 
               </div>
 
-              <div className="flex flex-row w-[45%]  justify-center align-center m-auto   gap-10  rounded  ">
+              <div className="flex flex-row flex-grow  justify-center align-center m-auto   gap-10  rounded  ">
                 <div className="  flex justify-center items-center w-full gap-10 p-10 border border-lightgary flex-grow rounded">
                   <i className="fa-solid fa-magnifying-glass text-gary"></i>
 
@@ -324,15 +327,15 @@ const Home = () => {
               Services We Offered.
             </h2>
           </div>
-  
 
 
-          <div class="swiper services-slider">
-            <div class="swiper-wrapper services-list-box">
+
+          <div className="swiper services-slider">
+            <div className="swiper-wrapper services-list-box">
               {services.status && services?.data.map((service, index) => {
                 let color = bgColor[index % bgColor.length];
                 return (
-                  <div key={index} class="swiper-slide group">
+                  <div key={index} className="swiper-slide group">
                     <div className="services-box shadow-[0px_0px_15px_0px_rgba(0,0,0,0.07)] relative xxl:p-40 p-30 xxl:m-15 m-10 before:w-full before:h-0 before:bg-primary before:absolute before:bottom-0 before:left-0 group-hover:before:h-full before:duration-500">
 
                       <div className={`w-90 h-90 rounded-full overflow-hidden bg-[${color}] group-hover:bg-white flex items-center justify-center mb-25 relative `}>
@@ -877,7 +880,7 @@ const Home = () => {
       </section>
 
       <section
-        className="overflow-hidden relative bg-[#F4F4FF] lg:py-120 md:py-80 py-60 bg-[url(../img/graph.png)] section-pricing"
+        className="overflow-hidden relative bg-[#F4F4FF] lg:py-120 md:py-80 py-60 bg-[url(../img/graph.png)] " id='section-pricing'
       >
         <div className="container">
           <div className="text-center lg:mx-auto lg:w-[60%] w-full pb-50">

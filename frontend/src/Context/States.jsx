@@ -7,24 +7,32 @@ export const useStatesContext = (() => {
 
 const States = ({children}) => {
     const [statesList, setStatesList] = useState([]);
+    const [stateLoading,setStateLoading] = useState(false);
+    const host = import.meta.env.VITE_HOST;
 
-    useEffect(() => {
-        const getStates = async () => {
-            try {
-                const response = await axios.get("/api/admin/states");
 
-                setStatesList(response.data);
-            } catch (error) {
-                console.error("Error fetching states:", error.response?.data || error.message);
-            }
+
+useEffect(() => {
+    const getStates = async () => {
+        setStateLoading(true);
+        try {
+            const response = await axios.get(`${host}/admin/states`);
+            setStatesList(response.data);
+        } catch (error) {
+            console.error("Error fetching states:", error.response?.data || error.message);
+        } finally {
+            setStateLoading(false);
         }
-        getStates();
+    };
 
-    }), [];
+    getStates();
+}, []); 
+
+
 
     const value = useMemo(()=> ({
-        statesList,setStatesList
-    }),[statesList])
+        statesList,setStatesList,stateLoading
+    }),[statesList,setStatesList,stateLoading])
 
 
     return (

@@ -9,16 +9,16 @@ export default defineConfig({
 
   ],
 
-  server : {
-     proxy : {
-     "/api": {
-        target: "https://api.medisco.in",
-        changeOrigin: true,
-        secure: process.env.NODE_ENV === "production" ? true : false,
-      }
+  // server : {
+  //    proxy : {
+  //    "/api": {
+  //       target: "https://api.medisco.in",
+  //       changeOrigin: true,
+  //       secure: process.env.NODE_ENV === "production" ? true : false,
+  //     }
       
-    }
-  },
+  //   }
+  // },
 
   build: {
     rollupOptions: {

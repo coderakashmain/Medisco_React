@@ -14,6 +14,7 @@ const Districts = ({ children }) => {
   const [districtsList, setDistrictsList] = useState([]);
   const [state,setState] = useState('');
   const [districtLoading,setDistrictLoading] = useState(false);
+  const host = import.meta.env.VITE_HOST;
  
 
   useEffect(() => {
@@ -23,9 +24,10 @@ const Districts = ({ children }) => {
      setDistrictLoading(true);
      setDistrictsList([]);
       try {
-        const response = await axios.get("/api/admin/cities",{
+        const response = await axios.get(`${host}/admin/cities`,{
             params : {state}
         });
+       
         setDistrictsList(response.data);
     
       } catch (error) {
@@ -37,6 +39,8 @@ const Districts = ({ children }) => {
 
     getDistricts();
   }, [state]); 
+
+
 
   const value = useMemo(() => ({
     districtsList,
