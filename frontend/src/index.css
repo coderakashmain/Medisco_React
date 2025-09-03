@@ -1037,6 +1037,9 @@
   .h-\[70vh\] {
     height: 70vh;
   }
+  .h-\[80vh\] {
+    height: 80vh;
+  }
   .min-h-screen {
     min-height: 100vh;
   }
@@ -2943,6 +2946,10 @@
   }
   .opacity-0 {
     opacity: 0%;
+  }
+  .opacity-80 {
+    opacity: 80%;
+    
   }
   .opacity-50 {
     opacity: 50%;
@@ -5079,6 +5086,11 @@
   .lg\:w-\[60\%\] {
     @media (width >= 992px) {
       width: 60%;
+    }
+  }
+  .lg\:w-\[80\%\] {
+    @media (width >= 992px) {
+      width: 80%;
     }
   }
   .lg\:w-full {

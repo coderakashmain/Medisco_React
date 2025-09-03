@@ -123,9 +123,12 @@ const Navbar = () => {
       sessionStorage.setItem('userdata', response.data);
       setMessage('Otp Verified.')
       setOTPError('');
-
-      otpVerify(false);
-      navigate('/dashboard')
+      setUserdata(response.data);
+      setOtpVerify(false);
+      setSignIn(false)
+    
+     window.location.href = "/dashboard";
+      
 
 
 

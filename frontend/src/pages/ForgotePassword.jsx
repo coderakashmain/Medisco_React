@@ -9,13 +9,15 @@ const ForgotePassword = React.memo(({setForgotePassword}) => {
   const [error, setError] = useState("");
 
   const handleForgotPassword = async (e) => {
+      const host = import.meta.env.VITE_HOST;
+
     e.preventDefault();
     setLoading(true);
     setError("");
     setMessage("");
 
     try {
-      const response = await axios.post("/api/user/forgot-password", {
+      const response = await axios.post(`${host}/user/forgot-password`, {
         email: email,
       });
 

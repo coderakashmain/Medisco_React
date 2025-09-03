@@ -1,0 +1,17 @@
+.dashboard-gallary ul{
+    flex-wrap: wrap;
+}
+.dashboard-gallary ul li{
+   width: 20rem;
+   height: 20rem;
+   background-color: rgb(228, 224, 224);
+   flex-basis: 300px;
+   flex-grow: 1;
+   max-width: 20rem;
+}
+.dashboard-gallary ul li img{
+   aspect-ratio: 1/1;
+    height: 20rem;
+   object-fit: cover;
+
+}
