@@ -7,9 +7,10 @@ export const useLocationContext = () => useContext(LocationContext);
 
 
 export const LocationProvider = ({ children }) => {
-  const [userLocation, setUserLocation] = useState({ lat: null, lng: null });
+  const [userLocation, setUserLocation] = useState({ lat: '', lng: '' });
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [locationLoading,setLocationLoading] = useState(false);
+  const [locationMesage,setLocationMessage] = useState('');
 
   const getLocation = () => {
     if (!navigator.geolocation) {
@@ -17,8 +18,9 @@ export const LocationProvider = ({ children }) => {
       return;
     }
 
-    setLoading(true);
-
+    setLocationLoading(true);
+    setLocationMessage('');
+    setError('');
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setUserLocation({
@@ -26,25 +28,26 @@ export const LocationProvider = ({ children }) => {
           lng: position.coords.longitude,
         });
         setError("");
-        setLoading(false);
+        setLocationMessage('Detected')
+        setLocationLoading(false);
       },
       (err) => {
         setError(err.message);
-        setLoading(false);
+        setLocationLoading(false);
       }
     );
   };
 
 
 
-  // Fetch location on mount (optional)
+  
   useEffect(() => {
     getLocation();
   }, []);
 
    const value = useMemo(
-    () => ({ userLocation, error, loading, getLocation }),
-    [userLocation, error, loading] 
+    () => ({ userLocation,locationMesage, error, locationLoading, getLocation }),
+    [userLocation, error,locationMesage, locationLoading] 
   );
 
   return (

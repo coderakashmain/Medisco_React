@@ -1,45 +1,57 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import './Photos.css'
-import photo1 from '../../assets/img/portfolio-1.jpg'
-import photo2 from '../../assets/img/portfolio-2.jpg'
-import photo3 from '../../assets/img/portfolio-3.jpg'
-import photo4 from '../../assets/img/portfolio-4.jpg'
-import photo5 from '../../assets/img/portfolio-5.jpg'
+import { useUserDataContext } from '../../Context/Userdata'
+import Pagination from '../../components/Pagination'
+import FileUploadIcon from '@mui/icons-material/FileUpload';
+import NotFound from '../NotFound'
+import FallbackLoader from '../../components/FallbackLoader'
 
 const Photos = () => {
+  const photoboxRef = useRef();
+  const { userdata, profileLoading, profileDetails } = useUserDataContext();
 
-  const photoes = [
-    photo1,
-    photo2,
-    photo3,
-    photo4,
-    photo5,
-  ]
+  if (profileLoading) {
+    return <FallbackLoader />;
+  }
+  if (!profileDetails) {
+    return <NotFound />;
+  }
+ 
   return (
-    <section className='h-full w-full  p-20 pb-40 sm:p-10'>
-      
-      <div  className='flex justify-between items-center'>
+    <section className='h-full w-full  p-20 pb-40 sm:p-10 ' ref={photoboxRef}>
+
+      <div className='flex justify-between items-center'>
         <h2 className='text-2xl font-semibold text-secondary'>Photo Gallery</h2>
-          <button className='button bg-primary rounded py-5 px-24 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5'>
-            Upload Photo
-          </button>
+        <button className='button bg-primary  font-semibold rounded py-5 px-15 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5'>
+          <FileUploadIcon className='mr-2' />
+          Upload Photo
+        </button>
       </div>
 
-      <div className='dashboard-gallary mt-40'>
-        <ul className='flex gap-10 '>
-        {photoes.length > 0 ? 
-        
-         ( photoes.map((photo,index)=>(
-              <li className='rounded overflow-hidden' key={index}>
-                  <img loading='lazy' src={photo} alt={`dashbord-img-${index}`} />
-              </li>
-          )))
-        :
-        
-        (
-          <li className='text-center'>No Photoes in Galary</li>
-        )}
-        </ul>
+      <div className='dashboard-gallary mt-40 ' id='photo-box'>
+        <Pagination
+          DataList={profileDetails.data.images}
+          limit={12}
+          targateRef={photoboxRef}
+        >
+          {(currentItems) => (
+            <ul className='flex gap-10 '>
+              {currentItems.length > 0 ?
+
+                (currentItems.map((photo, index) => (
+                  <li className='rounded overflow-hidden cursor-pointer ' key={index}>
+                    <img loading='lazy' className='' src={photo} alt={`dashbord-img-${index}`} />
+                  </li>
+                )))
+                :
+
+                (
+                  <p className='text-center m-auto'>No Photos in Gallary</p>
+                )}
+            </ul>
+          )}
+
+        </Pagination>
 
       </div>
 

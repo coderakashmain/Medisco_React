@@ -1,40 +1,70 @@
-import React, { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { ProfilApi } from "../APIs/ProfileApi";
+
 export const userDataContext = createContext();
 
 export const useUserDataContext = () => {
-    return useContext(userDataContext);
-}
+  return useContext(userDataContext);
+};
+
 const Userdata = ({ children }) => {
-    const [userdata, setUserdata] = useState();
-    const [userDataloading,setUserDataLoading] = useState(false);
+  const [userdata, setUserdata] = useState(null);
+  const [userDataloading, setUserDataLoading] = useState(false);
+  const [profileDetails, setProfileDetails] = useState(null);
+  const [profileLoading, setProfileLoading] = useState(false);
+  const [profileError, setProfileError] = useState("");
+
+  useEffect(() => {
+    setUserDataLoading(true);
+    const localdata = localStorage.getItem("userdata");
+    if (localdata) {
+      setUserdata(JSON.parse(localdata));
+    }
+    setUserDataLoading(false);
+  }, []);
+
+  // Fetch profile
 
 
 
-    useEffect(() => {
-        setUserDataLoading(true);
-        const locadata = localStorage.getItem('userdata');
-        const data = locadata;
-        if (data) {
-            setUserdata(JSON.parse(data))
-        }
-        setUserDataLoading(false);
-    }, []);
+  useEffect(() => {
+    const fetchProfile = async () => {
+      if (!userdata?.token) return;
 
-    const value = useMemo(() => ({
-        userdata,
-        setUserdata,
-        setUserDataLoading,
-        userDataloading
-    }), [userdata, ,,userDataloading])
+      setProfileLoading(true);
+      try {
+        const data = await ProfilApi(userdata.token);
+        setProfileDetails(data);
+      } catch (err) {
+        console.error("Profile fetch failed:", err.message);
+        setProfileError("Failed to load profile");
+      } finally {
+        setProfileLoading(false);
+      }
+    };
 
+    fetchProfile();
+  }, [userdata]);
 
+  const value = useMemo(
+    () => ({
+      userdata,
+      setUserdata,
+      userDataloading,
+      setUserDataLoading,
+      profileDetails,
+      profileLoading,
+      profileError,
+      setProfileDetails
+    }),
+    [userdata, userDataloading, profileDetails, profileLoading, profileError]
+  );
 
+  return (
+    <userDataContext.Provider value={value}>
+      {children}
+    </userDataContext.Provider>
+  );
+};
 
-    return (
-        <userDataContext.Provider value={value}>
-            {children}
-        </userDataContext.Provider>
-    )
-}
-
-export default Userdata
+export default Userdata;

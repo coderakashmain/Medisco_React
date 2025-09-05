@@ -17,13 +17,14 @@ import { useLocationContext } from '../Context/LocationProvider ';
 
 
 
+
 const Navbar = () => {
   const { services } = useServiceListContex();
   const { statesList } = useStatesContext();
   const { userLocation } = useLocationContext();
   const navigate = useNavigate();
   const location = useLocation();
-  const { userdata, setUserdata } = useUserDataContext();
+  const { userdata, setUserdata ,profileDetails} = useUserDataContext();
   const { districtsList, setState, state } = useDistrictsContext();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -198,7 +199,7 @@ const Navbar = () => {
             <div className="two-bar">
               <div className="flex items-center justify-between">
                 <div className="logo">
-                  <a href="">
+                  <a href="/">
                     <img alt="logo" src={logo} />
 
                   </a>
@@ -235,10 +236,11 @@ const Navbar = () => {
             <div className="flex gap-15 align-center">
               <div className="header-menu-right h-full flex items-center gap-15 cursor-pointer">
                 {userdata ? (<div className='font-semibold relative' onClick={() => setProfileDropdown(!ProfileDropdown)} >
-                  <Avatar username='prayash' profile_pic={profilelog} size={35} />
+                  <Avatar username={profileDetails?.data?.hospital_name} profile_pic={profileDetails?.data?.hospital_logo} size={35} />
                   <div className={`${ProfileDropdown ? 'dropdown-active' : ''} absolute top-[100%] right-0  opacity-0   bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
                     <ul>
                       <li onClick={() => {
+                        setProfileDropdown(false)
                         navigate('/dashboard')
                       }} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Dashborad</li>
                       <li onClick={handleLogout} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Log Out</li>
@@ -260,9 +262,10 @@ const Navbar = () => {
                       <div className={`${dropDownOpen ? 'dropdown-active' : ''} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
                         <ul>
                           <li
-                            onClick={() => {
-                              setDropdownOpen(false)
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setSignIn(!signInP)
+                              setDropdownOpen(false)
                             }}
                             className="register-btn font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user-plus w-25 "></i> Register</li>
 
@@ -270,9 +273,10 @@ const Navbar = () => {
 
                           <li
 
-                            onClick={() => {
-                              setDropdownOpen(false)
+                            onClick={(e) => {
+                              e.stopPropagation();
                               setLoginP(!logingP)
+                              setDropdownOpen(false)
                             }}
                             className="login-btn font-normal text-sm text-black px-10 hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user w-25 "></i> Log In</li>
 
@@ -291,7 +295,9 @@ const Navbar = () => {
 
                 {/* <!-- Registration popUp --> */}
 
-                {signInP && !otpVerify && (<div className=" register-popup   fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+                {signInP && !otpVerify && (
+                  
+                  <div className=" register-popup   fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
 
                   <div className="container flex items-center justify-center relative h-full   ">
                     <div className="register-box relative  md:w-[60%] lg:w-1/2 w-full max-h-[90vh] scroll  bg-white shadow rounded-[10px]  px-30 pb-30">
@@ -302,7 +308,7 @@ const Navbar = () => {
                             onClick={() => setSignIn(false)}
                             className='close-btn  registration-close'><i className="fa-solid fa-xmark"></i></button>
                           <div className="text-center mb-40">
-                            <a href="" className="mb-5 inline-block">
+                            <a href="#" className="mb-5 inline-block">
                               <img src={logo} alt="logo" className="max-w-[160px]" />
                             </a>
                             <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
@@ -442,7 +448,8 @@ const Navbar = () => {
 
                   </div>
 
-                </div>)}
+                </div>
+              )}
 
 
                 {/* <!-- Verify email popUp --> */}
@@ -459,7 +466,7 @@ const Navbar = () => {
                             onClick={() => setOtpVerify(false)}
                             className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
                           <div className="text-center mb-40">
-                            <a href="" className="mb-5 inline-block">
+                            <a href="#" className="mb-5 inline-block">
                               <img src={logo} alt="logo" className="max-w-[160px]" />
                             </a>
                             <h3 className="text-2xl font-semibold text-secondary">Verify Your Email</h3>

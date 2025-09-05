@@ -1,0 +1,108 @@
+import React, { useEffect, useState } from 'react'
+
+import logo from '../assets/img/logo.png'
+import axios from 'axios';
+import { useUserDataContext } from '../Context/Userdata';
+
+
+const VerifyOtp = ({ setVerifypopup, email, userId }) => {
+    const [loading, setLoading] = useState(false);
+    const [OTPValue, setOTPValue] = useState(null);
+    const [OTPError, setOTPError] = useState('');
+    const [message, setMessage] = useState('');
+    const { userdata, setUserdata, profileDetails } = useUserDataContext();
+    const host = import.meta.env.VITE_HOST;
+
+
+    const hanldeOtpvelidation = async (e) => {
+        e.preventDefault();
+
+
+
+        if (!OTPValue
+        ) {
+            console.warn("Please Enter OTP")
+            setOTPError("Please fill the all Boxes");
+            return;
+        }
+        setMessage('');
+        setOTPError('');
+        setLoading(true);
+
+        try {
+            const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
+            localStorage.setItem('userdata', response.data);
+            setMessage('Otp Verified.')
+            setOTPError('');
+            setUserdata(response.data);
+            setVerifypopup(false);
+            console.log(response.data)
+
+            window.location.href = "/dashboard";
+
+
+
+
+        } catch (error) {
+            setMessage('');
+            setOTPError(error.response?.data?.error?.message || "Something went wrong");
+            console.error("Registration  failed:", error.response?.data || error.message);
+        } finally {
+            setLoading(false);
+        }
+
+    }
+
+
+    return (
+        <div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+
+
+            <div className="container flex items-center justify-center relative h-full   ">
+                <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
+                    <form onSubmit={hanldeOtpvelidation}>
+
+                        <div className=" sticky">
+                            <button
+                                onClick={() => setVerifypopup(false)}
+                                className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
+                            <div className="text-center mb-40">
+                                <a href="" className="mb-5 inline-block">
+                                    <img src={logo} alt="logo" className="max-w-[160px]" />
+                                </a>
+                                <h3 className="text-2xl font-semibold text-secondary">Verify Your Email</h3>
+                                <p className="text-base text-body-color text-gary text-sm">OTP send to your email id {email}. Please check you email  and verify the OTP.</p>
+                                {OTPError && (<p className='text-xs text-[#FC4F4F] pt-10'>{OTPError}</p>)}
+                                {message && (<p className='text-xs text-primary pt-10'>{message}</p>)}
+                            </div>
+                        </div>
+
+                        <div className="mb-6 flex  bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
+
+                            <input onChange={(e) => setOTPValue(e.target.value)} value={OTPValue} type="number" name="otp" id="otp" placeholder="OTP" className="w-full outline-none focus:border-primary focus-visible:shadow-none" />
+                        </div>
+                        <div className="flex  justify-between items-center mb-20">
+                            <div className="form-check flex align-center text-sm justify-center gap-10">
+
+                                Don't Recieve OTP ? Resend OTP in<span>60s</span>
+                            </div>
+                            <p className="text-sm text-primary hover:underline cursor-pointer font-semibold">
+                                Resend OTP
+                            </p>
+                        </div>
+                        <div className="mb-10">
+                            <button disabled={loading} type="submit" className={`${loading ? "opacity-50" : ""} button active w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Verify</button>
+                        </div>
+
+
+
+                    </form>
+                </div>
+
+            </div>
+
+        </div>
+    )
+}
+
+export default VerifyOtp

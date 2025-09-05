@@ -1,22 +1,26 @@
-import React, { lazy, Suspense, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useUserDataContext } from '../Context/Userdata'
 import FallbackLoader from '../components/FallbackLoader';
 import NotFound from './NotFound';
 import "./Dashboard.css"
 import { NavLink, Outlet } from 'react-router-dom';
+import { ProfilApi } from '../APIs/ProfileApi';
 
 
 
 
 const Dashboard = () => {
-  const { userdata, userDataloading } = useUserDataContext();
-  
-  if (userDataloading) {
-    return <FallbackLoader />
-  }
-  if (!userdata) {
-    return <NotFound />;
-  }
+  const { userdata, userDataloading,profileLoading,profileError } = useUserDataContext();
+  const [profileDetails, setProfileDetails] = useState();
+  const [error, setError] = useState("");
+
+if (userDataloading) {
+  return <FallbackLoader />;
+}
+if (!userdata ) {
+  return <NotFound />;
+}
+
 
 
   return (
@@ -26,7 +30,7 @@ const Dashboard = () => {
         <div className='container    flex items-center justify-center '>
 
 
-          <div className="dashboard-right-box flex-1 flex flex-col h-full w-full  relative pt-100">
+          <div className="dashboard-right-box flex-1 flex flex-col h-full   relative pt-100">
             <div className="dashboard-userdata-box    p-10  ">
               <div className='flex flex-row gap-10  h-full'>
                 <div className='flex-grow '>
@@ -37,7 +41,7 @@ const Dashboard = () => {
                     }>
                       Profile
                     </NavLink>
-                    <NavLink to="services" className={({ isActive }) =>
+                    <NavLink to="discount" className={({ isActive }) =>
                       `rounded shadow ${isActive ? 'sub-tab-active' : ''}`
                     }>
                       Discount
@@ -70,7 +74,7 @@ const Dashboard = () => {
 
 
       </div>
-   
+
     </>
   )
 }

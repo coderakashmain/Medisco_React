@@ -11,10 +11,11 @@ import Userdata from './Context/Userdata';
 import FallbackLoader from './components/FallbackLoader';
 import GlobalRouter from './Router/GlobalRouter';
 import { LocationProvider } from './Context/LocationProvider ';
+import SnackbarProvider from './Context/SnackbarContext';
 
 
 const ProfileSubP = lazy(() => import("./pages/DashboardChild/ProfileSubP"));
-const ServicesSubP = lazy(() => import("./pages/DashboardChild/ServicesSubP"));
+const DiscountSubp = lazy(() => import("./pages/DashboardChild/DiscountSubp"));
 const Photos = lazy(() => import("./pages/DashboardChild/Photos"));
 const Statistics = lazy(() => import("./pages/DashboardChild/Statistics"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
@@ -31,7 +32,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <><LocationProvider><Userdata><Services><States><Districts><GlobalRouter /></Districts></States></Services></Userdata></LocationProvider></>,
+      element: <><SnackbarProvider><LocationProvider><Userdata><Services><States><Districts><GlobalRouter /></Districts></States></Services></Userdata></LocationProvider></SnackbarProvider></>,
       children: [
         {
           path: '',
@@ -63,8 +64,8 @@ function App() {
               element : <><Suspense fallback={<FallbackLoader  size="20vh"/>}><ProfileSubP /></Suspense></>
             },
             {
-              path : 'services',
-              element : <><Suspense fallback={<FallbackLoader size="20vh" />}><ServicesSubP/></Suspense></>
+              path : 'discount',
+              element : <><Suspense fallback={<FallbackLoader size="20vh" />}><DiscountSubp/></Suspense></>
             },
             {
               path : 'photos',

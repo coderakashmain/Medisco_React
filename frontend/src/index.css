@@ -1010,6 +1010,12 @@
   .h-252 {
     height: calc(var(--spacing) * 252);
   }
+  .h-400 {
+    height: calc(var(--spacing) * 400);
+  }
+  .min-h-400 {
+    min-height: calc(var(--spacing) * 400);
+  }
   .h-700 {
     height: calc(var(--spacing) * 700);
   }
@@ -1090,6 +1096,12 @@
   }
   .w-300 {
     width: calc(var(--spacing) * 300);
+  }
+  .w-350 {
+    width: calc(var(--spacing) * 350);
+  }
+  .w-400 {
+    width: calc(var(--spacing) * 400);
   }
   .min-w-250 {
     min-width: calc(var(--spacing) * 250);
@@ -2775,6 +2787,9 @@
   .text-\[\#FC4F4F\] {
     color: #FC4F4F;
   }
+  .text-red {
+    color: #FC4F4F;
+  }
   .text-black {
     color: var(--color-black);
   }
@@ -4223,6 +4238,7 @@
       text-align: center;
     }
   }
+ 
   .max-md\:text-xs {
     @media (width < 768px) {
       font-size: var(--text-xs);
@@ -4315,6 +4331,16 @@
   .sm\:m-auto {
     @media (width >= 576px) {
       margin: auto;
+    }
+  }
+  .sm\:pt-20 {
+    @media (width >= 576px) {
+      padding-top: calc(var(--spacing) * 20);
+    }
+  }
+  .sm\:pt-100 {
+    @media (width >= 576px) {
+      padding-top: calc(var(--spacing) * 100);
     }
   }
   .sm\:mt-60 {
@@ -4664,11 +4690,17 @@
     @media (width >= 768px) {
       width: calc(var(--spacing) * 60);
       height: calc(var(--spacing) * 60);
+     
     }
   }
   .md\:w-1\/2 {
     @media (width >= 768px) {
       width: calc(1/2 * 100%);
+    }
+  }
+   .md\:w-5\/12 {
+    @media (width >= 768px) {
+      width: calc(5/12 * 100%);
     }
   }
   .md\:w-\[60\%\] {
@@ -8578,11 +8610,13 @@ input[type=number] {
 }
 
 
-.dropdown-out-box:hover .dropdown-box{
+/* @media (min-width: 500px) { */
+  .dropdown-out-box:hover .dropdown-box {
     opacity: 1;
     transform: translateY(0%);
-      pointer-events: auto;
-}
+    pointer-events: auto;
+  }
+/* } */
 .dropdown-active{
       opacity: 1;
     transform: translateY(0%);

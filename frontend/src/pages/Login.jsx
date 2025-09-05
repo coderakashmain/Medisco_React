@@ -4,6 +4,7 @@ import { useUserDataContext } from '../Context/Userdata';
 import axios from 'axios';
 import FallbackLoader from '../components/FallbackLoader';
 import { useLocation, useNavigate } from 'react-router-dom';
+import VerifyOtp from './VerifyOtp';
 
 const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
     const [message, setMessage] = useState('');
@@ -11,9 +12,11 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
     const [passwordShow, setPasswordShow] = useState(false);
     const [loading, setLoading] = useState(false);
     const { userdata, setUserdata } = useUserDataContext();
+    const [verifypopup,setVerifypopup] = useState(false);
     const host = import.meta.env.VITE_HOST;
     const navigate = useNavigate();
     const location = useLocation();
+    const [userId,setUserId] = useState(null);
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
@@ -69,12 +72,22 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                     password: loginData.password
                 }
             );
+
+            if(response.data.status === 201){
+                setVerifypopup(true);
+                setUserId(response.data.data)
+                return;
+            }
+
             const userData = response.data;
             setUserdata(JSON.stringify(userData))
             setMessage("Login Successfully")
             if (loginData.remember) {
                 localStorage.setItem('email', loginData.email)
                 localStorage.setItem('password', loginData.password)
+            }else{
+                localStorage.removeItem('email');
+                localStorage.removeItem('password')
             }
             localStorage.setItem('userdata', JSON.stringify(userData));
 
@@ -88,9 +101,11 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
             })
             setMessage('');
 
+
         } catch (error) {
+            
             console.error("Login failed:", error.response?.data || error.message);
-            setLoginError(error.response?.data?.error?.message || "Something went wrong");
+            setLoginError(error.response?.data?.error?.message || error.response?.data?.error?.email || "Something went wrong");
         }
         finally {
             setLoading(false);
@@ -112,7 +127,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                             <div className=" sticky">
                                 <button onClick={() => { setLoginP(false) }} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
                                 <div className="text-center mb-40">
-                                    <a href="index.html" className="mb-5 inline-block">
+                                    <a href="#" className="mb-5 inline-block">
                                         <img src={logo} alt="logo" className="max-w-[160px]" />
                                     </a>
                                     <h3 className="text-2xl font-semibold text-secondary">Welcome Back!</h3>
@@ -173,7 +188,10 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
                 </div>
 
+                
             </div>
+                    {verifypopup && (<VerifyOtp email={loginData.email} userId = {userId} setVerifypopup={setVerifypopup}/>)}
+                  
         </>
     )
 })
