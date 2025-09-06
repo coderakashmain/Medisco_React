@@ -5,17 +5,24 @@ import axios from 'axios';
 import { useUserDataContext } from '../Context/Userdata';
 
 
-const VerifyOtp = ({ setVerifypopup, email, userId }) => {
+const VerifyOtp = ({ setVerifypopup}) => {
     const [loading, setLoading] = useState(false);
     const [OTPValue, setOTPValue] = useState(null);
     const [OTPError, setOTPError] = useState('');
     const [message, setMessage] = useState('');
     const { userdata, setUserdata, profileDetails } = useUserDataContext();
     const host = import.meta.env.VITE_HOST;
+    const email = sessionStorage.getItem('email');
+
 
 
     const hanldeOtpvelidation = async (e) => {
         e.preventDefault();
+
+        const userId = sessionStorage.getItem('userId');
+        if (!userId) {
+            throw new Error("userId not found");
+        }
 
 
 
@@ -31,14 +38,15 @@ const VerifyOtp = ({ setVerifypopup, email, userId }) => {
 
         try {
             const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
-            localStorage.setItem('userdata', response.data);
+            localStorage.setItem('userdata', JSON.stringify(userdata));
+           
             setMessage('Otp Verified.')
-            setOTPError('');
-            setUserdata(response.data);
-            setVerifypopup(false);
-            console.log(response.data)
-
             window.location.href = "/dashboard";
+            setOTPError('');
+            setVerifypopup(false);
+            sessionStorage.removeItem('email');
+            sessionStorage.removeItem('userId');
+
 
 
 

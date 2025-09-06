@@ -17,6 +17,7 @@ import { GetDiscountsByServiceApi } from '../../APIs/GetDiscountsByServiceApi';
 import { UpdateDiscountsApi } from '../../APIs/UpdateDiscountsApi';
 
 
+
 const DiscountSubp = () => {
     const [search, setSearch] = useState('');
     const { setSnackbar } = useSnakbar();
@@ -24,31 +25,24 @@ const DiscountSubp = () => {
     const { userdata, profileLoading, profileDetails } = useUserDataContext();
     const [discountList, setDiscountList] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [originalDiscountList, setOriginalDiscountList] = useState([]);
 
 
 
-   
+
 
     useEffect(() => {
+        if (profileDetails) {
+            setDiscountList(profileDetails.data.services);
+            setOriginalDiscountList(profileDetails.data.services);
+        }
 
-        const fetchDiscounts = async () => {
-            try {
-
-
-                const res = await GetDiscountsByServiceApi(userdata?.token, profileDetails.data.service_type);
-                setDiscountList(res.data)
-            } catch (error) {
-                console.error("Failed:", error.message);
-            }
-        };
-
-        fetchDiscounts();
-
-    }, [])
+    }, [profileDetails])
 
 
 
-     if (profileLoading) {
+    if (profileLoading) {
         return <FallbackLoader />;
     }
     if (!profileDetails) {
@@ -57,15 +51,28 @@ const DiscountSubp = () => {
 
 
 
-    const handleDiscountChange = (index, value) => {
+    const handleDiscountChange = (id, value) => {
         setDiscountList((prev) =>
-            prev.map((item, i) =>
-                i === index ? { ...item, discount: value } : item
+            prev.map((item) =>
+                item.id === id ? { ...item, discount: value } : item
             )
         );
     };
-
     const handleSaveAll = async () => {
+        const hasChanges = JSON.stringify(discountList) !== JSON.stringify(originalDiscountList);
+
+        if (!hasChanges) {
+            setSnackbar({
+                open: true,
+                message: "No changes to save",
+                type: "warning",
+            });
+            return; 
+        }
+
+
+
+        setLoading(true);
         try {
             await UpdateDiscountsApi(userdata?.token, discountList);
             setIsEditing(false);
@@ -80,17 +87,35 @@ const DiscountSubp = () => {
                 message: "Failed to update discounts",
                 type: "error",
             });
+        } finally {
+            setLoading(false)
         }
     };
 
 
 
     const columns = [
-
         { field: "discount_name", headerName: "Name", flex: 1 },
-        { field: "discount", headerName: "Discount (%)", flex: 1 },
-
+        {
+            field: "discount",
+            headerName: "Discount (%)",
+            flex: 1,
+            renderCell: (params) =>
+                isEditing ? (
+                    <input
+                        type="number"
+                        value={params.row.discount}
+                        onChange={(e) =>
+                            handleDiscountChange(params.row.id, e.target.value)
+                        }
+                        className="border border-lightgary outline-none rounded px-10 w-full"
+                    />
+                ) : (
+                    params.row.discount
+                )
+        }
     ];
+
 
 
     // const [filterList, setFilterList] = useState(discountList);
@@ -105,8 +130,8 @@ const DiscountSubp = () => {
     //     }
     // }, [search, discountList]);
 
-    console.log("This is discount list", discountList)
-    console.log(profileDetails)
+
+
 
 
     return (
@@ -123,16 +148,18 @@ const DiscountSubp = () => {
                         {isEditing && (<button onClick={() => setIsEditing(false)} style={{ background: '#767575' }} className='button text-white font-semibold rounded py-5 px-10  text-sm cursor-pointer text-nowrap '>Cancel</button>)}
                         {isEditing ? (
                             <button
+                                disabled={loading}
                                 onClick={handleSaveAll}
-                                className="button bg-primary font-semibold rounded py-5 px-10 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5"
+                                className={`button ${loading ? 'opacity-50 ' : ''} bg-primary font-semibold rounded py-5 px-10 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5`}
                             >
                                 Save
                             </button>
                         ) : (
                             <Tooltip title='Edit' >
                                 <button
+
                                     onClick={() => setIsEditing(true)}
-                                    className="button bg-primary font-semibold rounded py-5 px-10 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5"
+                                    className={`button  bg-primary font-semibold rounded py-5 px-10 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5`}
                                 >
                                     <EditSquareIcon className="mr-2" sx={{ height: 18, width: 18 }} />
                                     Edit
@@ -145,21 +172,8 @@ const DiscountSubp = () => {
                 <div className='mt-20 '>
                     <Suspense fallback={<FallbackLoader size="40vh" />}>
 
-                        <Table rows={discountList.map((row, index) => ({
-                            ...row,
-                            editableDiscount: (
-                                isEditing ? (
-                                    <input
-                                        type="number"
-                                        value={row.discount}
-                                        onChange={(e) => handleDiscountChange(index, e.target.value)}
-                                        className="border border-lightgray rounded px-2 py-1 w-full"
-                                    />
-                                ) : (
-                                    row.discount
-                                )
-                            )
-                        }))} columns={columns} />
+                        <Table rows={discountList} columns={columns} />
+
                     </Suspense>
                 </div>
             </section>

@@ -12,11 +12,11 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
     const [passwordShow, setPasswordShow] = useState(false);
     const [loading, setLoading] = useState(false);
     const { userdata, setUserdata } = useUserDataContext();
-    const [verifypopup,setVerifypopup] = useState(false);
+    const [verifypopup, setVerifypopup] = useState(false);
     const host = import.meta.env.VITE_HOST;
     const navigate = useNavigate();
     const location = useLocation();
-    const [userId,setUserId] = useState(null);
+    const [userId, setUserId] = useState(null);
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
@@ -66,26 +66,28 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
         try {
             const response = await axios.post(
-               ` ${host}/user/login`,
+                ` ${host}/user/login`,
                 {
                     email: loginData.email,
                     password: loginData.password
                 }
             );
 
-            if(response.data.status === 201){
+            if (response.data.status === 201) {
                 setVerifypopup(true);
-                setUserId(response.data.data)
+                
+                sessionStorage.setItem("userId", response.data.data.user_id);
+                sessionStorage.setItem("email", loginData.email);
                 return;
             }
 
             const userData = response.data;
-            setUserdata(JSON.stringify(userData))
+            // setUserdata(JSON.stringify(userData))
             setMessage("Login Successfully")
             if (loginData.remember) {
                 localStorage.setItem('email', loginData.email)
                 localStorage.setItem('password', loginData.password)
-            }else{
+            } else {
                 localStorage.removeItem('email');
                 localStorage.removeItem('password')
             }
@@ -93,7 +95,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
             setLoginP(false)
             window.location.href = '/dashboard';
-           
+
             setLoginData({
                 ...loginData,
                 email: '',
@@ -103,7 +105,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
 
         } catch (error) {
-            
+
             console.error("Login failed:", error.response?.data || error.message);
             setLoginError(error.response?.data?.error?.message || error.response?.data?.error?.email || "Something went wrong");
         }
@@ -188,10 +190,10 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
                 </div>
 
-                
+
             </div>
-                    {verifypopup && (<VerifyOtp email={loginData.email} userId = {userId} setVerifypopup={setVerifypopup}/>)}
-                  
+            {verifypopup && (<VerifyOtp  setVerifypopup={setLoginP} />)}
+
         </>
     )
 })

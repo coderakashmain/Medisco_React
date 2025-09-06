@@ -8,7 +8,7 @@ import { useLocationContext } from '../Context/LocationProvider ';
 import logo from '../assets/img/logo.png'
 import axios from 'axios';
 
-const Registration = ({ setSignIn, setLoginP, setOtpVerify, setuserId }) => {
+const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
 
     const { userdata, setUserdata, profileDetails } = useUserDataContext();
       const { userLocation } = useLocationContext();
@@ -39,7 +39,7 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify, setuserId }) => {
 
     })
 
-    console.log(userdetails)
+
 
     const hanldeRegistration = async (e) => {
         e.preventDefault();
@@ -58,8 +58,12 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify, setuserId }) => {
         try {
             const response = await axios.post(`${host}/user/register`, userdetails);
             const userdata = response.data;
-            setuserId(response.data.data.user_id);
-            setUserdata(JSON.stringify(userdata))
+            
+            
+            sessionStorage.setItem("email",userdetails.contact_email);
+            sessionStorage.setItem("userId",response.data.data.user_id);
+             
+       
             setOtpVerify(true);
         } catch (error) {
             setError(error.response?.data?.error?.message || "Something went wrong");

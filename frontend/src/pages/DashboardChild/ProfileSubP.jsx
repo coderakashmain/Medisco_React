@@ -22,7 +22,7 @@ const ProfileSubP = React.memo(() => {
   const [editable, setEditable] = useState(false);
   const [forgotePassword,setForgotePassword] = useState(false);
 
-  
+  console.log(profileDetails)
  useEffect(() => {
     if (editable  ) {
       document.body.style.overflow = "hidden";
@@ -44,6 +44,7 @@ if (profileLoading) {
 if (!profileDetails ) {
   return <NotFound />;
 }
+
 
 
 

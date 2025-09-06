@@ -917,6 +917,7 @@
   }
   .aspect-auto {
     aspect-ratio: auto;
+ 
   }
   .aspect-square {
     aspect-ratio: 1 / 1;
@@ -1183,6 +1184,9 @@
   }
   .flex-auto {
     flex: auto;
+  }
+  .flex-1 {
+    flex:1;
   }
   .flex-initial {
     flex: 0 auto;
@@ -1768,6 +1772,9 @@
   .overflow-hidden {
     overflow: hidden;
   }
+  .overflow-auto {
+    overflow-y: auto;
+  }
   .scroll{
     overflow-y: scroll;
   }
@@ -1779,6 +1786,7 @@
   }
   .\!rounded-\[10px\] {
     border-radius: 10px !important;
+    
   }
   .rounded {
     border-radius: 0.25rem;
@@ -8662,3 +8670,6 @@ input[type=number] {
 
 
 
+.dropdown-off{
+  pointer-events: none;
+}

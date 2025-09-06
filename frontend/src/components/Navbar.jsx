@@ -14,6 +14,8 @@ import FallbackLoader from './FallbackLoader'
 import { HashLink } from 'react-router-hash-link';
 const Login = lazy(() => import("../pages/Login"));
 import { useLocationContext } from '../Context/LocationProvider ';
+import Registration from '../pages/Registration'
+import VerifyOtp from '../pages/VerifyOtp'
 
 
 
@@ -47,55 +49,55 @@ const Navbar = () => {
 
 
 
-  const [userdetails, setUserdetails] = useState({
-    service_type: '',
-    organization_name: '',
-    contact_person: '',
-    contact_email: '',
-    contact_mobileno: null,
-    password: "",
-    state: '',
-    city: '',
-    address: '',
-    pincode: null,
-    longitude: `${userLocation?.lng}` || '23.23432',
-    latitude: `${userLocation?.lat}` || '43.2345'
+  // const [userdetails, setUserdetails] = useState({
+  //   service_type: '',
+  //   organization_name: '',
+  //   contact_person: '',
+  //   contact_email: '',
+  //   contact_mobileno: null,
+  //   password: "",
+  //   state: '',
+  //   city: '',
+  //   address: '',
+  //   pincode: null,
+  //   longitude: `${userLocation?.lng}` || '23.23432',
+  //   latitude: `${userLocation?.lat}` || '43.2345'
 
-  })
+  // })
 
 
 
 
   //User registration
 
-  const hanldeRegistration = async (e) => {
-    e.preventDefault();
+  // const hanldeRegistration = async (e) => {
+  //   e.preventDefault();
 
 
-    if (!userdetails.service_type || !userdetails.organization_name || !userdetails.contact_person || !userdetails.contact_email || !userdetails.contact_mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
-    ) {
-      console.warn("Please Enter all the fileds.")
-      setError("Please fill the all Boxes");
-      return;
-    }
+  //   if (!userdetails.service_type || !userdetails.organization_name || !userdetails.contact_person || !userdetails.contact_email || !userdetails.contact_mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
+  //   ) {
+  //     console.warn("Please Enter all the fileds.")
+  //     setError("Please fill the all Boxes");
+  //     return;
+  //   }
 
-    setError('');
-    setLoading(true);
+  //   setError('');
+  //   setLoading(true);
 
-    try {
-      const response = await axios.post(`${host}/user/register`, userdetails);
-      const userdata = response.data;
-      setuserId(response.data.data.user_id);
-      setUserdata(JSON.stringify(userdata))
-      setOtpVerify(true);
-    } catch (error) {
-      setError(error.response?.data?.error?.message || "Something went wrong");
-      console.error("Registration  failed:", error.response?.data || error.message);
-    } finally {
-      setLoading(false);
-    }
+  //   try {
+  //     const response = await axios.post(`${host}/user/register`, userdetails);
+  //     const userdata = response.data;
+ 
+  //     setUserdata(JSON.stringify(userdata))
+  //     setOtpVerify(true);
+  //   } catch (error) {
+  //     setError(error.response?.data?.error?.message || "Something went wrong");
+  //     console.error("Registration  failed:", error.response?.data || error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
 
-  }
+  // }
 
 
   //Verify Otp
@@ -104,44 +106,47 @@ const Navbar = () => {
 
 
 
-  const hanldeOtpvelidation = async (e) => {
-    e.preventDefault();
+  // const hanldeOtpvelidation = async (e) => {
+  //   e.preventDefault();
 
+  //   const userId = sessionStorage.getItem('userId');
+  //   if(!userId){
+  //     throw new Error("userId not found");
+  //   }
 
+  //   if (!OTPValue
+  //   ) {
+  //     console.warn("Please Enter OTP")
+  //     setOTPError("Please fill the all Boxes");
+  //     return;
+  //   }
+  //   setMessage('');
+  //   setOTPError('');
+  //   setLoading(true);
 
-    if (!OTPValue
-    ) {
-      console.warn("Please Enter OTP")
-      setOTPError("Please fill the all Boxes");
-      return;
-    }
-    setMessage('');
-    setOTPError('');
-    setLoading(true);
-
-    try {
-      const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
-      sessionStorage.setItem('userdata', response.data);
-      setMessage('Otp Verified.')
-      setOTPError('');
-      setUserdata(response.data);
-      setOtpVerify(false);
-      setSignIn(false)
+  //   try {
+  //     const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
+  //     sessionStorage.setItem('userdata', response.data);
+  //     setMessage('Otp Verified.')
+  //     setOTPError('');
+  //     setUserdata(response.data);
+  //     setOtpVerify(false);
+  //     setSignIn(false)
     
-     window.location.href = "/dashboard";
+  //    window.location.href = "/dashboard";
       
 
 
 
-    } catch (error) {
-      setMessage('');
-      setOTPError(error.response?.data?.error?.message || "Something went wrong");
-      console.error("Registration  failed:", error.response?.data || error.message);
-    } finally {
-      setLoading(false);
-    }
+  //   } catch (error) {
+  //     setMessage('');
+  //     setOTPError(error.response?.data?.error?.message || "Something went wrong");
+  //     console.error("Registration  failed:", error.response?.data || error.message);
+  //   } finally {
+  //     setLoading(false);
+  //   }
 
-  }
+  // }
 
 
 
@@ -151,17 +156,17 @@ const Navbar = () => {
 
   //data change event
 
-  const handleChange = (e) => {
-    const value = e.target.value;
-    const name = e.target.name;
+  // const handleChange = (e) => {
+  //   const value = e.target.value;
+  //   const name = e.target.name;
 
-    setUserdetails({
-      ...userdetails,
+  //   setUserdetails({
+  //     ...userdetails,
 
-      [name]: value
-    }
-    )
-  };
+  //     [name]: value
+  //   }
+  //   )
+  // };
 
   //Dropdown event
 
@@ -259,7 +264,7 @@ const Navbar = () => {
                           setDropdownOpen(!dropDownOpen)
                         }}
                         className="hover:text-primary text-xs">Join as Service Provider</span>
-                      <div className={`${dropDownOpen ? 'dropdown-active' : ''} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
+                      <div style={{display : userdata ? 'none' :''}} className={`${dropDownOpen ? 'dropdown-active' : 'dropdown-off'} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
                         <ul>
                           <li
                             onClick={(e) => {
@@ -296,211 +301,220 @@ const Navbar = () => {
                 {/* <!-- Registration popUp --> */}
 
                 {signInP && !otpVerify && (
+
+                  <Registration setSignIn = {setSignIn} setLoginP={setLoginP} setOtpVerify={setOtpVerify} />
                   
-                  <div className=" register-popup   fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+                //   <div className=" register-popup   fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
 
-                  <div className="container flex items-center justify-center relative h-full   ">
-                    <div className="register-box relative  md:w-[60%] lg:w-1/2 w-full max-h-[90vh] scroll  bg-white shadow rounded-[10px]  px-30 pb-30">
-                      <form onSubmit={hanldeRegistration}>
-                        <div className="sticky pt-30 pb-10 top-0 left-0 bg-white">
+                //   <div className="container flex items-center justify-center relative h-full   ">
+                //     <div className="register-box relative  md:w-[60%] lg:w-1/2 w-full max-h-[90vh] scroll  bg-white shadow rounded-[10px]  px-30 pb-30">
+                //       <form onSubmit={hanldeRegistration}>
+                //         <div className="sticky pt-30 pb-10 top-0 left-0 bg-white">
 
-                          <button
-                            onClick={() => setSignIn(false)}
-                            className='close-btn  registration-close'><i className="fa-solid fa-xmark"></i></button>
-                          <div className="text-center mb-40">
-                            <a href="#" className="mb-5 inline-block">
-                              <img src={logo} alt="logo" className="max-w-[160px]" />
-                            </a>
-                            <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
+                //           <button
+                //             onClick={() => setSignIn(false)}
+                //             className='close-btn  registration-close'><i className="fa-solid fa-xmark"></i></button>
+                //           <div className="text-center mb-40">
+                //             <a href="#" className="mb-5 inline-block">
+                //               <img src={logo} alt="logo" className="max-w-[160px]" />
+                //             </a>
+                //             <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
 
-                            <p className="text-base text-body-color text-gary text-sm">Register Here </p>
-                            {error && (<p className='text-xs text-[#FC4F4F] pt-10'>{error}</p>)}
-                          </div>
-                        </div>
+                //             <p className="text-base text-body-color text-gary text-sm">Register Here </p>
+                //             {error && (<p className='text-xs text-[#FC4F4F] pt-10'>{error}</p>)}
+                //           </div>
+                //         </div>
 
-                        <p className=" text-sm mb-10">Select Service Type *</p>
-                        <select
+                //         <p className=" text-sm mb-10">Select Service Type *</p>
+                //         <select
 
-                          name="service_type" id="service-list"
-                          onChange={handleChange}
-                          value={userdetails.service_type}
-                          className="w-full text-sm bg-[#F4F4FF] outline-none px-10 py-10 border border-lightgary rounded mb-20">
+                //           name="service_type" id="service-list"
+                //           onChange={handleChange}
+                //           value={userdetails.service_type}
+                //           className="w-full text-sm bg-[#F4F4FF] outline-none px-10 py-10 border border-lightgary rounded mb-20">
 
-                          <option value="" disabled selected>-- Select a Service --</option>
-                          {services.status && services.data.map((service, index) => (
-                            <option key={index} value={service.service_id}>
-                              {service.service_name}
-                            </option>
-                          ))}
+                //           <option value="" disabled selected>-- Select a Service --</option>
+                //           {services.status && services.data.map((service, index) => (
+                //             <option key={index} value={service.service_id}>
+                //               {service.service_name}
+                //             </option>
+                //           ))}
 
-                        </select>
+                //         </select>
 
-                        <p className=" text-sm mb-10">Name of the Organization *</p>
-                        <input
-                          name='organization_name'
-                          onChange={handleChange}
-                          value={userdetails.organization_name}
-                          type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
-
-
-                        <p className=" text-sm mb-10">Contact Person Name *</p>
-                        <input
-                          name='contact_person'
-                          value={userdetails.contact_person}
-                          onChange={handleChange}
-                          type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
+                //         <p className=" text-sm mb-10">Name of the Organization *</p>
+                //         <input
+                //           name='organization_name'
+                //           onChange={handleChange}
+                //           value={userdetails.organization_name}
+                //           type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
 
-
-
-                        <p className=" text-sm mb-10">Email *</p>
-                        <input
-                          name='contact_email'
-                          value={userdetails.contact_email}
-                          onChange={handleChange}
-                          type="email" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
-
-                        <p className=" text-sm mb-10">Mobile No *</p>
-                        <input
-                          name='contact_mobileno'
-                          value={userdetails.contact_mobileno}
-                          onChange={handleChange}
-                          type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
-
-                        <p className=" text-sm mb-10">State *</p>
-                        <select
-                          value={userdetails.state}
-                          onChange={(e) => {
-                            handleChange(e);
-                            setState(e.target.value);
-                          }}
-                          className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
-                          defaultValue=""
-                          name="state" id="state">
-                          <option value="">-- Select State --</option>
-                          {statesList.status && statesList.data.map((state, index) => (
-                            <option value={state} key={index}>{state}</option>
-
-                          ))}
-                        </select>
-
-                        <p className=" text-sm mb-10">City *</p>
-                        <select
-                          value={userdetails.city}
-                          onChange={handleChange}
-                          className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
-                          defaultValue=""
-                          name="city" id="city">
-                          <option value="">-- Select City --</option>
-                          {districtsList?.status && districtsList.data.map((dist, index) => (
-                            <option value={dist} key={index}>{dist}</option>
-
-                          ))}
-                        </select>
-
-
-                        <p className=" text-sm mb-10">Address *</p>
-                        <input
-                          name='address'
-                          value={userdetails.address}
-                          onChange={handleChange}
-                          type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
-
-                        <p className=" text-sm mb-10">Pincode *</p>
-                        <input
-                          name='pincode'
-                          value={userdetails.pincode}
-                          onChange={handleChange}
-                          type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
-
-
-
-                        <p className=" text-sm mb-10">Password *</p>
-                        <input
-                          name='password'
-                          value={userdetails.password}
-                          onChange={handleChange}
-                          type="password" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
+                //         <p className=" text-sm mb-10">Contact Person Name *</p>
+                //         <input
+                //           name='contact_person'
+                //           value={userdetails.contact_person}
+                //           onChange={handleChange}
+                //           type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
 
 
 
-                        <div className="mb-10">
-                          <button type="submit"
-                            disabled={loading}
-                            className={` ${loading ? 'opacity-50' : ''} button w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Continue</button>
-                        </div>
-                        <div className="flex  items-center gap-10  mt-10">
-                          <p className="text-center text-sm text-body-color">Already have an account? </p>
-                          <p className="switch-login text-center font-semibold text-primary text-sm text-primary hover:underline cursor-pointer block"
-                            onClick={() => {
-                              setLoginP(true);
-                              setSignIn(false);
-                            }}
-                          >Log In</p>
-                        </div>
+                //         <p className=" text-sm mb-10">Email *</p>
+                //         <input
+                //           name='contact_email'
+                //           value={userdetails.contact_email}
+                //           onChange={handleChange}
+                //           type="email" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
+
+                //         <p className=" text-sm mb-10">Mobile No *</p>
+                //         <input
+                //           name='contact_mobileno'
+                //           value={userdetails.contact_mobileno}
+                //           onChange={handleChange}
+                //           type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
+
+                //         <p className=" text-sm mb-10">State *</p>
+                //         <select
+                //           value={userdetails.state}
+                //           onChange={(e) => {
+                //             handleChange(e);
+                //             setState(e.target.value);
+                //           }}
+                //           className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
+                //           defaultValue=""
+                //           name="state" id="state">
+                //           <option value="">-- Select State --</option>
+                //           {statesList.status && statesList.data.map((state, index) => (
+                //             <option value={state} key={index}>{state}</option>
+
+                //           ))}
+                //         </select>
+
+                //         <p className=" text-sm mb-10">City *</p>
+                //         <select
+                //           value={userdetails.city}
+                //           onChange={handleChange}
+                //           className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
+                //           defaultValue=""
+                //           name="city" id="city">
+                //           <option value="">-- Select City --</option>
+                //           {districtsList?.status && districtsList.data.map((dist, index) => (
+                //             <option value={dist} key={index}>{dist}</option>
+
+                //           ))}
+                //         </select>
+
+
+                //         <p className=" text-sm mb-10">Address *</p>
+                //         <input
+                //           name='address'
+                //           value={userdetails.address}
+                //           onChange={handleChange}
+                //           type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
+
+                //         <p className=" text-sm mb-10">Pincode *</p>
+                //         <input
+                //           name='pincode'
+                //           value={userdetails.pincode}
+                //           onChange={handleChange}
+                //           type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
+
+
+
+                //         <p className=" text-sm mb-10">Password *</p>
+                //         <input
+                //           name='password'
+                //           value={userdetails.password}
+                //           onChange={handleChange}
+                //           type="password" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
 
 
 
 
-                      </form>
-                    </div>
+                //         <div className="mb-10">
+                //           <button type="submit"
+                //             disabled={loading}
+                //             className={` ${loading ? 'opacity-50' : ''} button w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Continue</button>
+                //         </div>
+                //         <div className="flex  items-center gap-10  mt-10">
+                //           <p className="text-center text-sm text-body-color">Already have an account? </p>
+                //           <p className="switch-login text-center font-semibold text-primary text-sm text-primary hover:underline cursor-pointer block"
+                //             onClick={() => {
+                //               setLoginP(true);
+                //               setSignIn(false);
+                //             }}
+                //           >Log In</p>
+                //         </div>
 
-                  </div>
 
-                </div>
+
+
+                //       </form>
+                //     </div>
+
+                //   </div>
+
+                // </div>
               )}
 
 
                 {/* <!-- Verify email popUp --> */}
 
-                {otpVerify && (<div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+                {otpVerify && signInP &&  (
+                  
+                  <VerifyOtp  setVerifypopup = {setSignIn}/>
+
+                  
+                //   <div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
 
 
-                  <div className="container flex items-center justify-center relative h-full   ">
-                    <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
-                      <form onSubmit={hanldeOtpvelidation}>
+                //   <div className="container flex items-center justify-center relative h-full   ">
+                //     <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
+                //       <form onSubmit={hanldeOtpvelidation}>
 
-                        <div className=" sticky">
-                          <button
-                            onClick={() => setOtpVerify(false)}
-                            className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
-                          <div className="text-center mb-40">
-                            <a href="#" className="mb-5 inline-block">
-                              <img src={logo} alt="logo" className="max-w-[160px]" />
-                            </a>
-                            <h3 className="text-2xl font-semibold text-secondary">Verify Your Email</h3>
-                            <p className="text-base text-body-color text-gary text-sm">OTP send to your email id {userdetails?.contact_email}. Please check you email  and verify the OTP.</p>
-                            {OTPError && (<p className='text-xs text-[#FC4F4F] pt-10'>{OTPError}</p>)}
-                            {message && (<p className='text-xs text-primary pt-10'>{message}</p>)}
-                          </div>
-                        </div>
+                //         <div className=" sticky">
+                //           <button
+                //             onClick={() => setOtpVerify(false)}
+                //             className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
+                //           <div className="text-center mb-40">
+                //             <a href="#" className="mb-5 inline-block">
+                //               <img src={logo} alt="logo" className="max-w-[160px]" />
+                //             </a>
+                //             <h3 className="text-2xl font-semibold text-secondary">Verify Your Email</h3>
+                //             <p className="text-base text-body-color text-gary text-sm">OTP send to your email id {userdetails?.contact_email}. Please check you email  and verify the OTP.</p>
+                //             {OTPError && (<p className='text-xs text-[#FC4F4F] pt-10'>{OTPError}</p>)}
+                //             {message && (<p className='text-xs text-primary pt-10'>{message}</p>)}
+                //           </div>
+                //         </div>
 
-                        <div className="mb-6 flex  bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
+                //         <div className="mb-6 flex  bg-[#F4F4FF] gap-10 border border-lightgary align-center justify-center rounded p-10 mb-20">
 
-                          <input onChange={(e) => setOTPValue(e.target.value)} value={OTPValue} type="number" name="otp" id="otp" placeholder="OTP" className="w-full outline-none focus:border-primary focus-visible:shadow-none" />
-                        </div>
-                        <div className="flex  justify-between items-center mb-20">
-                          <div className="form-check flex align-center text-sm justify-center gap-10">
+                //           <input onChange={(e) => setOTPValue(e.target.value)} value={OTPValue} type="number" name="otp" id="otp" placeholder="OTP" className="w-full outline-none focus:border-primary focus-visible:shadow-none" />
+                //         </div>
+                //         <div className="flex  justify-between items-center mb-20">
+                //           <div className="form-check flex align-center text-sm justify-center gap-10">
 
-                            Don't Recieve OTP ? Resend OTP in<span>60s</span>
-                          </div>
-                          <p className="text-sm text-primary hover:underline cursor-pointer font-semibold">
-                            Resend OTP
-                          </p>
-                        </div>
-                        <div className="mb-10">
-                          <button disabled={loading} type="submit" className={`${loading ? "opacity-50" : ""} button active w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Verify</button>
-                        </div>
+                //             Don't Recieve OTP ? Resend OTP in<span>60s</span>
+                //           </div>
+                //           <p className="text-sm text-primary hover:underline cursor-pointer font-semibold">
+                //             Resend OTP
+                //           </p>
+                //         </div>
+                //         <div className="mb-10">
+                //           <button disabled={loading} type="submit" className={`${loading ? "opacity-50" : ""} button active w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Verify</button>
+                //         </div>
 
 
 
-                      </form>
-                    </div>
+                //       </form>
+                //     </div>
 
-                  </div>
+                //   </div>
 
-                </div>)}
+                // </div>
+              
+              )}
 
                 {/* Forgate password section  */}
                 {forgotePassword && (
