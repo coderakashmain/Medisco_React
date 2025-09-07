@@ -1,22 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import logo from '../assets/img/logo.png'
-import { useUserDataContext } from '../Context/Userdata';
 import axios from 'axios';
 import FallbackLoader from '../components/FallbackLoader';
-import { useLocation, useNavigate } from 'react-router-dom';
 import VerifyOtp from './VerifyOtp';
-
+import { useSnackbar } from '../Context/SnackbarContext';
 const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
+    const {setSnackbar} = useSnackbar();
     const [message, setMessage] = useState('');
     const [loginError, setLoginError] = useState('');
     const [passwordShow, setPasswordShow] = useState(false);
     const [loading, setLoading] = useState(false);
-    const { userdata, setUserdata } = useUserDataContext();
     const [verifypopup, setVerifypopup] = useState(false);
     const host = import.meta.env.VITE_HOST;
-    const navigate = useNavigate();
-    const location = useLocation();
-    const [userId, setUserId] = useState(null);
     const [loginData, setLoginData] = useState({
         email: '',
         password: '',
@@ -49,12 +44,14 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
 
         if (!loginData.email) {
-            setLoginError("Please fill the all Boxes");
+            setLoginError("Please Enter your Email!");
+               setSnackbar({ open: true, message: 'Please Enter your Email!', type: 'warning' })
             console.warn("Please Enter Email Id.")
             return;
         }
         if (!loginData.password) {
-            setLoginError("Please fill the all Boxes");
+            setLoginError("Please Enter Password!");
+                setSnackbar({ open: true, message: 'Please Enter Password!', type: 'warning' })
             console.warn("Please Enter Password.")
             return;
         }
@@ -75,14 +72,15 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
             if (response.data.status === 201) {
                 setVerifypopup(true);
+                console.log(response.data);
                 
-                sessionStorage.setItem("userId", response.data.data.user_id);
+                sessionStorage.setItem("userId", response.data.data);
                 sessionStorage.setItem("email", loginData.email);
                 return;
             }
 
             const userData = response.data;
-            // setUserdata(JSON.stringify(userData))
+             setSnackbar({ open: true, message: 'Login Successfully', type: 'success' })
             setMessage("Login Successfully")
             if (loginData.remember) {
                 localStorage.setItem('email', loginData.email)
@@ -119,7 +117,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
     return (
         <>
             {loading && (<FallbackLoader fixed={true} size='100vh' />)}
-            <div className=" login-popup   fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+            <div style={{zIndex : 10}} className=" login-popup   fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002  cursor-default">
 
 
                 <div className="container flex items-center justify-center relative h-full   ">
@@ -192,7 +190,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
 
             </div>
-            {verifypopup && (<VerifyOtp  setVerifypopup={setLoginP} />)}
+            {verifypopup && (<VerifyOtp  setVerifypopup={setVerifypopup} />)}
 
         </>
     )

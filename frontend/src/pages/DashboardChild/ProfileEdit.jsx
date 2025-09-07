@@ -13,20 +13,21 @@ import FallbackLoader from '../../components/FallbackLoader';
 import { useLocationContext } from '../../Context/LocationProvider ';
 import Loading from '../../components/Loading';
 import { UpdateProfileApi } from '../../APIs/UpdateProfileApi';
-import { useSnakbar } from '../../Context/SnackbarContext';
+import { useSnackbar } from '../../Context/SnackbarContext';
 
-
+import { useScreen } from '../../Context/ScreenProvider';
 
 const ProfileEdit = ({ setEditable }) => {
     const { userdata, profileDetails, setProfileDetails } = useUserDataContext();
-    const {setSnackbar} = useSnakbar();
+    const { setSnackbar } = useSnackbar();
+      const {isMobile} = useScreen();
     const { statesList } = useStatesContext();
     const { userLocation, locationLoading, getLocation, error, locationMesage } = useLocationContext();
     const [click, setClick] = useState(0);
     const [loading, setLoading] = useState(false);
     const [apiError, setApiError] = useState("");
     const [success, setSuccess] = useState("");
-
+    const [isOtherCity, setIsOtherCity] = useState(false);
     const { districtsList, districtLoading, setState } = useDistrictsContext();
     const [editData, setEditData] = useState({
         hospital_name: profileDetails?.data.hospital_name || '',
@@ -55,6 +56,18 @@ const ProfileEdit = ({ setEditable }) => {
     }, [profileDetails?.data.state])
 
 
+    useEffect(() => {
+        if (!districtsList?.data) return;
+        const currentCity = profileDetails?.data?.city;
+
+
+        if (currentCity && !districtsList.data.includes(currentCity)) {
+            setIsOtherCity(true);
+        }
+
+    }, [profileDetails?.data.city,districtsList])
+
+
 
 
     useEffect(() => {
@@ -76,10 +89,22 @@ const ProfileEdit = ({ setEditable }) => {
         const name = e.target.name;
         const value = e.target.value;
 
-        setEditData({
-            ...editData,
-            [name]: value
-        })
+
+        if (name === "citySelect") {
+            if (value === "Other") {
+                setIsOtherCity(true);
+                setEditData((prev) => ({ ...prev, city: "" }));
+            } else {
+                setIsOtherCity(false);
+                setEditData((prev) => ({ ...prev, city: value }));
+            }
+        } else if (name === "city") {
+
+            setEditData((prev) => ({ ...prev, city: value }));
+        } else {
+            setEditData((prev) => ({ ...prev, [name]: value }));
+        }
+
     }
 
 
@@ -101,41 +126,45 @@ const ProfileEdit = ({ setEditable }) => {
                 },
             }));
             setSuccess("Profile updated successfully ");
-          
-            setSnackbar({open : true, message : 'Profile updated successfully',type : 'success'})
+
+            setSnackbar({ open: true, message: 'Profile updated successfully', type: 'success' })
 
 
             setEditable(false);
         } catch (error) {
             setApiError(error.message);
-         
+
         } finally {
             setLoading(false);
         }
     };
 
- 
+
+
     return (
         <>
-            <section className='h-full w-full p-20 pb-80 sm:p-10'>
+            <section className='h-full w-full p-20 pb-40 sm:p-10'>
+
                 <form onSubmit={handleSubmit}>
                     <div className='dash-p-top-bar flex flex-row justify-between items-center '>
                         <div className='flex gap-10 '>
                             <div className=''>
-                                <Avatar username='Organisation Name' profile_pic={profileDetails?.data?.hospital_logo} size="100px" />
+                                <Avatar username='Organisation Name' profile_pic={profileDetails?.data?.hospital_logo} size={isMobile ? '50px' : '80px'} />
                             </div>
-                            <div className='flex flex-col  align-center justify-center gap-5'>
-                                <h2 className='font-bold'>{profileDetails?.data.hospital_name}</h2>
+                            <div className='flex flex-col  align-center justify-center max-sm:gap-3 gap-5'>
+                                <h2 className='font-bold max-sm:text-sm'>{profileDetails?.data.hospital_name}</h2>
                                 <p className='text-xs text-gary'>{userdata?.data?.role}</p>
                             </div>
                         </div>
-                        <div  >
-                            <button onClick={() => { setEditable(false) }} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
-                            <div className='flex gap-5 items-center' style={{ transform: 'translate(-50%)' }}>
 
+                        <div  >
+
+                            <button onClick={() => { setEditable(false) }} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
+                            {!isMobile && (<div className='flex gap-5 items-center' style={{ transform: 'translate(-22px)' }}>
+                                {!locationLoading && (<p className='text-xs'>Track your current Location</p>)}
                                 {locationLoading && (<Loading size="15px" />)}
                                 {error && (<p className='text-red text-xs'>{error}</p>)}
-                                {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>{locationMesage}</p>)}
+                                {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>({locationMesage})</p>)}
                                 <Tooltip title="Detect current Location">
                                     <IconButton onClick={() => {
                                         getLocation();
@@ -145,7 +174,7 @@ const ProfileEdit = ({ setEditable }) => {
                                         <GpsFixedIcon className=' active text-primary cursor-pointer items-center' />
                                     </IconButton>
                                 </Tooltip>
-                            </div>
+                            </div>)}
 
 
                         </div>
@@ -198,7 +227,7 @@ const ProfileEdit = ({ setEditable }) => {
                             <li>
                                 <label htmlFor="city">City </label>
 
-                                <select value={editData.city} name="city" id="city" className={`block rounded outline-none mt-10 shadow w-full p-7 text-sm px-10 bg-[#F4F4FF]`}
+                                <select value={isOtherCity ? "Other" : editData.city} name="citySelect" id="city" className={`block rounded outline-none mt-10 shadow w-full p-7 text-sm px-10 bg-[#F4F4FF]`}
                                     onChange={handleChange}
                                     defaultValue="">
                                     <option className='p-7 text-sm px-10' value="" > -- Select City --</option>
@@ -206,10 +235,26 @@ const ProfileEdit = ({ setEditable }) => {
                                         <option className='p-7 text-sm px-10' key={index} value={district}>{district}</option>
 
                                     ))}
+                                    {districtsList?.status && (
+                                        <option value="Other">Other</option>
+                                    )}
                                     {districtLoading && (<option className='p-7 text-sm px-10' disabled>Loading...</option>)}
                                 </select>
 
                             </li>
+                            {isOtherCity && (
+                                <li>
+
+                                    <label htmlFor="address">Enter your city</label>
+                                    <input
+                                        type="text"
+                                        name="city"
+                                        value={editData.city}
+                                        onChange={handleChange}
+                                        className="rounded outline-none p-7 text-sm px-10e"
+                                    />
+                                </li>
+                            )}
 
                             <li>
                                 <label htmlFor="address">Address</label>
@@ -224,8 +269,24 @@ const ProfileEdit = ({ setEditable }) => {
 
                         </ul>
                     </div>
-                    <div>
-                        <button disabled={loading} type='submit' className={`${loading ? 'opacity-50' : ''} button bloack float-right bg-primary rounded py-5 px-24 mt-30 text-white text-xs cursor-pointer text-nowrap flex items-center gap-5 `}>Save</button>
+                <div className={`flex ${isMobile ? "justify-between" : 'justify-end'}  items-center mt-30 `}>
+                        {isMobile && ( <div className='flex  items-center'>
+                             <Tooltip title="Detect current Location">
+                                    <IconButton onClick={() => {
+                                        getLocation();
+                                        setClick((e) => e + 1);
+
+                                    }}>
+                                        <GpsFixedIcon className=' active text-primary cursor-pointer items-center' />
+                                    </IconButton>
+                                </Tooltip>
+                                {!locationLoading && (<p className='text-xs'>Track your current Location</p>)}
+                                {locationLoading && (<Loading size="15px" />)}
+                                {error && (<p className='text-red text-xs'>{error}</p>)}
+                                {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>({locationMesage})</p>)}
+                               
+                            </div>)}
+                        <button disabled={loading} type='submit' className={`${loading ? 'opacity-50' : ''} button block float-right bg-primary rounded py-5 px-24 text-white text-xs cursor-pointer text-nowrap flex items-center gap-5 `}>Save</button>
                     </div>
 
                 </form>

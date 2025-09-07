@@ -3,12 +3,13 @@ import AddIcon from '@mui/icons-material/Add';
 import SearchIcon from '@mui/icons-material/Search';
 import FallbackLoader from '../../components/FallbackLoader';
 import Tooltip from '@mui/material/Tooltip';
-import { useSnakbar } from '../../Context/SnackbarContext';
+import { useSnackbar } from '../../Context/SnackbarContext';
 
 import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditSquareIcon from '@mui/icons-material/EditSquare';
+import PopUp from '../../components/PopUp';
 
-const PopUp = lazy(() => import("../../components/PopUp"));
+
 
 const Table = lazy(() => import("../../components/Table"));
 import { useUserDataContext } from '../../Context/Userdata';
@@ -20,7 +21,7 @@ import { UpdateDiscountsApi } from '../../APIs/UpdateDiscountsApi';
 
 const DiscountSubp = () => {
     const [search, setSearch] = useState('');
-    const { setSnackbar } = useSnakbar();
+    const { setSnackbar } = useSnackbar();
 
     const { userdata, profileLoading, profileDetails } = useUserDataContext();
     const [discountList, setDiscountList] = useState([]);
@@ -152,7 +153,7 @@ const DiscountSubp = () => {
                                 onClick={handleSaveAll}
                                 className={`button ${loading ? 'opacity-50 ' : ''} bg-primary font-semibold rounded py-5 px-10 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5`}
                             >
-                                Save
+                              {loading ? "Saving..." : "Save"}
                             </button>
                         ) : (
                             <Tooltip title='Edit' >
@@ -170,11 +171,11 @@ const DiscountSubp = () => {
                     </div>
                 </div>
                 <div className='mt-20 '>
-                    <Suspense fallback={<FallbackLoader size="40vh" />}>
+                  
 
                         <Table rows={discountList} columns={columns} />
 
-                    </Suspense>
+                   
                 </div>
             </section>
 

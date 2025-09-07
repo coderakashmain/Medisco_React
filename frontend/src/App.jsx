@@ -12,6 +12,7 @@ import FallbackLoader from './components/FallbackLoader';
 import GlobalRouter from './Router/GlobalRouter';
 import { LocationProvider } from './Context/LocationProvider ';
 import SnackbarProvider from './Context/SnackbarContext';
+import ScreenProvider from './Context/ScreenProvider';
 
 
 const ProfileSubP = lazy(() => import("./pages/DashboardChild/ProfileSubP"));
@@ -32,7 +33,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <><SnackbarProvider><LocationProvider><Userdata><Services><States><Districts><GlobalRouter /></Districts></States></Services></Userdata></LocationProvider></SnackbarProvider></>,
+      element: <><ScreenProvider><SnackbarProvider><LocationProvider><Userdata><Services><States><Districts><GlobalRouter /></Districts></States></Services></Userdata></LocationProvider></SnackbarProvider></ScreenProvider></>,
       children: [
         {
           path: '',

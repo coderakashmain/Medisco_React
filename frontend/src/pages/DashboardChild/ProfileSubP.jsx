@@ -6,13 +6,17 @@ import EditSquareIcon from '@mui/icons-material/EditSquare';
 import MuiAvatar from '@mui/material/Avatar';
 import MailIcon from '@mui/icons-material/Mail';
 import { useUserDataContext } from '../../Context/Userdata';
-const PopUp = lazy(() => import("../../components/PopUp"))
+// const PopUp = lazy(() => import("../../components/PopUp"))
+
+import PopUp from '../../components/PopUp';
 import FallbackLoader from '../../components/FallbackLoader';
 import ProfileEdit from './ProfileEdit';
 
 import ForgotePassword from '../ForgotePassword'
 import NotFound from '../NotFound'
 import TimeAgo from '../../components/TimeAgo'
+import OnOffToggle from '../../components/OnOffToggle';
+import { useScreen } from '../../Context/ScreenProvider';
 
 
 
@@ -21,8 +25,9 @@ const ProfileSubP = React.memo(() => {
   const { userdata,profileLoading,profileDetails } = useUserDataContext();
   const [editable, setEditable] = useState(false);
   const [forgotePassword,setForgotePassword] = useState(false);
+  const {isMobile} = useScreen();
 
-  console.log(profileDetails)
+
  useEffect(() => {
     if (editable  ) {
       document.body.style.overflow = "hidden";
@@ -55,17 +60,19 @@ if (!profileDetails ) {
       <section className='h-full w-full p-20 pb-40 sm:p-10'>
 
         <div className='dash-p-top-bar flex flex-row justify-between items-center '>
-          <div className='flex gap-10 '>
+          <div className='flex gap-10 max-sm:gap-5 '>
             <div className=''>
-              <Avatar username='Organisation Name' profile_pic={profileDetails?.data?.hospital_logo} size="80px" />
+              <Avatar username={profileDetails?.data?.hospital_name} profile_pic={profileDetails?.data?.hospital_logo} size={isMobile ? '50px' : '80px'} />
             </div>
-            <div className='flex flex-col  align-center justify-center gap-5'>
-              <h2 className='font-bold'>{profileDetails.data.hospital_name}</h2>
+            <div className='flex flex-col  align-center justify-center max-sm:gap-3 gap-5'>
+              <h2 className='font-bold max-sm:text-sm'>{profileDetails.data.hospital_name}</h2>
               <p className='text-xs text-gary'>{userdata?.data?.role}</p>
             </div>
           </div>
-          <div className='flex gap-10 flex-nowrap'>
-            
+          <div className='flex gap-10 flex-nowrap items-center'>
+            {/* <p className='text-sm'>Publish</p>
+        
+            <OnOffToggle/> */}
 
 
             <button onClick={() => setEditable(true)} className='button bg-primary rounded py-5 px-10 text-white text-xs cursor-pointer text-nowrap flex font-semibold items-center gap-5'><EditSquareIcon sx={{ height: 18, width: 18 }} /> Edit</button>
@@ -102,7 +109,7 @@ if (!profileDetails ) {
             </li>
             <li>
               <label htmlFor="state">City </label>
-              <input type="text" value={profileDetails.data.city} className={`rounded outline-none p-7 text-sm px-10 pacity-80`} disabled id='City' />
+              <input type="text" value={profileDetails.data.city} className={`rounded outline-none p-7 text-sm px-10 opacity-80`} disabled id='City' />
 
             </li>
 
@@ -124,9 +131,9 @@ if (!profileDetails ) {
 
         <div className='mt-40'>
           <h3 className='text-sm font-bold'>My email Adress</h3>
-          <div className='flex justify-between'>
+          <div className='flex justify-between mt-20'>
 
-            <div className='mt-20 flex gap-10  items-center'>
+            <div className=' flex gap-10  items-center'>
               <MuiAvatar sx={{ height: 35, width: 35, bgcolor: '#F4F4FF', color: 'var(--color-primary)' }}><MailIcon sx={{ height: 20, width: 20 }} /></MuiAvatar>
               <div>
                 <p className='text-sm'>{profileDetails?.data?.email}</p>
@@ -135,7 +142,7 @@ if (!profileDetails ) {
 
             </div>
             <div className='flex items-center'>
-              <button onClick={()=>setForgotePassword(true)} style={{ padding: '5px 10px ', borderRadius: '3rem' }} className=' border border-lightgary text-sm bg-[#F4F4FF] font-bold cursor-pointer  rounded button text-primary '>Reset Password</button>
+              <button onClick={()=>setForgotePassword(true)} style={{ padding: '5px 10px ', borderRadius: '3rem' }} className=' border border-lightgary max-sm:text-xs  text-sm bg-[#F4F4FF] font-bold cursor-pointer  rounded button text-primary  '>Reset Password</button>
 
             </div>
           </div>
@@ -144,15 +151,15 @@ if (!profileDetails ) {
       </section>
       {editable && (
 
-        <Suspense fallback={<FallbackLoader />}>
+       
           <PopUp>
 
-            <div className="profile-edit-box relative md:w-[80%] lg:w-[80%] w-full  bg-white shadow max-h-[90vh] rounded-[10px] scroll">
+            <div className={`profile-edit-box relative md:w-[80%] lg:w-[80%] w-full  bg-white shadow ${isMobile ? "max-h-[80vh]" : 'max-h-[90vh]'}  rounded-[10px] scroll`}>
 
               <ProfileEdit setEditable={setEditable} />
             </div>
           </PopUp>
-        </Suspense>
+     
 
       )}
    

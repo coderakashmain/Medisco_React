@@ -1,17 +1,25 @@
 import React, { useState } from 'react'
 import logo from '../assets/img/logo.png'
 import axios from 'axios';
+import { useSnackbar } from '../Context/SnackbarContext';
+import FallbackLoader from '../components/FallbackLoader';
 const ForgotePassword = React.memo(({setForgotePassword}) => {
 
     const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
+  const {setSnackbar} = useSnackbar();
 
   const handleForgotPassword = async (e) => {
       const host = import.meta.env.VITE_HOST;
 
-    e.preventDefault();
+      e.preventDefault();
+      if(!email){
+         setSnackbar({ open: true, message: 'Please enter your email!', type: 'warning' })
+         return;
+      }
+
     setLoading(true);
     setError("");
     setMessage("");
@@ -22,6 +30,7 @@ const ForgotePassword = React.memo(({setForgotePassword}) => {
       });
 
       if (response.data.status) {
+                setSnackbar({ open: true, message: 'Password reset link sent!', type: 'success' })
         setMessage(response.data.message || "Password reset link sent!");
       } else {
         setError(response.data.error?.message || "Something went wrong");
@@ -35,7 +44,7 @@ const ForgotePassword = React.memo(({setForgotePassword}) => {
 
 
   return (
-    <div className=" forgatepassword    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+    <div style={{zIndex : 100}} className=" forgatepassword    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
     
     
                       <div className="container flex items-center justify-center relative h-full   ">
@@ -73,6 +82,7 @@ const ForgotePassword = React.memo(({setForgotePassword}) => {
                         </div>
     
                       </div>
+                      {loading && (<FallbackLoader fixed={true}/>)}
     
                     </div>
   )

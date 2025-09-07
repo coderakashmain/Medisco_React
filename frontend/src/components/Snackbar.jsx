@@ -1,19 +1,31 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Snackbar, Alert } from "@mui/material";
-import { useSnakbar } from '../Context/SnackbarContext';
+import { useSnackbar } from '../Context/SnackbarContext';
+import Grow from "@mui/material/Grow";
+
+const GrowTransition = (props) => (
+  <Grow
+    {...props}
+    style={{
+      transformOrigin: "top center",
+    }}
+  />
+);
+
 
 const CustomSnackbar = () => {
-  const { snackbar, setSnackbar } = useSnakbar();
-
+  const { snackbar, setSnackbar } = useSnackbar();
 
 
 
   return (
     <Snackbar
       open={snackbar.open}
-      autoHideDuration={3000}
+      autoHideDuration={2000}
       onClose={() => setSnackbar({ ...snackbar, open: false })}
-      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+      TransitionComponent={GrowTransition}
+
       sx={{ zIndex: 99999999 }}
     >
       <Alert
@@ -22,24 +34,26 @@ const CustomSnackbar = () => {
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         sx={{
           width: '100%',
-          bgcolor: snackbar.type === "success" ? "#e6f4ea" :
-            snackbar.type === "error" ? "#fdecea" :
-              snackbar.type === "warning" ? "#fff4e5" :
+          bgcolor: snackbar.type === "success" ? "white" :
+            snackbar.type === "error" ? "white" :
+              snackbar.type === "warning" ? "white" :
                 "#e8f0fe",
-          color: snackbar.type === "success" ? "#1e4620" :
+          color: snackbar.type === "success" ? "green" :
             snackbar.type === "error" ? "#5f2120" :
               snackbar.type === "warning" ? "#663c00" :
                 "#1a73e8",
           border: `1px solid ${snackbar.type === "success" ? "#a5d6a7" :
-              snackbar.type === "error" ? "#ef9a9a" :
-                snackbar.type === "warning" ? "#ffcc80" :
-                  "#90caf9"
+            snackbar.type === "error" ? "#ef9a9a" :
+              snackbar.type === "warning" ? "#ffcc80" :
+                "#90caf9"
             }`,
           borderRadius: 2,
           boxShadow: 3,
           fontWeight: 500,
-          px: 2,
-          py: 1.5,
+          px: 1.5,
+          py: 1,
+           transform: snackbar.open ? "translateY(0) scale(1)" : "translateY(-10px) scale(0.8)",
+          transition: "transform 0.3s ease-in-out",
         }}
       >
         {snackbar.message}

@@ -7,7 +7,13 @@
 .dashboard-pg-profile-details ul li{
     flex-basis: 400px;
     flex-grow: 1;
+  
 
+}
+@media (min-width : 1200px) {
+    .dashboard-pg-profile-details ul li{
+          max-width: 480px;
+    }
 }
 .dashboard-pg-profile-details ul  li label{
     font-size: calc(var(--spacing) * 14);

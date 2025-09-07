@@ -1,8 +1,8 @@
-import React, { useState, createContext, useContext } from "react";
+import React, { useState, createContext, useContext, useEffect } from "react";
 
 export const SnackbarContext = createContext(); 
 
-export const useSnakbar = ()=>{
+export const useSnackbar = ()=>{
     return useContext(SnackbarContext)
 }
 

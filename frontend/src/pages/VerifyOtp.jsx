@@ -3,14 +3,14 @@ import React, { useEffect, useState } from 'react'
 import logo from '../assets/img/logo.png'
 import axios from 'axios';
 import { useUserDataContext } from '../Context/Userdata';
+import { useSnackbar } from '../Context/SnackbarContext';
 
-
-const VerifyOtp = ({ setVerifypopup}) => {
+const VerifyOtp = ({ setVerifypopup }) => {
     const [loading, setLoading] = useState(false);
-    const [OTPValue, setOTPValue] = useState(null);
+    const [OTPValue, setOTPValue] = useState('');
     const [OTPError, setOTPError] = useState('');
     const [message, setMessage] = useState('');
-    const { userdata, setUserdata, profileDetails } = useUserDataContext();
+    const { setSnackbar } = useSnackbar();
     const host = import.meta.env.VITE_HOST;
     const email = sessionStorage.getItem('email');
 
@@ -38,8 +38,11 @@ const VerifyOtp = ({ setVerifypopup}) => {
 
         try {
             const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
-            localStorage.setItem('userdata', JSON.stringify(userdata));
-           
+
+            console.log(response)
+
+            localStorage.setItem('userdata', JSON.stringify(response.data));
+            setSnackbar({ open: true, message: 'OTP Verified.', type: 'success' })
             setMessage('Otp Verified.')
             window.location.href = "/dashboard";
             setOTPError('');
