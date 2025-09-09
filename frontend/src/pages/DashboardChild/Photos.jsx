@@ -1,4 +1,4 @@
-import React, { Suspense, useRef, useState } from 'react'
+import React, { Suspense, useEffect, useRef, useState } from 'react'
 import './Photos.css'
 import { useUserDataContext } from '../../Context/Userdata'
 import Pagination from '../../components/Pagination'
@@ -10,23 +10,50 @@ import { UploadPhoto } from '../../APIs/UploadPhoto';
 import { SavePhoto } from '../../APIs/SavePhoto';
 import { useScreen } from '../../Context/ScreenProvider';
 import { useSnackbar } from '../../Context/SnackbarContext';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
+
 
 const Photos = () => {
   const photoboxRef = useRef();
   const fileInputRef = useRef();
-  const {setSnackbar} = useSnackbar();
+  const { setSnackbar } = useSnackbar();
   const { userdata, profileLoading, profileDetails, setProfileDetails } = useUserDataContext();
   const [imagePopUp, setImagePopUp] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [selectedFiles, setSelectedFiles] = useState(null);
   const [saveState, setSaveState] = useState(false);
   const [imagePath, setImagePath] = useState([])
-   const {isMobile} = useScreen();
-  
-
+  const { isMobile } = useScreen();
+  const [images, setImages] = useState([]);
 
 
   // console.log(profileDetails)
+
+
+  const submitDelete = async (updatedImages) => {
+
+
+    try {
+      await SavePhoto(userdata?.token, updatedImages);
+      setSnackbar({ open: true, message: 'Photo Deleted!', type: 'success' });
+    } catch (err) {
+      setSnackbar({ open: true, message: 'Failed', type: 'error' });
+    }
+  };
+
+  useEffect(() => {
+    if (profileDetails?.data?.images) {
+      setImages(profileDetails.data.images);
+
+    }
+  }, [profileDetails]);
+
+
+
+
+
 
   if (profileLoading) {
     return <FallbackLoader />;
@@ -36,6 +63,16 @@ const Photos = () => {
   }
 
 
+
+
+  const handleDelete = (index) => {
+    setSnackbar({ open: true, message: 'Photo Deleted!', type: 'success' })
+    setImages((prev) => {
+      const updated = prev.filter((_, i) => i !== index);
+      submitDelete(updated);
+      return updated;
+    });
+  };
   const handleFileSelect = async (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -43,7 +80,7 @@ const Photos = () => {
   };
 
   const handleSubmit = async () => {
-    if (!selectedFiles) return     setSnackbar({open : true ,message : 'Please select an image first',type : 'warning'});
+    if (!selectedFiles) return setSnackbar({ open: true, message: 'Please select an image first', type: 'warning' });
 
 
 
@@ -56,7 +93,7 @@ const Photos = () => {
       setImagePath(prev => [...prev, res.data]);
 
       setSaveState(true);
-      
+
 
     } catch (err) {
       console.error(err);
@@ -73,7 +110,7 @@ const Photos = () => {
     try {
       const updatedImages = [...profileDetails.data.images, ...imagePath];
       const res = await SavePhoto(userdata?.token, updatedImages);
-      
+
       setProfileDetails(prev => ({
         ...prev,
         data: {
@@ -81,15 +118,15 @@ const Photos = () => {
           images: [...prev.data.images, imagePath],
         }
       }));
-        setSnackbar({open : true,message : 'Photo Upload Successfully.',type : 'success'})
-     
+      setSnackbar({ open: true, message: 'Photo Upload Successfully.', type: 'success' })
+
       setImagePath([]);
       setImagePopUp(false);
       setSaveState(false);
       setSelectedFiles(null);
     } catch (err) {
       console.error(err);
-      alert('Upload failed');
+      setSnackbar({ open: true, message: 'Upload failed', type: 'error' })
     } finally {
       setUploading(false);
     }
@@ -141,7 +178,7 @@ const Photos = () => {
                 {saveState ? (
                   <button
                     onClick={handleSave}
-                    className={`bg-primary rounded text-white px-10 py-5 cursor-pointer mt-10 ${uploading ? 'opacity-50' : ''}`}>{uploading ? 'Saving..' :'Save'}</button>
+                    className={`bg-primary rounded text-white px-10 py-5 cursor-pointer mt-10 ${uploading ? 'opacity-50' : ''}`}>{uploading ? 'Saving..' : 'Save'}</button>
                 ) :
                   (
                     <>
@@ -150,7 +187,7 @@ const Photos = () => {
                         className={`bg-primary rounded text-white px-10 py-5 cursor-pointer mt-10 ${selectedFiles ? 'opacity-50' : ''}`}>Choose Here</button>
                       {selectedFiles && (<button
                         onClick={handleSubmit}
-                        className={`bg-primary rounded text-white px-10 py-5 cursor-pointer mt-10 ${uploading ? 'opacity-50' : ''}`}>{uploading ? "Confirming..." :"Confirm"}</button>)}
+                        className={`bg-primary rounded text-white px-10 py-5 cursor-pointer mt-10 ${uploading ? 'opacity-50' : ''}`}>{uploading ? "Confirming..." : "Confirm"}</button>)}
                     </>
 
                   )}
@@ -177,7 +214,7 @@ const Photos = () => {
 
       <div className='dashboard-gallary mt-40 ' id='photo-box'>
         <Pagination
-          DataList={profileDetails.data.images}
+          DataList={images}
           limit={12}
           targateRef={photoboxRef}
         >
@@ -186,8 +223,17 @@ const Photos = () => {
               {currentItems.length > 0 ?
 
                 (currentItems.map((photo, index) => (
-                  <li className='rounded overflow-hidden cursor-pointer ' key={index}>
+                  <li className='rounded overflow-hidden cursor-pointer relative' key={index}>
                     <img loading='lazy' className='' src={`https://api.medisco.in/${photo}`} alt={`dashbord-img-${index}`} />
+                    <IconButton
+                      onClick={() => handleDelete(index)}
+                      className='photo-delete ' style={{ position: 'absolute', top: '2px', right: '2px', color: 'white', background: 'black' }}>
+                      <Tooltip title="delete">
+
+
+                        <DeleteOutlineIcon />
+                      </Tooltip>
+                    </IconButton>
                   </li>
                 )))
                 :

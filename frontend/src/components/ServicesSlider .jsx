@@ -7,9 +7,9 @@ import "swiper/css";
 import "swiper/css/navigation";
 
 const ServicesSlider = ({ services }) => {
-  const bgColor = ["#ffebee", "#e8f5e9", "#e3f2fd", "#fff3e0"]; // your bg colors
+  const bgColor = ["#ffebee", "#e8f5e9", "#e3f2fd", "#fff3e0"]; 
 
-  // slice text function
+ 
   const sliceText = (text, length) => {
      const plainText = text.replace(/<[^>]+>/g, "");
     if (plainText.length > length) {
@@ -25,7 +25,7 @@ const ServicesSlider = ({ services }) => {
         modules={[Navigation, Autoplay, FreeMode]}
         slidesPerView={4}
         spaceBetween={0}
-        loop={services?.data?.length > 4} // loop only if enough slides
+        loop={services?.data?.length > 4} 
         speed={1000}
         freeMode={true}
         autoplay={{
@@ -75,7 +75,7 @@ const ServicesSlider = ({ services }) => {
                   </p>
 
                   <NavLink
-                    to={`/servicedetails/${service.service_id}/${service.service_name}`}
+                    to={`/servicurl`}
                     className="service-read-more relative font-bold text-secondary font-sora group-hover:text-white duration-500"
                   >
                     Read More{" "}

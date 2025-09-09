@@ -6,17 +6,17 @@ export const SavePhoto = async (token, file) => {
   const API_URL = `${HOST}/user/update-images`;
     
 
+ 
   try {
     const response = await axios.post(API_URL,{images : file}, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-
     return response.data;
   } catch (error) {
     if (error.response) {
-      const errorMessage = error.response.data?.error?.message || "Failed to fetch discounts";
+      const errorMessage = error.response.data?.error?.message || "Failed";
       console.error("API Error:", errorMessage);
       throw new Error(errorMessage);
     } else {

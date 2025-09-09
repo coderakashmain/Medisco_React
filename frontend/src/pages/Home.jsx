@@ -1,8 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
+import './Home.css'
+import { useSnackbar } from '../Context/SnackbarContext'
 import shape3 from '../assets/img/shaps-3.png'
 import shape1 from '../assets/img/shaps-1.png'
 import shape2 from '../assets/img/shaps-2.png'
@@ -35,17 +37,24 @@ import Loading from '../components/Loading';
 import ServicesSlider from '../components/ServicesSlider ';
 import ReviewSlider from '../components/ReviewSlider';
 import BrandSlider from '../components/BrandSlider';
+import DropdownOff from '../components/DropdownOff';
+
 
 const Home = () => {
   const [searchData, setSearchData] = useState({
     state: '',
-    district: '',
-    service: ''
+    city: '',
+    service: '',
+    service_id: ''
   })
+  const { setSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const { services } = useServiceListContex();
   const { statesList, stateLoading } = useStatesContext();
   const { districtsList, setState, districtLoading } = useDistrictsContext();
+  const [hideDropdown, setHideDropdown] = useState(false);
+  const [filterList, setFilterList] = useState([])
+  const dropdownRef = useRef(null)
   let bgColor = [
     "rgb(240,93,193)",
     "#58CBF2",
@@ -54,6 +63,7 @@ const Home = () => {
     "#58CBF2",
     "#9B52E1",
   ]
+
 
   //Slice service Description
   const sliceText = (text, maxLength = 30) => {
@@ -65,6 +75,72 @@ const Home = () => {
     }
   }
 
+
+
+
+useEffect(() => {
+  if(!services)  return;
+  if (!searchData.service.trim()) {
+    setFilterList([]);
+    return;
+  } else {
+    setHideDropdown(true);
+  }
+
+  const filterList = services?.data.filter((data) =>
+    data.service_name.toLowerCase().includes(searchData.service.toLowerCase())
+  );
+
+  setFilterList(filterList);
+}, [searchData.service, services]);
+
+
+
+useEffect(() => {
+  if (!services?.data || !searchData.service.trim()) {
+    setSearchData((prev) => ({
+      ...prev,
+      service_id: '',
+    }));
+    return;
+  }
+
+  const matched = services.data.find(
+    (value) =>
+      value.service_name.toLowerCase() === searchData.service.toLowerCase()
+  );
+
+  if (matched) {
+    setSearchData((prev) => ({
+      ...prev,
+      service_id: matched.service_id,
+    }));
+  } else {
+    setSearchData((prev) => ({
+      ...prev,
+      service_id: "",
+    }));
+  }
+}, [searchData.service, services]);
+
+
+
+
+
+
+  
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!searchData.state && !searchData.service && !searchData.service_id) {
+      setSnackbar({ open: true, message: 'Enter atleast one field.', type: "warning" })
+      return;
+    }
+    navigate({
+      pathname: "/search_result",
+      search: `?${createSearchParams(searchData)}`
+    }, { state: { searchData } });
+  }
 
 
 
@@ -232,47 +308,41 @@ const Home = () => {
 
       {/* <!-- Search Space Section --> */}
 
-      <section className="lg:pt-100 md:pt-90 pt-50 sm:hide" id="search-space ">
+      <section className="lg:pt-100 md:pt-90 pt-50 " id="search-space ">
         <div className="container ">
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            navigate({
-              pathname: "/search_result",
-              search: `?${createSearchParams(searchData)}`
-            });
-          }} id="search-form w-[100%] ">
+          <form onSubmit={handleSubmit } id="search-form ">
             <h2
-              className="text-center text-secondary pb-70 xxl:text-6xl xl:text-5xl md:text-4xl sm:text-3xl text-3xl font-extrabold"
+              className="text-center text-secondary lg:pb-70 sm:pb-50 pb-40 xxl:text-6xl xl:text-5xl md:text-4xl sm:text-3xl text-xl font-extrabold"
             >
               Find The Service You Want
             </h2>
-            <div className='w-full flex lg:flex-row flex-col flex-wrap gap-10'>
+            <div className='search-space-box'>
 
 
               <div
-                className="search-form-box flex m-auto    flex-row w-[50%] justify-center  flex-nowrap align-center gap-20 "
+                className="search-space-left-box "
               >
 
-                <div className="border border-lightgary p-7 rounded flex justify-center items-center gap-10 w-[50%] flex-grow md:w-[50%]   ">
-                  <i className="fa-solid fa-location-dot text-gary"></i>
-                  <select name="states" id="states-box" className='bg-white outline-none w-[100%]  py-5' onChange={(e) => {
+                <div className="search-space-left-box-1  border border-lightgary  rounded   ">
+                  <i className="fa-solid fa-location-dot text-gary "></i>
+                  <select name="states" id="states-box" className='bg-white rounded ' onChange={(e) => {
                     setSearchData({ ...searchData, state: e.target.value });
                     setState(e.target.value)
                   }} defaultValue="">
                     <option className='text-sm' value="">Search By State</option>
                     {statesList.status && statesList.data.map((state, index) => (
-                      <option className='text-sm' key={index} value={state}>{state}</option>
+                      <option className='text-sm ' key={index} value={state}>{state}</option>
 
                     ))}
-                    {stateLoading && (<option disabled>Loading...</option>)}
+                    {stateLoading && (<option className='text-sm' disabled>Loading...</option>)}
                   </select>
 
                 </div>
-                <div className="border border-lightgary p-7 rounded flex justify-center  items-center gap-10 w-[50%] flex-grow  md:w-[50%] ">
+                <div className=" search-space-left-box-2 border border-lightgary p-7 rounded  ">
                   <i className="fa-solid fa-location-dot text-gary"></i>
 
-                  <select disabled={districtLoading} name="states" id="states" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
-                    onChange={(e) => setSearchData({ ...searchData, district: e.target.value })}
+                  <select disabled={districtLoading} name="city" id="city" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
+                    onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
                     defaultValue="">
                     <option className='text-sm' >Search By City</option>
                     {districtsList.status && districtsList.data.map((district, index) => (
@@ -285,8 +355,8 @@ const Home = () => {
 
               </div>
 
-              <div className="flex flex-row flex-grow  justify-center align-center m-auto   gap-10  rounded  ">
-                <div className="  flex justify-center items-center w-full gap-10 p-10 border border-lightgary flex-grow rounded">
+              <div className="search-space-right-box ">
+                <div className=" search-space-right-box-1 border border-lightgary p-7 rounded relative ">
                   <i className="fa-solid fa-magnifying-glass text-gary"></i>
 
                   <input
@@ -296,7 +366,34 @@ const Home = () => {
                     value={searchData.service}
                     onChange={(e) => setSearchData({ ...searchData, service: e.target.value })}
                   />
+                  <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
+                    <div ref={dropdownRef} className='search-space-right-box-dropdown'>
+                      <ul className='shadow'>
+                        {searchData.service && hideDropdown && (filterList.length > 0 ? filterList.map((service, index) => (
+                          <li key={index} onClick={() => {
+                            setHideDropdown(false);
+                            setSearchData({
+                              ...searchData,
+                              service: service.service_name,
+                              service_id: service.service_id
+                            })
+
+                          }} className='text-sm p-10 cursor-pointer  hover:bg-primary hover:text-white bg-white'>
+                            {service.service_name}
+                          </li>
+
+                        ))
+                          :
+                          (
+                            <li style={{ userSelect: 'none' }} className='text-sm p-10  bg-white'>No Service Found</li>
+                          )
+                        )}
+
+                      </ul>
+                    </div>
+                  </DropdownOff>
                 </div>
+
                 <button type="submit" className="cursor-pointer button bg-primary px-20 py-10 text-white rounded "><i className="fa fa-search"></i>
                 </button>
 
@@ -322,8 +419,8 @@ const Home = () => {
             </h2>
           </div>
 
-            <ServicesSlider services={services}/>
-        
+          <ServicesSlider services={services} />
+
         </div>
       </section>
 
@@ -1028,16 +1125,16 @@ const Home = () => {
               What Our Members Say
             </h2>
           </div>
-          <ReviewSlider/>
-        
+          <ReviewSlider />
+
         </div>
       </section>
       <div className='overflow-hidden'>
 
-      <BrandSlider/>
+        <BrandSlider />
       </div>
 
-      
+
 
     </>
   )

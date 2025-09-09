@@ -42,8 +42,8 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
         city: '',
         address: '',
         pincode: '',
-        longitude: `${userLocation?.lng}` || '23.23432',
-        latitude: `${userLocation?.lat}` || '43.2345'
+        longitude: `${userLocation?.lng}` || '00',
+        latitude: `${userLocation?.lat}` || '00'
 
     })
 

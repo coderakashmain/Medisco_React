@@ -1,0 +1,13 @@
+.search-list-service-loading img{
+    animation:  moving 01s alternate-reverse infinite;
+
+}
+
+@keyframes moving {
+    0%{
+        transform: translateY(-5%);
+    }
+    100%{
+              transform: translateY(5%);
+    }
+}

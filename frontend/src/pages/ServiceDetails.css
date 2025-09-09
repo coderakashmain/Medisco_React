@@ -1,0 +1,27 @@
+.servicedetails-discount-box ul{
+   flex-wrap: wrap;
+}
+.servicedetails-discount-box ul li{
+ flex-basis: calc(var(--spacing) * 400);
+ flex-grow: 1;
+ height:calc(var(--spacing) * 70) ;
+ align-items: center;
+ max-width:  calc(var(--spacing) * 400);
+}
+
+@media (max-width : 1245px) {
+   .servicedetails-discount-box ul li{
+ flex-basis: calc(var(--spacing) * 300);
+ max-width:  calc(var(--spacing) * 350);
+} 
+}
+@media (max-width : 991px) {
+.service-details-box{
+  flex-direction: column;
+}
+  .servicedetails-discount-box ul li{
+    flex-grow: 1;
+ max-width:  calc(var(--spacing) * 550);
+} 
+}
+

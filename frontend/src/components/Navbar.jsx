@@ -200,7 +200,7 @@ const Navbar = () => {
                 )}
 
 
-                <div className="header-search-button search-box-outer  ">
+                {/* <div className="header-search-button search-box-outer  ">
 
                   <a href="javascript:void(0)" className="search-btn ">
                     <i>
@@ -229,11 +229,8 @@ const Navbar = () => {
                       </svg>
                     </i>
                   </a>
-                </div>
-                {/* <!-- <a href="appointment.html" className="btn xl:block hidden"
-                ><span
-                  >Book Appointment<i className="fa-solid fa-arrow-right"></i></span
-              ></a> --> */}
+                </div> */}
+               
               </div>
               <a href="javascript:void(0)" id="mobile-menu" className="menu-start ">
                 <i className="fa-solid fa-bars m-0"></i>
@@ -264,7 +261,7 @@ const Navbar = () => {
             </ul>
             <a href="JavaScript:void(0)" id="res-cross"></a>
           </div>
-          <div className="search-popup">
+          {/* <div className="search-popup">
             <button className="close-search"><i className="fa-solid fa-xmark"></i></button>
             <form method="post" action="#">
               <div className="form-group relative  overflow-hidden rounded">
@@ -301,7 +298,7 @@ const Navbar = () => {
                 <button type="submit"><i className="fa fa-search"></i></button>
               </div>
             </form>
-          </div>
+          </div> */}
 
         </div>
       </div>
