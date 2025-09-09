@@ -47,7 +47,7 @@ const ServicesSlider = ({ services }) => {
         {services.status &&
           services?.data.map((service, index) => {
             let color = bgColor[index % bgColor.length];
-            return (
+            return ( 
               <SwiperSlide key={index} className="group">
                 <div className="services-box shadow-[0px_0px_15px_0px_rgba(0,0,0,0.07)] relative xxl:p-40 p-30 xxl:m-15 m-10 before:w-full before:h-0 before:bg-primary before:absolute before:bottom-0 before:left-0 group-hover:before:h-full before:duration-500">
                   <div
