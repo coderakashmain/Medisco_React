@@ -14,7 +14,7 @@ import { useScreen } from '../Context/ScreenProvider';
 const ServiceDetails = () => {
   const location = useLocation();
   const { services } = useServiceListContex();
-  const {isMobile} = useScreen();
+  const { isMobile } = useScreen();
   const [serviceDetails, setServiceDetails] = useState(null);
 
   useEffect(() => {
@@ -75,6 +75,7 @@ const ServiceDetails = () => {
                       ? { delay: 2000, disableOnInteraction: false }
                       : false
                   }
+                 
                   breakpoints={{
                     10: { slidesPerView: 1 },
                     575: { slidesPerView: 1 },
@@ -86,7 +87,7 @@ const ServiceDetails = () => {
                   {serviceDetails.images.map((image, index) => (
                     <SwiperSlide key={index}>
                       <img
-                      loading='lazy'
+                        loading='lazy'
                         src={`https://api.medisco.in/${image}`}
                         alt={serviceDetails.hospital_name || "hospital image"}
                         className="h-full w-full rounded aspect-square object-cover"
@@ -116,7 +117,7 @@ const ServiceDetails = () => {
 
               </div>
               <div className='text-xs  mt-5 '>
-                <div  className={`flex gap-10 items-center ${isMobile ? 'flex-col' : 'flex-row'}`}>
+                <div className={`flex gap-10 items-center ${isMobile ? 'flex-col' : 'flex-row'}`}>
 
 
                   <span className='select-none text-nowrap'>

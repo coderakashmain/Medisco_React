@@ -7,29 +7,31 @@ import MuiAvatar from '@mui/material/Avatar';
 import MailIcon from '@mui/icons-material/Mail';
 import { useUserDataContext } from '../../Context/Userdata';
 // const PopUp = lazy(() => import("../../components/PopUp"))
-
-import PopUp from '../../components/PopUp';
-import FallbackLoader from '../../components/FallbackLoader';
-import ProfileEdit from './ProfileEdit';
-
-import ForgotePassword from '../ForgotePassword'
-import NotFound from '../NotFound'
 import TimeAgo from '../../components/TimeAgo'
 import OnOffToggle from '../../components/OnOffToggle';
 import { useScreen } from '../../Context/ScreenProvider';
+
+import PopUp from '../../components/PopUp';
+import FallbackLoader from '../../components/FallbackLoader';
+const ProfileEdit = lazy(() => import("./ProfileEdit"));
+const ForgotePassword = lazy(() => import("../ForgotePassword"));
+
+
+import NotFound from '../NotFound'
+
 
 
 
 
 const ProfileSubP = React.memo(() => {
-  const { userdata,profileLoading,profileDetails } = useUserDataContext();
+  const { userdata, profileLoading, profileDetails } = useUserDataContext();
   const [editable, setEditable] = useState(false);
-  const [forgotePassword,setForgotePassword] = useState(false);
-  const {isMobile} = useScreen();
+  const [forgotePassword, setForgotePassword] = useState(false);
+  const { isMobile } = useScreen();
 
 
- useEffect(() => {
-    if (editable  ) {
+  useEffect(() => {
+    if (editable) {
       document.body.style.overflow = "hidden";
     } else {
       document.body.style.overflow = "auto";
@@ -39,22 +41,22 @@ const ProfileSubP = React.memo(() => {
     return () => {
       document.body.style.overflow = "auto";
     };
-  }, [editable,forgotePassword]);
+  }, [editable, forgotePassword]);
 
 
 
-if (profileLoading) {
-  return <FallbackLoader />;
-}
-if (!profileDetails ) {
-  return <NotFound />;
-}
+  if (profileLoading) {
+    return <FallbackLoader />;
+  }
+  if (!profileDetails) {
+    return <NotFound />;
+  }
 
 
 
 
 
- 
+
   return (
     <>
       <section className='h-full w-full p-20 pb-40 sm:p-10'>
@@ -137,12 +139,12 @@ if (!profileDetails ) {
               <MuiAvatar sx={{ height: 35, width: 35, bgcolor: '#F4F4FF', color: 'var(--color-primary)' }}><MailIcon sx={{ height: 20, width: 20 }} /></MuiAvatar>
               <div>
                 <p className='text-sm'>{profileDetails?.data?.email}</p>
-                <p className='text-xs text-gary'><TimeAgo dateString={profileDetails.data.created_datetime}/></p>
+                <p className='text-xs text-gary'><TimeAgo dateString={profileDetails.data.created_datetime} /></p>
               </div>
 
             </div>
             <div className='flex items-center'>
-              <button onClick={()=>setForgotePassword(true)} style={{ padding: '5px 10px ', borderRadius: '3rem' }} className=' border border-lightgary max-sm:text-xs  text-sm bg-[#F4F4FF] font-bold cursor-pointer  rounded button text-primary  '>Reset Password</button>
+              <button onClick={() => setForgotePassword(true)} style={{ padding: '5px 10px ', borderRadius: '3rem' }} className=' border border-lightgary max-sm:text-xs  text-sm bg-[#F4F4FF] font-bold cursor-pointer  rounded button text-primary  '>Reset Password</button>
 
             </div>
           </div>
@@ -151,22 +153,27 @@ if (!profileDetails ) {
       </section>
       {editable && (
 
-       
-          <PopUp>
 
-            <div className={`profile-edit-box relative md:w-[80%] lg:w-[80%] w-full  bg-white shadow ${isMobile ? "max-h-[80vh]" : 'max-h-[90vh]'}  rounded-[10px] scroll`}>
+        <PopUp>
 
+          <div className={`profile-edit-box relative md:w-[80%] lg:w-[80%] w-full  bg-white shadow ${isMobile ? "max-h-[80vh]" : 'max-h-[90vh]'}  rounded-[10px] scroll`}>
+
+            <Suspense fallback={<FallbackLoader fixed={true} />}>
               <ProfileEdit setEditable={setEditable} />
-            </div>
-          </PopUp>
-     
+            </Suspense>
+          </div>
+        </PopUp>
+
 
       )}
-   
 
-        {forgotePassword && (
-                  <ForgotePassword setForgotePassword={setForgotePassword} />
-                )}
+
+      {forgotePassword && (
+        <Suspense fallback={<FallbackLoader fixed={true} />}>
+
+          <ForgotePassword setForgotePassword={setForgotePassword} />
+        </Suspense>
+      )}
     </>
   )
 })

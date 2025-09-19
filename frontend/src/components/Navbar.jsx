@@ -1,16 +1,17 @@
 import React, { useEffect, useState, useRef, Suspense, lazy } from 'react'
 import logo from '../assets/img/logo.png'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import ForgotePassword from '../pages/ForgotePassword'
 import { useUserDataContext } from '../Context/Userdata'
 import Avatar from './Avatar'
 
 import Loading from './Loading'
 import { HashLink } from 'react-router-hash-link';
 const Login = lazy(() => import("../pages/Login"));
-import Registration from '../pages/Registration'
-import VerifyOtp from '../pages/VerifyOtp'
+const ForgotePassword = lazy(() => import("../pages/ForgotePassword"));
+const Registration = lazy(() => import("../pages/Registration"));
+const VerifyOtp = lazy(() => import("../pages/VerifyOtp"));
 import DropdownOff from './DropdownOff'
+import FallbackLoader from './FallbackLoader'
 
 
 
@@ -86,6 +87,10 @@ const Navbar = () => {
                 <li className="navbar-dropdown">
                   <HashLink smooth to='/'>Home</HashLink>
                 </li>
+
+                <li className="navbar-dropdown service-dropdown-out-box dropdown-out-box  relative ">
+                  <HashLink smooth to="/#services">Services</HashLink>
+                </li>
                 <li className="navbar-dropdown">
                   <HashLink smooth to="/#about">About</HashLink>
                 </li>
@@ -93,13 +98,6 @@ const Navbar = () => {
                   <HashLink smooth to="/#section-pricing">Plans</HashLink>
                 </li>
 
-                <li className="navbar-dropdown service-dropdown-out-box dropdown-out-box  relative ">
-                  <HashLink smooth to="/#services">Services</HashLink>
-                  <div className="service-dropdown-box dropdown-box  absolute top-[100%] left-[-100%] w-[30vw]    bg-white font-normal  z-99 mt-5 flex flex-col  shadow">
-                    <ul>
-                    </ul>
-                  </div>
-                </li>
 
                 <li className="navbar-dropdown">
                   <HashLink smooth to="/#contact">contact</HashLink>
@@ -112,21 +110,21 @@ const Navbar = () => {
                 {userdata ? (<div className='font-semibold relative' onClick={() => setProfileDropdown(!ProfileDropdown)} >
 
                   <div >
-                    
 
-                      <Avatar username={profileDetails?.data?.hospital_name} profile_pic={profileDetails?.data?.hospital_logo} size={35} />
-                 
+
+                    <Avatar username={profileDetails?.data?.hospital_name} profile_pic={profileDetails?.data?.hospital_logo} size={35} />
+
                   </div>
                   <div ref={avatarRef} className={`${ProfileDropdown ? 'dropdown-active' : 'dropdown-off'} absolute top-[100%] right-0  opacity-0   bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
                     <DropdownOff dropdownRef={avatarRef} setDropdownOpen={setProfileDropdown}>
-                    <ul>
-                      <li onClick={(e) => {
-                        e.stopPropagation();
-                        setProfileDropdown(false)
-                        navigate('/dashboard')
-                      }} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Dashborad</li>
-                      <li onClick={handleLogout} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Log Out</li>
-                    </ul>
+                      <ul>
+                        <li onClick={(e) => {
+                          e.stopPropagation();
+                          setProfileDropdown(false)
+                          navigate('/dashboard')
+                        }} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Dashborad</li>
+                        <li onClick={handleLogout} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Log Out</li>
+                      </ul>
                     </DropdownOff>
                   </div>
                 </div>) :
@@ -174,21 +172,26 @@ const Navbar = () => {
 
                 {/* <!-- Login popUp --> */}
 
-                {logingP && (<Suspense fallback={<Loading size="10px" />}><Login setLoginP={setLoginP} setForgotePassword={setForgotePassword} setSignIn={setSignIn} /></Suspense>)}
+                {logingP && (<Suspense fallback={<FallbackLoader fixed={true} />}><Login setLoginP={setLoginP} setForgotePassword={setForgotePassword} setSignIn={setSignIn} /></Suspense>)}
 
                 {/* <!-- Registration popUp --> */}
 
                 {signInP && !otpVerify && (
+                  <Suspense fallback={<FallbackLoader fixed={true} />}>
 
-                  <Registration setSignIn={setSignIn} setLoginP={setLoginP} setOtpVerify={setOtpVerify} />
+                    <Registration setSignIn={setSignIn} setLoginP={setLoginP} setOtpVerify={setOtpVerify} />
+                  </Suspense>
 
                 )}
 
                 {/* <!-- Verify email popUp --> */}
 
                 {otpVerify && (
+                  <Suspense fallback={<FallbackLoader fixed={true} />}>
+                    <VerifyOtp setVerifypopup={setOtpVerify} />
 
-                  <VerifyOtp setVerifypopup={setOtpVerify} />
+
+                  </Suspense>
 
 
 
@@ -196,7 +199,10 @@ const Navbar = () => {
 
                 {/* Forgate password section  */}
                 {forgotePassword && (
-                  <ForgotePassword setForgotePassword={setForgotePassword} />
+                  <Suspense fallback={<FallbackLoader fixed={true} />}>
+
+                    <ForgotePassword setForgotePassword={setForgotePassword} />
+                  </Suspense>
                 )}
 
 
@@ -230,7 +236,7 @@ const Navbar = () => {
                     </i>
                   </a>
                 </div> */}
-               
+
               </div>
               <a href="javascript:void(0)" id="mobile-menu" className="menu-start ">
                 <i className="fa-solid fa-bars m-0"></i>

@@ -21,7 +21,8 @@ export const GetServiceResult = async (token, data) => {
       params: {
         state: data.state,
         city: data.city,
-        service_id: data.service_id
+        service_id: data.service_id,
+        organization_name:data.organization_name
       }
     });
 

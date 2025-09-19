@@ -4,10 +4,12 @@ import { Outlet } from 'react-router-dom'
 import Footer from '../components/Footer'
 import Preloader from '../components/Preloader'
 import CustomSnackbar from '../components/Snackbar'
+import ProgressBar from '../components/ProgressBar'
 
 const HomeContext = () => {
   return (
-    <div className=''>
+    <>
+      <ProgressBar/>
       
         <Preloader/>
         <CustomSnackbar/>
@@ -16,7 +18,7 @@ const HomeContext = () => {
         <Footer/>
 
       
-    </div>
+    </>
   )
 }
 

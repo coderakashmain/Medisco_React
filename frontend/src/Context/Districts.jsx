@@ -48,7 +48,7 @@ const Districts = ({ children }) => {
     setState,
     state,
     districtLoading
-  }), [districtsList, state, setDistrictsList, districtLoading,setState]);
+  }), [districtsList, state, districtLoading,setState]);
 
   return (
     <districtsContext.Provider value={value}>

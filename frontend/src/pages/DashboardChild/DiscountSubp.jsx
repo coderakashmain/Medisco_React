@@ -1,20 +1,15 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react'
-import AddIcon from '@mui/icons-material/Add';
-import SearchIcon from '@mui/icons-material/Search';
 import FallbackLoader from '../../components/FallbackLoader';
 import Tooltip from '@mui/material/Tooltip';
 import { useSnackbar } from '../../Context/SnackbarContext';
-
-import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import EditSquareIcon from '@mui/icons-material/EditSquare';
-import PopUp from '../../components/PopUp';
+
 
 
 
 const Table = lazy(() => import("../../components/Table"));
 import { useUserDataContext } from '../../Context/Userdata';
 import NotFound from '../NotFound';
-import { GetDiscountsByServiceApi } from '../../APIs/GetDiscountsByServiceApi';
 import { UpdateDiscountsApi } from '../../APIs/UpdateDiscountsApi';
 
 

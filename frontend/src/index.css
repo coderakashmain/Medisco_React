@@ -6918,10 +6918,11 @@ input[type=number] {
   color: var(--color-secondary);
   --tw-duration: 500ms;
   transition-duration: 500ms;
+
 }
 @media (max-width: 1200px) {
   .services-slider-box .swiper-button {
-    top: calc(var(--spacing) * 20);
+    top: calc(var(--spacing) * -110);
   }
 }
 .services-slider-box .services-swiper-button-next {

@@ -15,18 +15,19 @@ import loadingdata from '../assets/img/loadingdata.png'
 import { useScreen } from '../Context/ScreenProvider';
 import './SearchList.css'
 import sliceText from '../components/SliceTest';
+import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
 const Loading = lazy(() => import('../components/Loading'))
 
 const SearchList = () => {
     const navigate = useNavigate();
     const { search } = useLocation();
-    const {isTablet} = useScreen();
+    const { isTablet } = useScreen();
     const { setSnackbar } = useSnackbar();
     const { userdata } = useUserDataContext;
     const params = new URLSearchParams(search);
     const { statesList } = useStatesContext();
     const searchResultRef = useRef(null);
-    const { districtsList, setState, districtLoading } = useDistrictsContext();
+    const { districtsList, setState, districtLoading,setDistrictsList } = useDistrictsContext();
     const { services } = useServiceListContex();
     const { state } = useLocation();
     const [hideDropdown, setHideDropdown] = useState(false);
@@ -38,12 +39,11 @@ const SearchList = () => {
     const [searchData, setSearchData] = useState({
         state: state?.searchData.state || '',
         city: state?.searchData.city || '',
-        service: state?.searchData.service || '',
+        organization_name: state?.searchData.organization_name || '',
         service_id: state?.searchData.service_id || ''
     })
 
 
-    
 
 
 
@@ -51,21 +51,9 @@ const SearchList = () => {
 
 
 
-
-    //Get Search result form backend
-
-    useEffect(() => {
-        if (!searchData) return;
-        navigate(
-            {
-                pathname: "/search_result",
-                search: `?${createSearchParams(searchData)}`
-            },
-            { replace: true }
-        )
-        setResultList([]);
-        setLoading(true);
-        const fetchList = async () => {
+  const fetchList = async () => {
+    if ( !searchData.state && !searchData.city && !searchData.organization_name && !searchData.service_id) return;
+      setLoading(true);
             try {
                 const data = await GetServiceResult(userdata?.token, searchData)
 
@@ -78,9 +66,55 @@ const SearchList = () => {
             }
         }
 
+    //Get Search result form backend
+
+    useEffect(() => {
+        
+
+        if(!searchData.state){
+           setDistrictsList([])
+        }
+       
+
+
+        sessionStorage.setItem('searchItems', JSON.stringify(searchData));
+
+        navigate(
+            {
+                pathname: "/search_result",
+                search: `?${createSearchParams(searchData)}`
+            },
+            { replace: true }
+        )
+        setResultList([]);
+
+        
+      
+      
+        //Calling the api 
+
         fetchList();
 
-    }, [searchData.state, searchData.city, searchData.service_id])
+    }, [searchData.state, searchData.city, searchData.service_id]);
+
+    useEffect(() => {
+        const searchItems = sessionStorage.getItem('searchItems');
+        const data = JSON.parse(searchItems);
+
+        navigate(
+            {
+                pathname: "/search_result",
+                search: `?${createSearchParams(data)}`
+            },
+            { replace: true }
+        )
+
+        setSearchData((prev) => ({
+            ...prev,
+            ...data
+        }));
+
+    }, [])
 
 
 
@@ -101,8 +135,8 @@ const SearchList = () => {
 
 
     useEffect(() => {
-        if(!services) return;
-        if (!searchData.service.trim()) {
+        if (!services) return;
+        if (!searchData.organization_name.trim()) {
             setFilterList([]);
             return;
         } else {
@@ -110,16 +144,16 @@ const SearchList = () => {
         }
 
         const filterList = services?.data?.filter((data) =>
-            data.service_name.toLowerCase().includes(searchData.service.toLowerCase())
+            data.service_name.toLowerCase().includes(searchData.organization_name.toLowerCase())
         );
 
         setFilterList(filterList);
-    }, [searchData.service, services]);
+    }, [searchData.organization_name, services]);
 
 
 
     useEffect(() => {
-        if (!services?.data || !searchData.service.trim()) {
+        if (!services?.data || !searchData.organization_name.trim()) {
             setSearchData((prev) => ({
                 ...prev,
                 service_id: '',
@@ -129,7 +163,7 @@ const SearchList = () => {
 
         const matched = services.data.find(
             (value) =>
-                value.service_name.toLowerCase() === searchData.service.toLowerCase()
+                value.service_name.toLowerCase() === searchData.organization_name.toLowerCase()
         );
 
         if (matched) {
@@ -143,14 +177,14 @@ const SearchList = () => {
                 service_id: "",
             }));
         }
-    }, [searchData.service, services]);
+    }, [searchData.organization_name, services]);
 
 
 
     //handle submit 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!searchData.state && !searchData.service && !searchData.service_id) {
+        if (!searchData.state && !searchData.organization_name ) {
             setSnackbar({ open: true, message: 'Enter atleast one field.', type: "warning" })
             return;
         }
@@ -161,20 +195,21 @@ const SearchList = () => {
             },
             { replace: true }
         )
+        fetchList();
     };
 
 
     const handleNavigate = (data) => {
-         sessionStorage.setItem(
-        "servicedetails",
-        JSON.stringify(data)
-      );
+        sessionStorage.setItem(
+            "servicedetails",
+            JSON.stringify(data)
+        );
         navigate(`/servicedetails/${data.service_type}/${findeServiceName(data.service_type)}`, { state: { data } })
 
     }
 
 
-
+  
     return (
         <div className="sm:pt-100 pt-80 sm:pt-40 lg:pt-80 bg-[#F4F4FF]  ">
             <div className="container">
@@ -195,12 +230,17 @@ const SearchList = () => {
                                         name="state"
                                         className='outline-none text-white text-sm '
                                         onChange={(e) => {
-                                            setSearchData({ ...searchData, state: e.target.value });
-                                            setState(e.target.value)
+                                            setSearchData(() => ({
+                                                ...searchData,
+                                                state: e.target.value,
+                                                city: ''
+                                            }));
+
+                                            setState(e.target.value);
                                         }}
                                         value={searchData.state}
                                     >
-                                        <option className='text-black text-sm'>Search By State</option>
+                                        <option value="" className='text-black text-sm'>Search By State</option>
                                         {statesList.status && statesList.data.map((state, index) => (
                                             <option className='text-black text-sm' key={index} value={state}>{state}</option>
                                         ))}
@@ -220,7 +260,7 @@ const SearchList = () => {
                                         value={searchData.city}
                                         name='city'
                                     >
-                                        <option className='text-black text-sm'>Search By City</option>
+                                        <option value="" className='text-black text-sm'>Search By City</option>
                                         {districtsList.status && districtsList.data.map((district, index) => (
                                             <option className='text-black text-sm' key={index} value={district}>{district}</option>
                                         ))}
@@ -239,18 +279,18 @@ const SearchList = () => {
                                         type="text"
                                         placeholder="Search By Service"
                                         className="outline-none flex-grow text-sm text-white"
-                                        value={searchData.service}
-                                        onChange={(e) => setSearchData({ ...searchData, service: e.target.value })}
+                                        value={searchData.organization_name}
+                                        onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
                                     />
                                     <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
                                         <div ref={dropdownRef} className='search-space-right-box-dropdown'>
                                             <ul className='shadow'>
-                                                {searchData.service && hideDropdown && (filterList.length > 0 ? filterList.map((service, index) => (
+                                                {searchData.organization_name && hideDropdown && filterList && (filterList.length > 0 && filterList.map((service, index) => (
                                                     <li key={index} onClick={() => {
                                                         setHideDropdown(false);
                                                         setSearchData({
                                                             ...searchData,
-                                                            service: service.service_name,
+                                                            organization_name: service.service_name,
                                                             service_id: service.service_id
                                                         })
 
@@ -258,12 +298,7 @@ const SearchList = () => {
                                                         {service.service_name}
                                                     </li>
 
-                                                ))
-                                                    :
-                                                    (
-                                                        <li style={{ userSelect: 'none' }} className='text-sm p-10  bg-white'>No Service Found</li>
-                                                    )
-                                                )}
+                                                )))}
 
                                             </ul>
                                         </div>
@@ -290,32 +325,33 @@ const SearchList = () => {
                             targateRef={searchResultRef}
                         >
                             {(currentItems) => (
-                                <ul className='flex gap-20  flex-wrap align-center'>
+                                <ul className='flex gap-10 justify-around  flex-wrap align-center'>
                                     {currentItems.length > 0 ? (
                                         currentItems.map((data, index) => (
-                                            <li style={{flexBasis : '400px'}} key={index} className="bg-white    shadow rounded overflow-hidden mb-20  min-h-400">
+                                            <li style={{ flexBasis: '325px', maxWidth: '400px' }} key={index} className="bg-white flex-grow    shadow rounded overflow-hidden mb-20  min-h-400">
                                                 <div className="p-10 pb-15 flex flex-col justify-between h-full">
                                                     {/* Image */}
                                                     <div className=''>
-                                                    <div style={{minHeight : '8rem',background : 'lightgray'}} className='search-result-left-img-box rounded overflow-hidden '>
-                                                        <figure className="overflow-hidden rounded">
-                                                            <img
-                                                                loading='lazy'
-                                                                src={data?.hospital_logo}
-                                                                alt={data.hospital_name}
-                                                                className="w-full group-hover:scale-[1.1] group-hover:rotate-[3deg] duration-500 h-full object-contain"
-                                                            />
-                                                        </figure>
-                                                    </div>
+                                                        <div style={{ minHeight: '10rem', background: 'lightgray' }} className='search-result-left-img-box rounded overflow-hidden '>
+                                                            <figure className="overflow-hidden rounded">
+                                                                <img
+                                                                    loading='lazy'
+                                                                    style={{ height: '15rem' }}
+                                                                    src={data?.hospital_logo ? ` https://api.medisco.in/${data?.hospital_logo}` : defaultOrganizationlogo}
+                                                                    alt={data.hospital_name}
+                                                                    className="w-full  object-fill"
+                                                                />
+                                                            </figure>
+                                                        </div>
 
-                                                    {/* Content */}
-                                                    <div className="search-result-right-content-box  mt-10  ">
-                                                        <h2 className="lg:text-3xl text-center md:text-2xl sm:text-2xl text-xl font-bold text-secondary">{data.hospital_name}</h2>
-                                                        <p className="text-xs mb-20 text-center mt-5">{findeServiceName(data.service_type)}</p>
-                                                        <p className="text-sm mt-10"><span className="font-bold text-secondary">About : </span>{sliceText(data?.service_desc,60) }</p>
-                                                        <p className="uppercase text-sm font-semibold mt-30"><i className="fa-solid fa-location-dot mr-10"></i>{data?.address} || {data.pincode}</p>
+                                                        {/* Content */}
+                                                        <div className="search-result-right-content-box  mt-10  ">
+                                                            <h2 className="lg:text-3xl text-center md:text-2xl sm:text-2xl text-xl font-bold text-secondary">{data.hospital_name}</h2>
+                                                            <p className="text-xs mb-20 text-center mt-5">{findeServiceName(data.service_type)}</p>
+                                                            {data?.service_desc && (<p className="text-sm mt-10"><span className="font-bold text-secondary"> </span>{sliceText(data?.service_desc, 60)}</p>)}
+                                                            <p className="uppercase text-sm font-semibold mt-30"><i className="fa-solid fa-location-dot mr-10"></i>{data?.address} || {data.pincode}</p>
+                                                        </div>
                                                     </div>
-                                                </div>
                                                     {/* Rating + Button */}
                                                     <div className="flex flex-row justify-between mt-20 ">
                                                         <p className="text-primary font-semibold text-xs text-nowrap">
@@ -350,7 +386,7 @@ const SearchList = () => {
                             (
                                 <div className='search-list-service-loading w-full flex flex-col items-center justify-center'>
                                     <div  >
-                                        <img src={loadingdata} style={{  width: "20rem"}} className=' h-full w-full object-cover' alt="loadingdata" />
+                                        <img src={loadingdata} style={{ width: "20rem" }} className=' h-full w-full object-cover' alt="loadingdata" />
                                     </div>
                                     <p className='font-semibold mt-10 text-2xl'>Loading....</p>
                                 </div>

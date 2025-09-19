@@ -41,7 +41,7 @@ function App() {
           children: [
             {
               path: '*',
-              element: <><Suspense fallback={<FallbackLoader />}><NotFound /></Suspense></>
+              element: <><Suspense fallback={<FallbackLoader fixed={true}/>}><NotFound /></Suspense></>
             },
             {
               path: '',
@@ -49,43 +49,43 @@ function App() {
             },
             {
               path: '/search_result',
-              element: <><Suspense fallback={<FallbackLoader />}><SearchList /></Suspense></>
+              element: <><Suspense fallback={<FallbackLoader fixed={true} />}><SearchList /></Suspense></>
             },
 
             {
               path: '/servicedetails/:service_id/:service_name',
-              element: <><Suspense fallback={<FallbackLoader />}><ServiceDetails /></Suspense></>
-            },
-             {
-          path: '/dashboard',
-          element: <><Suspense fallback={<FallbackLoader />}><Dashboard /></Suspense></>,
-          children : [
-            {
-              path : '',
-              element : <><Suspense fallback={<FallbackLoader  size="20vh"/>}><ProfileSubP /></Suspense></>
+              element: <><Suspense fallback={<FallbackLoader  fixed={true}/>}><ServiceDetails /></Suspense></>
             },
             {
-              path : 'discount',
-              element : <><Suspense fallback={<FallbackLoader size="20vh" />}><DiscountSubp/></Suspense></>
-            },
-            {
-              path : 'photos',
-              element : <><Suspense fallback={<FallbackLoader  size="20vh"/>}><Photos/></Suspense></>
-            },
-            {
-              path : 'statistics',
-              element : <><Suspense fallback={<FallbackLoader size="20vh" />}><Statistics/></Suspense></>
-            },
-            
-          ]
-        }
+              path: '/dashboard',
+              element: <><Suspense fallback={<FallbackLoader fixed={true} />}><Dashboard /></Suspense></>,
+              children: [
+                {
+                  path: '',
+                  element: <><ProfileSubP /></>
+                },
+                {
+                  path: 'discount',
+                  element: <><DiscountSubp /></>
+                },
+                {
+                  path: 'photos',
+                  element: <><Photos /></>
+                },
+                {
+                  path: 'statistics',
+                  element: <><Statistics /></>
+                },
+
+              ]
+            }
           ]
         },
         {
           path: '/reset-password',
-          element: <><Suspense fallback={<FallbackLoader />}><ResetPassword /></Suspense></>
+          element: <><Suspense fallback={<FallbackLoader fixed={true}/>}><ResetPassword /></Suspense></>
         },
-       
+
       ]
     }
 
