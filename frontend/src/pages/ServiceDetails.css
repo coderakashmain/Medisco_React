@@ -13,6 +13,7 @@
    .servicedetails-discount-box ul li{
  flex-basis: calc(var(--spacing) * 300);
  max-width:  calc(var(--spacing) * 350);
+
 } 
 }
 @media (max-width : 991px) {

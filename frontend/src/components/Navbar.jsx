@@ -256,13 +256,13 @@ const Navbar = () => {
                 <a href="/">Home</a>
               </li>
               <li>
-                <HashLink to="#about">About Us</HashLink>
+                <HashLink to="/#about">About Us</HashLink>
               </li>
               <li>
-                <HashLink to="#services">Services</HashLink>
+                <HashLink to="/#services">Services</HashLink>
               </li>
               <li>
-                <HashLink to="#">Contact</HashLink>
+                <HashLink to="/#">Contact</HashLink>
               </li>
             </ul>
             <a href="JavaScript:void(0)" id="res-cross"></a>

@@ -11,6 +11,8 @@ import TimeAgo from '../components/TimeAgo';
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, FreeMode } from "swiper/modules";
 import { useScreen } from '../Context/ScreenProvider';
+import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
+
 const ServiceDetails = () => {
   const location = useLocation();
   const { services } = useServiceListContex();
@@ -60,8 +62,8 @@ const ServiceDetails = () => {
       <div className='container   '>
 
         <div className='service-details-box h-full gap-20 shadow flex flex-row bg-white p-10 rounded pb-30'>
-          <div className='service-details-left-box w-252  '>
-            <div className='photoes-box h-252 w-252  bg-[#F4F4FF] rounded overflow-hidden flex items-center justify-center'>
+          <div className={`service-details-left-box  ${isMobile ? 'w-full' : 'w-252'} `}>
+            <div className={`photoes-box h-252 ${isMobile ? 'w-full' : 'w-252'}   bg-[#F4F4FF] rounded overflow-hidden flex items-center justify-center`}>
               {serviceDetails?.images?.length > 0 ? (
                 <Swiper
                   modules={[Navigation, Autoplay, FreeMode]}
@@ -107,7 +109,10 @@ const ServiceDetails = () => {
             <div className='flex  justify-between'>
               <div className='flex gap-10' >
                 <div className='h-80 w-80  bg-[#F4F4FF] overflow-hidden rounded'>
-                  <img src={`https://api.medisco.in/${serviceDetails.hospital_logo}`} alt={serviceDetails.hospital_name} className='h-full w-full rounded aspect-square object-cover' />
+                  <img 
+                    src={serviceDetails?.hospital_logo ? ` https://api.medisco.in/${serviceDetails?.hospital_logo}` : defaultOrganizationlogo}
+                  
+                  alt={serviceDetails.hospital_name} className='h-full w-full rounded aspect-square object-cover' />
                 </div>
                 <div>
                   <h2 className='text-xl font-semibold color-secondary'>{serviceDetails.hospital_name}</h2>
@@ -125,7 +130,7 @@ const ServiceDetails = () => {
                     {serviceDetails?.rating || '0'} &nbsp;
                     <span>Rating</span>
                   </span>
-                  <span className='bg-[#F4F4FF] px-10 py-5 rounded-[20px] select-none  text-primary font-semibold'>{serviceDetails?.availability}4 A.M - 8 P.M</span>
+                {serviceDetails?.availability && (  <span className='bg-primary px-10 py-5 rounded-[20px] select-none  text-white font-semibold'>{serviceDetails?.availability}</span>)}
                 </div>
 
                 <div className='mt-20'>
@@ -146,13 +151,13 @@ const ServiceDetails = () => {
             <p className='mt-40  font-semibold '>{serviceDetails.address} </p>
 
             <div className='flex gap-20 mt-40 flex-wrap '>
-              <div className='py-5 px-15 font-semibold bg-[#F4F4FF] rounded text-primary text-sm'>
+              <div className='py-5 px-15 font-semibold bg-primary rounded text-white text-sm'>
                 State : {serviceDetails?.state}
               </div>
-              <div className='py-5 px-10 font-semibold  bg-[#F4F4FF] rounded text-primary text-sm'>
+              <div className='py-5 px-10 font-semibold  bg-primary rounded text-white text-sm'>
                 City : {serviceDetails?.city}
               </div>
-              <div className='py-5 px-10 font-semibold  bg-[#F4F4FF] rounded text-primary text-sm'>
+              <div className='py-5 px-10 font-semibold  bg-primary rounded text-white text-sm'>
                 Pincode : {serviceDetails?.pincode}
               </div>
             </div>

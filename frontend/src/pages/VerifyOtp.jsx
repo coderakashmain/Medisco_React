@@ -66,7 +66,7 @@ const VerifyOtp = ({ setVerifypopup }) => {
 
 
     return (
-        <div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
+        <div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad] cursor-default  w-screen h-screen z-1002 ">
 
 
             <div className="container flex items-center justify-center relative h-full   ">
@@ -92,7 +92,7 @@ const VerifyOtp = ({ setVerifypopup }) => {
 
                             <input onChange={(e) => setOTPValue(e.target.value)} value={OTPValue} type="number" name="otp" id="otp" placeholder="OTP" className="w-full outline-none focus:border-primary focus-visible:shadow-none" />
                         </div>
-                        <div className="flex  justify-between items-center mb-20">
+                        {/* <div className="flex  justify-between items-center mb-20">
                             <div className="form-check flex align-center text-sm justify-center gap-10">
 
                                 Don't Recieve OTP ? Resend OTP in<span>60s</span>
@@ -100,7 +100,7 @@ const VerifyOtp = ({ setVerifypopup }) => {
                             <p className="text-sm text-primary hover:underline cursor-pointer font-semibold">
                                 Resend OTP
                             </p>
-                        </div>
+                        </div> */}
                         <div className="mb-10">
                             <button disabled={loading} type="submit" className={`${loading ? "opacity-50" : ""} button active w-full bg-primary text-white py-7  px-5 rounded hover:bg-opacity-90 transition cursor-pointer`}>Verify</button>
                         </div>

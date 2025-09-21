@@ -2,6 +2,7 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import Avatar from '../../components/Avatar'
 import './ProfileSubP.css'
+import CustomTimePicker from '../../components/AvailabilityPicker';
 
 import { useUserDataContext } from '../../Context/Userdata';
 import { useStatesContext } from '../../Context/States';
@@ -20,7 +21,7 @@ import { useScreen } from '../../Context/ScreenProvider';
 const ProfileEdit = ({ setEditable }) => {
     const { userdata, profileDetails, setProfileDetails } = useUserDataContext();
     const { setSnackbar } = useSnackbar();
-      const {isMobile} = useScreen();
+    const { isMobile } = useScreen();
     const { statesList } = useStatesContext();
     const { userLocation, locationLoading, getLocation, error, locationMesage } = useLocationContext();
     const [click, setClick] = useState(0);
@@ -51,6 +52,9 @@ const ProfileEdit = ({ setEditable }) => {
 
     });
 
+
+   
+
     useEffect(() => {
         setState(profileDetails?.data.state);
     }, [profileDetails?.data.state])
@@ -65,7 +69,7 @@ const ProfileEdit = ({ setEditable }) => {
             setIsOtherCity(true);
         }
 
-    }, [profileDetails?.data.city,districtsList])
+    }, [profileDetails?.data.city, districtsList])
 
 
 
@@ -105,7 +109,17 @@ const ProfileEdit = ({ setEditable }) => {
             setEditData((prev) => ({ ...prev, [name]: value }));
         }
 
+    };
+
+    const handleRefChange = (e) => {
+        const name = e.target.name;
+        const value = e.target.value;
+        setEditData((prev) => ({ ...prev, ref_percentage: [value] }));
     }
+
+
+
+
 
 
     const handleSubmit = async (e) => {
@@ -133,6 +147,7 @@ const ProfileEdit = ({ setEditable }) => {
             setEditable(false);
         } catch (error) {
             setApiError(error.message);
+            setSnackbar({ open: true, message: error.message, type: 'error' })
 
         } finally {
             setLoading(false);
@@ -266,26 +281,49 @@ const ProfileEdit = ({ setEditable }) => {
                                 <input type="number" onChange={handleChange} name='pincode' value={editData.pincode} className={`rounded outline-none p-7 text-sm px-10 `} id='pincode' />
 
                             </li>
+                            <li>
+                                <label htmlFor="registration_no">Registration No</label>
+                                <input type="number" onChange={handleChange} name='registration_no' value={editData.registration_no} className={`rounded outline-none p-7 text-sm px-10 `} id='registration_no' />
+
+                            </li>
+                            <li>
+                                <label htmlFor="gst">GST</label>
+                                <input type="number" onChange={handleChange} name='gst' value={editData.gst} className={`rounded outline-none p-7 text-sm px-10 `} id='gst' />
+
+                            </li>
+                            <li>
+                                <label htmlFor="ref_percentage">Referral Percentage</label>
+                                <input type="number" onChange={handleRefChange} name='ref_percentage' value={editData.ref_percentage} className={`rounded outline-none p-7 text-sm px-10 `} id='ref_percentage' />
+
+                            </li>
+                            <li>
+                                <label htmlFor="availability">Availability</label>
+                                <CustomTimePicker
+                                    value={editData.availability}
+                                    onChange={(val) => setEditData((prev) => ({ ...prev, availability: val }))}
+                                />
+                            </li>
+
 
                         </ul>
                     </div>
-                <div className={`flex ${isMobile ? "justify-between" : 'justify-end'}  items-center mt-30 `}>
-                        {isMobile && ( <div className='flex  items-center'>
-                             <Tooltip title="Detect current Location">
-                                    <IconButton onClick={() => {
-                                        getLocation();
-                                        setClick((e) => e + 1);
+                    <div className={`flex ${isMobile ? "justify-between" : 'justify-end'}  items-center mt-30 `}>
+                        {isMobile && (<div className='flex  items-center'>
+                            <Tooltip title="Detect current Location">
+                                <IconButton onClick={() => {
+                                    getLocation();
+                                    setClick((e) => e + 1);
 
-                                    }}>
-                                        <GpsFixedIcon className=' active text-primary cursor-pointer items-center' />
-                                    </IconButton>
-                                </Tooltip>
-                                {!locationLoading && (<p className='text-xs'>Track your current Location</p>)}
-                                {locationLoading && (<Loading size="15px" />)}
-                                {error && (<p className='text-red text-xs'>{error}</p>)}
-                                {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>({locationMesage})</p>)}
-                               
-                            </div>)}
+                                }}>
+                                    <GpsFixedIcon className=' active text-primary cursor-pointer items-center' />
+                                </IconButton>
+                            </Tooltip>
+                            {!locationLoading && (<p className='text-xs'>Track your current Location</p>)}
+                            {locationLoading && (<Loading size="15px" />)}
+                            {error && (<p className='text-red text-xs'>{error}</p>)}
+                            {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>({locationMesage})</p>)}
+
+                        </div>)}
                         <button disabled={loading} type='submit' className={`${loading ? 'opacity-50' : ''} button block float-right bg-primary rounded py-5 px-24 text-white text-xs cursor-pointer text-nowrap flex items-center gap-5 `}>Save</button>
                     </div>
 

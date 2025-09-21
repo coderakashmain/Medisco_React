@@ -57,6 +57,7 @@ const ProfileSubP = React.memo(() => {
 
 
 
+
   return (
     <>
       <section className='h-full w-full p-20 pb-40 sm:p-10'>
@@ -69,6 +70,7 @@ const ProfileSubP = React.memo(() => {
             <div className='flex flex-col  align-center justify-center max-sm:gap-3 gap-5'>
               <h2 className='font-bold max-sm:text-sm'>{profileDetails.data.hospital_name}</h2>
               <p className='text-xs text-gary'>{userdata?.data?.role}</p>
+
             </div>
           </div>
           <div className='flex gap-10 flex-nowrap items-center'>
@@ -91,7 +93,7 @@ const ProfileSubP = React.memo(() => {
 
             <li>
               <label htmlFor="parson-name">Parson Name</label>
-              <input type="text" value={userdata?.data?.fullname} className={`rounded outline-none p-7 text-sm px-10  opacity-80`} disabled id="parson-name" />
+              <input type="text" value={profileDetails?.data?.first_name} className={`rounded outline-none p-7 text-sm px-10  opacity-80`} disabled id="parson-name" />
 
             </li>
             <li>
@@ -123,6 +125,27 @@ const ProfileSubP = React.memo(() => {
             <li>
               <label htmlFor="pincode">Pincode</label>
               <input type="number" value={profileDetails.data.pincode} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='pincode' />
+
+            </li>
+            <li>
+              <label htmlFor="registration_no">Registration No</label>
+              <input type="text" value={profileDetails.data.registration_no} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='registration_no' />
+
+            </li>
+            <li>
+              <label htmlFor="gst">GST</label>
+              <input type="text" value={profileDetails.data.gst} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='gst' />
+
+            </li>
+            <li>
+              <label htmlFor="ref_percentage">Referral Percentage</label>
+              <input type="text" value={profileDetails.data.ref_percentage}
+                className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='ref_percentage' />
+
+            </li>
+            <li>
+              <label htmlFor="availability">Availability</label>
+              <input type="text" value={profileDetails.data.availability} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='availability' />
 
             </li>
 
