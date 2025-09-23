@@ -17,6 +17,9 @@ import './SearchList.css'
 import sliceText from '../components/SliceTest';
 import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
 const Loading = lazy(() => import('../components/Loading'))
+import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 
 const SearchList = () => {
     const navigate = useNavigate();
@@ -27,7 +30,7 @@ const SearchList = () => {
     const params = new URLSearchParams(search);
     const { statesList } = useStatesContext();
     const searchResultRef = useRef(null);
-    const { districtsList, setState, districtLoading,setDistrictsList } = useDistrictsContext();
+    const { districtsList, setState, districtLoading, setDistrictsList } = useDistrictsContext();
     const { services } = useServiceListContex();
     const { state } = useLocation();
     const [hideDropdown, setHideDropdown] = useState(false);
@@ -36,48 +39,61 @@ const SearchList = () => {
     const [resultList, setResultList] = useState([]);
     const [loading, setLoading] = useState(false);
 
-    const [searchData, setSearchData] = useState({
-        state: state?.searchData.state || '',
-        city: state?.searchData.city || '',
-        organization_name: state?.searchData.organization_name || '',
-        service_id: state?.searchData.service_id || ''
-    })
-
-
-
-
-
-
-
-
-
-  const fetchList = async () => {
-    if ( !searchData.state && !searchData.city && !searchData.organization_name && !searchData.service_id) return;
-      setLoading(true);
-            try {
-                const data = await GetServiceResult(userdata?.token, searchData)
-
-                setResultList(data.data);
-            } catch (err) {
-                console.error(err);
-                setSnackbar({ open: true, message: 'Error getting service.' })
-            } finally {
-                setLoading(false);
-            }
+    const [searchData, setSearchData] = useState(() => {
+        if (state) {
+            return {
+                state: state?.searchData?.state || '',
+                city: state?.searchData?.city || '',
+                organization_name: state?.searchData?.organization_name || '',
+                service_id: state?.searchData?.service_id || '',
+                service_name: state?.searchData?.service_name || '',
+            };
         }
+        const saved = sessionStorage.getItem('searchItems');
+        if (saved) {
+            return JSON.parse(saved);
+        }
+
+    });
+
+
+
+
+
+
+
+
+
+    const fetchList = async () => {
+        if (!searchData.state && !searchData.city && !searchData.organization_name && !searchData.service_id ) return;
+        
+        setLoading(true);
+        try {
+            const data = await GetServiceResult(userdata?.token, searchData)
+
+            setResultList(data.data);
+        } catch (err) {
+            console.error(err);
+            setSnackbar({ open: true, message: 'Error getting service.' })
+        } finally {
+            setLoading(false);
+        }
+    }
 
     //Get Search result form backend
 
     useEffect(() => {
-        
 
-        if(!searchData.state){
-           setDistrictsList([])
+
+        if (!searchData.state) {
+            setDistrictsList([])
         }
-       
-
 
         sessionStorage.setItem('searchItems', JSON.stringify(searchData));
+        if (!searchData.service_id) return;
+
+        console.log("This is running.")
+
 
         navigate(
             {
@@ -88,33 +104,35 @@ const SearchList = () => {
         )
         setResultList([]);
 
-        
-      
-      
+
+        console.log("This is Data", searchData)
+
         //Calling the api 
 
         fetchList();
 
-    }, [searchData.state, searchData.city, searchData.service_id]);
+    }, [searchData.state, searchData.city, searchData.organization_name, searchData.service_id]);
 
-    useEffect(() => {
-        const searchItems = sessionStorage.getItem('searchItems');
-        const data = JSON.parse(searchItems);
+    // useEffect(() => {
+    //     const searchItems = sessionStorage.getItem('searchItems');
+    //     const data = JSON.parse(searchItems);
 
-        navigate(
-            {
-                pathname: "/search_result",
-                search: `?${createSearchParams(data)}`
-            },
-            { replace: true }
-        )
+    //     console.log("This is Data",data)
 
-        setSearchData((prev) => ({
-            ...prev,
-            ...data
-        }));
+    //     navigate(
+    //         {
+    //             pathname: "/search_result",
+    //             search: `?${createSearchParams(data)}`
+    //         },
+    //         { replace: true }
+    //     )
 
-    }, [])
+    //     setSearchData((prev) => ({
+    //         ...prev,
+    //         ...data
+    //     }));
+
+    // }, [])
 
 
 
@@ -134,26 +152,9 @@ const SearchList = () => {
 
 
 
-    useEffect(() => {
-        if (!services) return;
-        if (!searchData.organization_name.trim()) {
-            setFilterList([]);
-            return;
-        } else {
-            setHideDropdown(true);
-        }
-
-        const filterList = services?.data?.filter((data) =>
-            data.service_name.toLowerCase().includes(searchData.organization_name.toLowerCase())
-        );
-
-        setFilterList(filterList);
-    }, [searchData.organization_name, services]);
-
-
 
     useEffect(() => {
-        if (!services?.data || !searchData.organization_name.trim()) {
+        if (!services?.data || !searchData.service_name.trim()) {
             setSearchData((prev) => ({
                 ...prev,
                 service_id: '',
@@ -163,7 +164,7 @@ const SearchList = () => {
 
         const matched = services.data.find(
             (value) =>
-                value.service_name.toLowerCase() === searchData.organization_name.toLowerCase()
+                value.service_name.toLowerCase() === searchData.service_name.toLowerCase()
         );
 
         if (matched) {
@@ -177,14 +178,14 @@ const SearchList = () => {
                 service_id: "",
             }));
         }
-    }, [searchData.organization_name, services]);
+    }, [searchData.service_name, services]);
 
 
 
     //handle submit 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!searchData.state && !searchData.organization_name ) {
+        if (!searchData.state && !searchData.organization_name) {
             setSnackbar({ open: true, message: 'Enter atleast one field.', type: "warning" })
             return;
         }
@@ -209,16 +210,43 @@ const SearchList = () => {
     }
 
 
-  
+
     return (
         <div className="sm:pt-100 pt-80 sm:pt-40 lg:pt-80 bg-[#F4F4FF]  ">
             <div className="container">
                 {/* ---------- Search Form ---------- */}
                 <section className="lg:pt-60 md:pt-50 pt-50 lg:pb-60 md:pb-50  px-20 pb-50 bg-primary rounded-[10px] shadow" id="search-space-search-result ">
                     <form onSubmit={handleSubmit} id="search-form ">
-                        <h2 className="text-center text-white lg:pb-70 sm:pb-50 pb-40 xxl:text-6xl xl:text-5xl md:text-4xl sm:text-2xl text-xl font-extrabold">
-                            Find the Service You Want
+                        <h2 className="text-center text-white  xxl:text-6xl xl:text-5xl md:text-4xl sm:text-2xl text-xl font-extrabold">
+                            Searching For
+                            {/* <p className='text-sm mt-5'>{searchData.service_name}
+                               
+                            </p> */}
                         </h2>
+                        <div className='text-sm mt-10 lg:pb-70 sm:pb-50 pb-30 font-extrabold  flex justify-center '>
+                            <select
+                                name="service_name"
+                                id="service_name"
+                                className='text-white outline-none  border border-lightgary px-5  rounded '
+                                value={searchData.service_name}
+                                onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
+                            >
+                                <option disabled className='text-sm text-black' value="" >Search By Service</option>
+                                {services.status && services.data.map((service, index) => (
+                                    <option className='text-sm p-10 text-black' key={index} value={service.service_name}>{service.service_name}</option>
+
+                                ))}
+
+                            </select>
+                            <IconButton >
+                                <Tooltip title="Change Service type">
+
+                                    <SwapHorizIcon className='text-white' />
+                                </Tooltip>
+
+                            </IconButton>
+                        </div>
+
                         <div className='search-space-box'>
 
 
@@ -277,12 +305,12 @@ const SearchList = () => {
                                     <i className="fa-solid fa-magnifying-glass text-white"></i>
                                     <input
                                         type="text"
-                                        placeholder="Search By Service"
+                                        placeholder="Search By Organization Name"
                                         className="outline-none flex-grow text-sm text-white"
                                         value={searchData.organization_name}
                                         onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
                                     />
-                                    <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
+                                    {/* <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
                                         <div ref={dropdownRef} className='search-space-right-box-dropdown'>
                                             <ul className='shadow'>
                                                 {searchData.organization_name && hideDropdown && filterList && (filterList.length > 0 && filterList.map((service, index) => (
@@ -302,7 +330,7 @@ const SearchList = () => {
 
                                             </ul>
                                         </div>
-                                    </DropdownOff>
+                                    </DropdownOff> */}
                                 </div>
                                 <button type="submit" className="button cursor-pointer bg-white px-20 py-10 text-secondary rounded">
                                     <i className="fa fa-search"></i>

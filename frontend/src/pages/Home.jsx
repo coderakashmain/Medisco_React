@@ -45,7 +45,8 @@ const Home = () => {
     state: '',
     city: '',
     organization_name: '',
-    service_id: ''
+    service_id: '',
+    service_name : ''
   })
   const { setSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -97,7 +98,7 @@ useEffect(() => {
 
 
 useEffect(() => {
-  if (!services?.data || !searchData.organization_name.trim()) {
+  if (!services?.data || !searchData.service_name.trim()) {
     setSearchData((prev) => ({
       ...prev,
       service_id: '',
@@ -107,7 +108,7 @@ useEffect(() => {
 
   const matched = services.data.find(
     (value) =>
-      value.service_name.toLowerCase() === searchData.organization_name.toLowerCase()
+      value.service_name.toLowerCase() === searchData.service_name.toLowerCase()
   );
 
   if (matched) {
@@ -121,7 +122,7 @@ useEffect(() => {
       service_id: "",
     }));
   }
-}, [searchData.organization_name, services]);
+}, [searchData.service_name,services,searchData.organization_name]);
 
 
 
@@ -316,80 +317,30 @@ useEffect(() => {
             >
               Find The Service You Want
             </h2>
-            <div className='search-space-box'>
+            <div className='search-space-box '>
 
-
-              <div
-                className="search-space-left-box "
-              >
-
-                <div className="search-space-left-box-1  border border-lightgary  rounded   ">
-                  <i className="fa-solid fa-location-dot text-gary "></i>
-                  <select name="states" id="states-box" className='bg-white rounded ' onChange={(e) => {
-                    setSearchData({ ...searchData, state: e.target.value });
-                    setState(e.target.value)
-                  }} defaultValue="">
-                    <option className='text-sm' value="">Search By State</option>
-                    {statesList.status && statesList.data.map((state, index) => (
-                      <option className='text-sm ' key={index} value={state}>{state}</option>
-
-                    ))}
-                    {stateLoading && (<option className='text-sm' disabled>Loading...</option>)}
-                  </select>
-
-                </div>
-                <div className=" search-space-left-box-2 border border-lightgary p-7 rounded  ">
-                  <i className="fa-solid fa-location-dot text-gary"></i>
-
-                  <select disabled={districtLoading} name="city" id="city" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
-                    onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
-                    defaultValue="">
-                    <option className='text-sm' >Search By City</option>
-                    {districtsList.status && districtsList.data.map((district, index) => (
-                      <option className='text-sm' key={index} value={district}>{district}</option>
-
-                    ))}
-                  </select>
-                  {districtLoading && (<Loading size='20px' />)}
-                </div>
-
-              </div>
 
               <div className="search-space-right-box ">
-                <div className=" search-space-right-box-1 border border-lightgary p-7 rounded relative ">
+                <div className=" search-space-right-box-1 border border-lightgary p-7 rounded  ">
                   <i className="fa-solid fa-magnifying-glass text-gary"></i>
 
-                  <input
-                    type="text"
-                    placeholder="Search By Service"
-                    className="bg-white outline-none flex-grow"
-                    value={searchData.organization_name}
-                    onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
-                  />
-                  <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
-                    <div ref={dropdownRef} className='search-space-right-box-dropdown'>
-                      <ul className='shadow'>
-                        {searchData.organization_name && hideDropdown && (filterList.length > 0 && filterList.map((service, index) => (
-                          <li key={index} onClick={() => {
-                            setHideDropdown(false);
-                     
-                            setSearchData({
-                              ...searchData,
-                              organization_name: service.service_name,
-                              service_id: service.service_id
-                            })
+                    <select 
+                    name="service_name" 
+                    id="services"
+                    className='bg-white rounded flex-grow outline-none overflow-hidden text-sm'
+                      value={searchData.service_name}
+                    onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
+                    > 
+                    <option className='text-sm' value="" >Search By Service</option>
+                    {services.status && services.data.map((service, index) => (
+                      <option className='text-sm p-10' key={index} value={service.service_name}>{service.service_name}</option>
+
+                    ))}
+                
 
 
-                          }} className='text-sm p-10 cursor-pointer  hover:bg-primary hover:text-white bg-white'>
-                            {service.service_name}
-                          </li>
+                    </select>
 
-                        ))
-                        )}
-
-                      </ul>
-                    </div>
-                  </DropdownOff>
                 </div>
 
                 <button type="submit" className="cursor-pointer button bg-primary px-20 py-10 text-white rounded "><i className="fa fa-search"></i>

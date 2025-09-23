@@ -1,7 +1,7 @@
 .search-space-box {
   display: flex;
   gap: calc(var(--spacing) * 10);
-  /* width: 100%; */
+justify-content: center;
 }
 
 .search-space-left-box {
@@ -55,9 +55,9 @@
    
     
 }
-.search-space-right-box-1 input{
+.search-space-right-box-1 select{
     height: 100%;
-    flex-grow: 1;
+    width: 50%;
 }
 .search-space-right-box-1 i{
       padding: calc(var(--spacing) * 10);
