@@ -5,7 +5,7 @@ import NotFound from './NotFound';
 import "./Dashboard.css"
 import { NavLink, Outlet } from 'react-router-dom';
 import { ProfilApi } from '../APIs/ProfileApi';
-
+import { useScreen } from '../Context/ScreenProvider';
 
 
 
@@ -13,7 +13,7 @@ const Dashboard = () => {
   const { userdata, userDataloading,profileLoading,profileError } = useUserDataContext();
   const [profileDetails, setProfileDetails] = useState();
   const [error, setError] = useState("");
-
+  const {isMobile} = useScreen();
 if (userDataloading) {
   return <FallbackLoader />;
 }
@@ -25,7 +25,7 @@ if (!userdata ) {
 
   return (
     <>
-      <div id='dashboard' className='w-full min-h-screen  bg-[#F4F4FF]'>
+      <div id='dashboard' className={`w-full  ${isMobile ? 'bg-white' : 'bg-[#F4F4FF]'}`}>
 
         <div className='container    flex items-center justify-center '>
 
@@ -37,27 +37,27 @@ if (!userdata ) {
 
                   <div className='dashboard-subtab flex flex-row gap-30  mb-10 font-semibold' >
                     <NavLink to="/dashboard" end className={({ isActive }) =>
-                      `rounded shadow ${isActive ? 'sub-tab-active' : ''}`
+                      `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
                       Profile
                     </NavLink>
                     <NavLink to="discount" className={({ isActive }) =>
-                      `rounded shadow ${isActive ? 'sub-tab-active' : ''}`
+                      `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
                       Discount
                     </NavLink>
                     <NavLink to="photos" className={({ isActive }) =>
-                      `rounded shadow ${isActive ? 'sub-tab-active' : ''}`
+                      `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
                       Photos
                     </NavLink>
                     <NavLink to="statistics" className={({ isActive }) =>
-                      `rounded shadow ${isActive ? 'sub-tab-active' : ''}`
+                      `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
                       Statistics
                     </NavLink>
                   </div>
-                  <div style={{ scrollbarWidth: 'none' }} className=' w-full mt-20 min-h-252 bg-white  rounded shadow'>
+                  <div style={{ scrollbarWidth: 'none' }} className={` w-full mt-20 min-h-252 bg-white  rounded ${isMobile ? "" : 'shadow '}`}>
                     <Outlet />
                   </div>
 

@@ -15,8 +15,7 @@ import PopUp from '../../components/PopUp';
 import FallbackLoader from '../../components/FallbackLoader';
 const ProfileEdit = lazy(() => import("./ProfileEdit"));
 const ForgotePassword = lazy(() => import("../ForgotePassword"));
-
-
+import { useServiceListContex } from '../../Context/Services';
 import NotFound from '../NotFound'
 
 
@@ -28,6 +27,7 @@ const ProfileSubP = React.memo(() => {
   const [editable, setEditable] = useState(false);
   const [forgotePassword, setForgotePassword] = useState(false);
   const { isMobile } = useScreen();
+  const {services} = useServiceListContex();
 
 
   useEffect(() => {
@@ -54,13 +54,21 @@ const ProfileSubP = React.memo(() => {
 
 
 
+    const findeServiceName = (serviceId) => {
+        if (!services?.data) return;
 
+        const matched = services.data.find(
+            (value) => value.service_id === serviceId
+        );
+
+        return matched ? matched.service_name : undefined;
+    };
 
 
 
   return (
     <>
-      <section className='h-full w-full p-20 pb-40 sm:p-10'>
+      <section className={`h-full w-full ${isMobile ? "pt-10 " : ' p-20  sm:p-10'} pb-20`}>
 
         <div className='dash-p-top-bar flex flex-row justify-between items-center '>
           <div className='flex gap-10 max-sm:gap-5 '>
@@ -69,7 +77,7 @@ const ProfileSubP = React.memo(() => {
             </div>
             <div className='flex flex-col  align-center justify-center max-sm:gap-3 gap-5'>
               <h2 className='font-bold max-sm:text-sm'>{profileDetails.data.hospital_name}</h2>
-              <p className='text-xs text-gary'>{userdata?.data?.role}</p>
+              <p className='text-xs text-gary'> {findeServiceName(profileDetails?.data?.service_type)}</p>
 
             </div>
           </div>
@@ -129,17 +137,17 @@ const ProfileSubP = React.memo(() => {
             </li>
             <li>
               <label htmlFor="registration_no">Registration No</label>
-              <input type="text" value={profileDetails.data.registration_no} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='registration_no' />
+              <input type="number" value={profileDetails.data.registration_no} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='registration_no' />
 
             </li>
             <li>
               <label htmlFor="gst">GST</label>
-              <input type="text" value={profileDetails.data.gst} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='gst' />
+              <input type="number" value={profileDetails.data.gst} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='gst' />
 
             </li>
             <li>
-              <label htmlFor="ref_percentage">Referral Percentage</label>
-              <input type="text" value={profileDetails.data.ref_percentage}
+              <label htmlFor="ref_percentage">Referral Percentage (%)</label>
+              <input type="number" value={profileDetails.data.ref_percentage}
                 className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='ref_percentage' />
 
             </li>
@@ -148,6 +156,11 @@ const ProfileSubP = React.memo(() => {
               <input type="text" value={profileDetails.data.availability} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='availability' />
 
             </li>
+            {findeServiceName(profileDetails?.data?.service_type) === 'HOSPITALS' && (<li>
+              <label htmlFor="noofbed">No of Bed</label>
+              <input type="number" value={profileDetails.data.noofbed} className={`rounded outline-none p-7 text-sm px-10   opacity-80`} disabled id='noofbed' />
+
+            </li>)}
 
           </ul>
         </div>

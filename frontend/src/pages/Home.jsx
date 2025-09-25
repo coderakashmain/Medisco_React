@@ -1,4 +1,4 @@
-import React, { lazy,useEffect, useRef, useState } from 'react'
+import React, { lazy, useEffect, useRef, useState } from 'react'
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -46,7 +46,7 @@ const Home = () => {
     city: '',
     organization_name: '',
     service_id: '',
-    service_name : ''
+    service_name: ''
   })
   const { setSnackbar } = useSnackbar();
   const navigate = useNavigate();
@@ -55,86 +55,69 @@ const Home = () => {
   const { districtsList, setState, districtLoading } = useDistrictsContext();
   const [hideDropdown, setHideDropdown] = useState(false);
   const [filterList, setFilterList] = useState([])
-  const dropdownRef = useRef(null)
-  let bgColor = [
-    "rgb(240,93,193)",
-    "#58CBF2",
-    "#9B52E1",
-    "#69b741",
-    "#58CBF2",
-    "#9B52E1",
-  ]
+ 
 
 
-  //Slice service Description
-  const sliceText = (text, maxLength = 30) => {
-    const plainText = text.replace(/<[^>]+>/g, "");
-    if (plainText.length > maxLength) {
-      return plainText.slice(0, maxLength) + "...";
+
+
+
+
+  useEffect(() => {
+    if (!services) return;
+    if (!searchData.organization_name.trim()) {
+      setFilterList([]);
+      return;
     } else {
-      return plainText;
+      setHideDropdown(true);
     }
-  }
+
+    const filterList = services?.data.filter((data) =>
+      data.service_name.toLowerCase().includes(searchData.organization_name.toLowerCase())
+    );
+
+    setFilterList(filterList);
+  }, [searchData.organization_name, services]);
 
 
 
+  useEffect(() => {
+    if (!services?.data || !searchData.service_name.trim()) {
+      setSearchData((prev) => ({
+        ...prev,
+        service_id: '',
+      }));
+      return;
+    }
 
-useEffect(() => {
-  if(!services)  return;
-  if (!searchData.organization_name.trim()) {
-    setFilterList([]);
-    return;
-  } else {
-    setHideDropdown(true);
-  }
+    const matched = services.data.find(
+      (value) =>
+        value.service_name.toLowerCase() === searchData.service_name.toLowerCase()
+    );
 
-  const filterList = services?.data.filter((data) =>
-    data.service_name.toLowerCase().includes(searchData.organization_name.toLowerCase())
-  );
-
-  setFilterList(filterList);
-}, [searchData.organization_name, services]);
-
-
-
-useEffect(() => {
-  if (!services?.data || !searchData.service_name.trim()) {
-    setSearchData((prev) => ({
-      ...prev,
-      service_id: '',
-    }));
-    return;
-  }
-
-  const matched = services.data.find(
-    (value) =>
-      value.service_name.toLowerCase() === searchData.service_name.toLowerCase()
-  );
-
-  if (matched) {
-    setSearchData((prev) => ({
-      ...prev,
-      service_id: matched.service_id,
-    }));
-  } else {
-    setSearchData((prev) => ({
-      ...prev,
-      service_id: "",
-    }));
-  }
-}, [searchData.service_name,services,searchData.organization_name]);
+    if (matched) {
+      setSearchData((prev) => ({
+        ...prev,
+        service_id: matched.service_id,
+      }));
+    } else {
+      setSearchData((prev) => ({
+        ...prev,
+        service_id: "",
+      }));
+    }
+  }, [searchData.service_name, services, searchData.organization_name]);
 
 
 
 
 
 
-  
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (!searchData.state && !searchData.organization_name && !searchData.service_id) {
-      setSnackbar({ open: true, message: 'Enter atleast one field.', type: "warning" })
+    if (!searchData.service_id) {
+      setSnackbar({ open: true, message: 'Service name is required.', type: "error" })
       return;
     }
     navigate({
@@ -311,7 +294,7 @@ useEffect(() => {
 
       <section className="lg:pt-100 md:pt-90 pt-50 " id="search-space ">
         <div className="container ">
-          <form onSubmit={handleSubmit } id="search-form ">
+          <form onSubmit={handleSubmit} id="search-form ">
             <h2
               className="text-center text-secondary lg:pb-70 sm:pb-50 pb-40 xxl:text-6xl xl:text-5xl md:text-4xl sm:text-3xl text-xl font-extrabold"
             >
@@ -319,27 +302,63 @@ useEffect(() => {
             </h2>
             <div className='search-space-box '>
 
+              <div
+                className="search-space-left-box "
+              >
+
+                <div className="search-space-left-box-1  border border-lightgary  rounded   ">
+                  <i className="fa-solid fa-location-dot text-gary "></i>
+                  <select name="states" id="states-box" className='bg-white rounded ' onChange={(e) => {
+                    setSearchData({ ...searchData, state: e.target.value });
+                    setState(e.target.value)
+                  }} defaultValue="">
+                    <option className='text-sm' value="">Search By State</option>
+                    {statesList.status && statesList.data.map((state, index) => (
+                      <option className='text-sm ' key={index} value={state}>{state}</option>
+
+                    ))}
+                    {stateLoading && (<option className='text-sm' disabled>Loading...</option>)}
+                  </select>
+
+                </div>
+                <div className=" search-space-left-box-2 border border-lightgary p-7 rounded  ">
+                  <i className="fa-solid fa-location-dot text-gary"></i>
+
+                  <select disabled={districtLoading} name="city" id="city" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
+                    onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
+                    defaultValue="">
+                    <option className='text-sm' >Search By City</option>
+                    {districtsList.status && districtsList.data.map((district, index) => (
+                      <option className='text-sm' key={index} value={district}>{district}</option>
+
+                    ))}
+                  </select>
+                  {districtLoading && (<Loading size='20px' />)}
+                </div>
+
+              </div>
+
 
               <div className="search-space-right-box ">
                 <div className=" search-space-right-box-1 border border-lightgary p-7 rounded  ">
                   <i className="fa-solid fa-magnifying-glass text-gary"></i>
 
-                    <select 
-                    name="service_name" 
+                  <select
+                    name="service_name"
                     id="services"
                     className='bg-white rounded flex-grow outline-none overflow-hidden text-sm'
-                      value={searchData.service_name}
+                    value={searchData.service_name}
                     onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
-                    > 
+                  >
                     <option className='text-sm' value="" >Search By Service</option>
                     {services.status && services.data.map((service, index) => (
                       <option className='text-sm p-10' key={index} value={service.service_name}>{service.service_name}</option>
 
                     ))}
-                
 
 
-                    </select>
+
+                  </select>
 
                 </div>
 
@@ -380,7 +399,7 @@ useEffect(() => {
               <div className="w-full group">
                 <figure className="overflow-hidden">
                   <img
-                  loading='lazy'
+                    loading='lazy'
                     src={photo1card}
                     alt="img"
                     className="w-full group-hover:scale-[1.1] group-hover:rotate-[3deg] duration-500"
@@ -443,7 +462,7 @@ useEffect(() => {
                   >More About Us<i className="fa-solid fa-arrow-right"></i></span
                     ></a>
                   <img
-                  loading='lazy'
+                    loading='lazy'
                     src={signature}
                     alt="img"
                     className="sm:ml-30 ml-20 sm:border-l sm:border-[#D8D8D8] sm:pl-30 py-20 sm:py-10"
@@ -455,7 +474,7 @@ useEffect(() => {
               <div className="w-full group">
                 <figure className="overflow-hidden">
                   <img
-                       loading='lazy'
+                    loading='lazy'
                     src={about2}
                     alt="img"
                     className="w-full group-hover:scale-[1.1] group-hover:rotate-[3deg] duration-500"
@@ -510,7 +529,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg3}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -525,7 +544,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -540,7 +559,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg1}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -555,7 +574,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -572,7 +591,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg3}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -587,7 +606,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -602,7 +621,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg1}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -617,7 +636,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -641,7 +660,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg3}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -656,7 +675,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -671,7 +690,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg1}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -686,7 +705,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -703,7 +722,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg3}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -718,7 +737,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -733,7 +752,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg1}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -748,7 +767,7 @@ useEffect(() => {
               className="lg:ml-60 ml-33 w-[max-content] lg:gap-30 gap-20 flex items-center"
             >
               <img
-                   loading='lazy'
+                loading='lazy'
                 src={healthimg2}
                 alt="img"
                 className="max-xxl:w-60 max-lg:w-36"
@@ -771,19 +790,19 @@ useEffect(() => {
                 className="text-end relative before:absolute before:w-[71%] before:h-full before:bg-primary before:-left-38 before:z-[-1] before:rotate-[5deg] before:top-[13%] mt-50 lg:mr-40 max-lg:before:hidden"
               >
                 <figure className="overflow-hidden">
-                  <img src={whyusphoto1} alt="img"      loading='lazy' className="w-full" />
+                  <img src={whyusphoto1} alt="img" loading='lazy' className="w-full" />
                 </figure>
                 <div
                   className="absolute xl:top-[-15%] xl:left-[-10%] lg:top-[-11%] lg:left-[-11%] top-[-12%] left-[-6%] xl:size-200 size-170 bg-white rounded-full flex items-center justify-center max-md:size-165"
                 >
                   <img
-                       loading='lazy'
+                    loading='lazy'
                     alt="img"
                     src={chooseuslogo}
                     className="size-80 p-17 bg-primary rounded-full"
                   />
                   <img
-                       loading='lazy'
+                    loading='lazy'
                     alt="img"
                     src={circleimage}
                     className="circle absolute size-auto bg-transparent p-17 mx-auto mt-10 text-center z-[1] animate-fa-spin"
@@ -912,7 +931,7 @@ useEffect(() => {
                 className="bg-white p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
                 <img
-                     loading='lazy'
+                  loading='lazy'
                   src={pricingplanshap}
                   className="absolute right-30 top-30"
                   alt="img"
@@ -963,7 +982,7 @@ useEffect(() => {
                 className="pricing-plan two bg-primary p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
                 <img
-                     loading='lazy'
+                  loading='lazy'
                   src={pricingplanshap1}
                   className="absolute right-30 top-30"
                   alt="img"
@@ -1013,7 +1032,7 @@ useEffect(() => {
                 className="bg-white p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
                 <img
-                     loading='lazy'
+                  loading='lazy'
                   src={pricingplanshap}
                   className="absolute right-30 top-30"
                   alt="img"
@@ -1063,14 +1082,14 @@ useEffect(() => {
         </div>
         <ul className="shaps">
           <li className="absolute">
-            <img      loading='lazy' src={shape7} alt="img" className="animate-fa-spin" />
+            <img loading='lazy' src={shape7} alt="img" className="animate-fa-spin" />
           </li>
           <li className="absolute">
-            <img      loading='lazy' src={shape8} alt="img" className="animate-fa-spin" />
+            <img loading='lazy' src={shape8} alt="img" className="animate-fa-spin" />
           </li>
           <li className="absolute">
             <img
-                 loading='lazy'
+              loading='lazy'
               src={dotsimg}
               alt="img"
               className="animate-fa-spin"
@@ -1078,7 +1097,7 @@ useEffect(() => {
           </li>
           <li className="absolute">
             <img
-                 loading='lazy'
+              loading='lazy'
               src={dotsimg}
               alt="img"
               className="animate-fa-spin"

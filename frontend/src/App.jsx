@@ -53,7 +53,7 @@ function App() {
             },
 
             {
-              path: '/servicedetails/:service_id/:service_name',
+              path: '/servicedetails/:service_id/:service_name/:organization_name',
               element: <><Suspense fallback={<FallbackLoader  fixed={true}/>}><ServiceDetails /></Suspense></>
             },
             {

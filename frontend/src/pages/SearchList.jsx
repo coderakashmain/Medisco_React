@@ -65,8 +65,8 @@ const SearchList = () => {
 
 
     const fetchList = async () => {
-        if (!searchData.state && !searchData.city && !searchData.organization_name && !searchData.service_id ) return;
-        
+        if (!searchData.state && !searchData.city && !searchData.organization_name && !searchData.service_id) return;
+
         setLoading(true);
         try {
             const data = await GetServiceResult(userdata?.token, searchData)
@@ -74,7 +74,7 @@ const SearchList = () => {
             setResultList(data.data);
         } catch (err) {
             console.error(err);
-            setSnackbar({ open: true, message: 'Error getting service.' })
+            setSnackbar({ open: true, message: 'Error getting service.', type: 'error' })
         } finally {
             setLoading(false);
         }
@@ -92,7 +92,7 @@ const SearchList = () => {
         sessionStorage.setItem('searchItems', JSON.stringify(searchData));
         if (!searchData.service_id) return;
 
-        console.log("This is running.")
+
 
 
         navigate(
@@ -105,38 +105,19 @@ const SearchList = () => {
         setResultList([]);
 
 
-        console.log("This is Data", searchData)
 
         //Calling the api 
 
         fetchList();
 
-    }, [searchData.state, searchData.city, searchData.organization_name, searchData.service_id]);
-
-    // useEffect(() => {
-    //     const searchItems = sessionStorage.getItem('searchItems');
-    //     const data = JSON.parse(searchItems);
-
-    //     console.log("This is Data",data)
-
-    //     navigate(
-    //         {
-    //             pathname: "/search_result",
-    //             search: `?${createSearchParams(data)}`
-    //         },
-    //         { replace: true }
-    //     )
-
-    //     setSearchData((prev) => ({
-    //         ...prev,
-    //         ...data
-    //     }));
-
-    // }, [])
+    }, [searchData.state, searchData.city, searchData.service_id]);
 
 
 
-    //fetch service name 
+
+
+
+     
 
     const findeServiceName = (serviceId) => {
         if (!services?.data) return;
@@ -145,7 +126,15 @@ const SearchList = () => {
             (value) => value.service_id === serviceId
         );
 
-        return matched ? matched.service_name : undefined;
+        if (!matched) return undefined;
+
+        
+        let name = decodeURIComponent(matched.service_name);
+
+       
+        name = name.replace(/\//g, " ");
+
+        return name.trim();
     };
 
 
@@ -205,9 +194,11 @@ const SearchList = () => {
             "servicedetails",
             JSON.stringify(data)
         );
-        navigate(`/servicedetails/${data.service_type}/${findeServiceName(data.service_type)}`, { state: { data } })
+
+        navigate(`/servicedetails/${data.service_type}/${findeServiceName(data.service_type)}/${data.hospital_name}`, { state: { data } })
 
     }
+
 
 
 
@@ -215,19 +206,16 @@ const SearchList = () => {
         <div className="sm:pt-100 pt-80 sm:pt-40 lg:pt-80 bg-[#F4F4FF]  ">
             <div className="container">
                 {/* ---------- Search Form ---------- */}
-                <section className="lg:pt-60 md:pt-50 pt-50 lg:pb-60 md:pb-50  px-20 pb-50 bg-primary rounded-[10px] shadow" id="search-space-search-result ">
+                <section className="lg:pt-60 md:pt-50 pt-30 lg:pb-60 md:pb-50  px-20 pb-50 bg-primary rounded-[10px] shadow" id="search-space-search-result ">
                     <form onSubmit={handleSubmit} id="search-form ">
                         <h2 className="text-center text-white  xxl:text-6xl xl:text-5xl md:text-4xl sm:text-2xl text-xl font-extrabold">
-                            Searching For
-                            {/* <p className='text-sm mt-5'>{searchData.service_name}
-                               
-                            </p> */}
+                            Searching for
                         </h2>
-                        <div className='text-sm mt-10 lg:pb-70 sm:pb-50 pb-30 font-extrabold  flex justify-center '>
+                        <div className='text-sm mt-30 lg:pb-20 sm:pb-10   flex justify-center items-center rounded'>
                             <select
                                 name="service_name"
                                 id="service_name"
-                                className='text-white outline-none  border border-lightgary px-5  rounded '
+                                className='text-white outline-none max-sm:w-full px-5 py-10 rounded  border border-lightgary  font-semibold'
                                 value={searchData.service_name}
                                 onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
                             >
@@ -238,25 +226,26 @@ const SearchList = () => {
                                 ))}
 
                             </select>
-                            <IconButton >
+                            {/* <IconButton >
                                 <Tooltip title="Change Service type">
 
                                     <SwapHorizIcon className='text-white' />
                                 </Tooltip>
 
-                            </IconButton>
+                            </IconButton> */}
                         </div>
 
-                        <div className='search-space-box'>
+
+                        <div className='search-space-box lg:pt-20 sm:pt-20 pt-10'>
 
 
                             {/* State Dropdown */}
-                            <div className="search-space-left-box">
+                            <div className="search-space-left-box ">
                                 <div className="search-space-left-box-1 border border-lightgary  rounded ">
                                     <i className="fa-solid fa-location-dot text-white"></i>
                                     <select
                                         name="state"
-                                        className='outline-none text-white text-sm '
+                                        className='outline-none text-white text-sm  '
                                         onChange={(e) => {
                                             setSearchData(() => ({
                                                 ...searchData,
@@ -268,7 +257,7 @@ const SearchList = () => {
                                         }}
                                         value={searchData.state}
                                     >
-                                        <option value="" className='text-black text-sm'>Search By State</option>
+                                        <option value="" className='text-black text-sm '>Search By State</option>
                                         {statesList.status && statesList.data.map((state, index) => (
                                             <option className='text-black text-sm' key={index} value={state}>{state}</option>
                                         ))}
@@ -301,16 +290,34 @@ const SearchList = () => {
 
 
                             <div className="search-space-right-box ">
-                                <div className="search-space-right-box-1   border border-lightgary flex items-center relative rounded">
-                                    <i className="fa-solid fa-magnifying-glass text-white"></i>
-                                    <input
-                                        type="text"
-                                        placeholder="Search By Organization Name"
-                                        className="outline-none flex-grow text-sm text-white"
-                                        value={searchData.organization_name}
-                                        onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
-                                    />
-                                    {/* <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
+                                <div className='search-space-right-box-1 gap-10'>
+                                    {/* <div className='border border-lightgary relative rounded  '>
+                                        <select
+                                            name="service_name"
+                                            id="service_name"
+                                            className='text-white outline-none   px-5  rounded !w-full text-sm'
+                                            value={searchData.service_name}
+                                            onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
+                                        >
+                                            <option disabled className='text-sm text-black' value="" >Search By Service</option>
+                                            {services.status && services.data.map((service, index) => (
+                                                <option className='text-sm p-10 text-black' key={index} value={service.service_name}>{service.service_name}</option>
+
+                                            ))}
+
+                                        </select>
+                                    </div> */}
+
+                                    <div className="  border border-lightgary overflow-hidden flex items-center relative rounded w-full">
+                                        <i className="fa-solid fa-magnifying-glass text-white"></i>
+                                        <input
+                                            type="text"
+                                            placeholder="Search By Organization Name"
+                                            className="outline-none flex-grow text-sm text-white"
+                                            value={searchData.organization_name}
+                                            onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
+                                        />
+                                        {/* <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
                                         <div ref={dropdownRef} className='search-space-right-box-dropdown'>
                                             <ul className='shadow'>
                                                 {searchData.organization_name && hideDropdown && filterList && (filterList.length > 0 && filterList.map((service, index) => (
@@ -331,6 +338,7 @@ const SearchList = () => {
                                             </ul>
                                         </div>
                                     </DropdownOff> */}
+                                    </div>
                                 </div>
                                 <button type="submit" className="button cursor-pointer bg-white px-20 py-10 text-secondary rounded">
                                     <i className="fa fa-search"></i>

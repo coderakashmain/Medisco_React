@@ -33,7 +33,7 @@
     
 }
 .dashboard-subtab a{
-    background-color: var(--color-white);
+    
     padding: calc(var(--spacing) * 3) calc(var(--spacing) * 13);
     border-radius: 30px 30px 30px 30px;
     position: relative;

@@ -15,11 +15,11 @@ import { useLocationContext } from '../../Context/LocationProvider ';
 import Loading from '../../components/Loading';
 import { UpdateProfileApi } from '../../APIs/UpdateProfileApi';
 import { useSnackbar } from '../../Context/SnackbarContext';
-
 import { useScreen } from '../../Context/ScreenProvider';
-
+import { useServiceListContex } from '../../Context/Services';
 const ProfileEdit = ({ setEditable }) => {
     const { userdata, profileDetails, setProfileDetails } = useUserDataContext();
+    const {services} = useServiceListContex();
     const { setSnackbar } = useSnackbar();
     const { isMobile } = useScreen();
     const { statesList } = useStatesContext();
@@ -152,6 +152,16 @@ const ProfileEdit = ({ setEditable }) => {
         } finally {
             setLoading(false);
         }
+    };
+
+        const findeServiceName = (serviceId) => {
+        if (!services?.data) return;
+
+        const matched = services.data.find(
+            (value) => value.service_id === serviceId
+        );
+
+        return matched ? matched.service_name : undefined;
     };
 
 
@@ -296,6 +306,11 @@ const ProfileEdit = ({ setEditable }) => {
                                 <input type="number" onChange={handleRefChange} name='ref_percentage' value={editData.ref_percentage} className={`rounded outline-none p-7 text-sm px-10 `} id='ref_percentage' />
 
                             </li>
+                             {findeServiceName(profileDetails?.data?.service_type) === 'HOSPITALS' && (  <li>
+                                <label htmlFor="noofbed">No of Bed</label>
+                                <input type="number" onChange={handleChange} name='noofbed' value={editData.noofbed} className={`rounded outline-none p-7 text-sm px-10 `} id='noofbed' />
+
+                            </li>)}
                             <li>
                                 <label htmlFor="availability">Availability</label>
                                 <CustomTimePicker

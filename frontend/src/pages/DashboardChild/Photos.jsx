@@ -135,12 +135,12 @@ const Photos = () => {
 
 
   return (
-    <section className='h-full w-full  p-20 pb-40 sm:p-10 ' ref={photoboxRef}>
+    <section className={`h-full w-full    ${isMobile ? "pt-10 " : ' p-20  sm:p-10'} pb-20 `} ref={photoboxRef}>
 
       <div className='flex justify-between items-center'>
-        <h2 className='text-2xl max-sm:text-md font-semibold text-secondary'>Photo Gallery</h2>
+        <h2 className={` ${isMobile ? "text-xl " : ' text-2xl'}    font-semibold text-secondary`}>Photo Gallery</h2>
         <button onClick={() => setImagePopUp(true)} className={`button bg-primary items-center  font-semibold rounded  ${isMobile ? 'text-xs px-5 py-5' : 'py-5 px-15'} text-white text-sm cursor-pointer text-nowrap flex items-center gap-5`}>
-          <FileUploadIcon className='mr-2' />
+          <FileUploadIcon sx={{height : 18, width : 18}} className='mr-2' />
           Upload Photo
         </button>
       </div>

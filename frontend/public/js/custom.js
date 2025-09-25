@@ -22,10 +22,10 @@ var Madula = (function () {
       $("#mobile-nav").toggleClass("open");
     });
 
-    $("#desktop-menu").click(function () {
-      $(this).toggleClass("open");
-      $(".desktop-menu").toggleClass("open");
-    });
+    // $("#desktop-menu").click(function () {
+    //   $(this).toggleClass("open");
+    //   $(".desktop-menu").toggleClass("open");
+    // });
 
     $("#res-cross").click(function () {
       $("#mobile-nav").removeClass("open");

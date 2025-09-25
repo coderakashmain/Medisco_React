@@ -4,7 +4,7 @@
 .servicedetails-discount-box ul li{
  flex-basis: calc(var(--spacing) * 400);
  flex-grow: 1;
- height:calc(var(--spacing) * 70) ;
+ /* height:calc(var(--spacing) * 70) ; */
  align-items: center;
  max-width:  calc(var(--spacing) * 400);
 }

@@ -12,6 +12,7 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Autoplay, FreeMode } from "swiper/modules";
 import { useScreen } from '../Context/ScreenProvider';
 import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
+import LocationCityIcon from '@mui/icons-material/LocationCity';
 
 const ServiceDetails = () => {
   const location = useLocation();
@@ -58,10 +59,10 @@ const ServiceDetails = () => {
 
   return (
 
-    <section id='service-details' className='min-h-[80vh] w-full bg-[#F4F4FF] sm:pt-100 pt-80 sm:pt-40 lg:pt-80'>
+    <section id='service-details' className={`min-h-[80vh] w-full ${isMobile ? 'bg-white' : 'bg-[#F4F4FF]'}  sm:pt-100 pt-80 sm:pt-40 lg:pt-80`}>
       <div className='container   '>
 
-        <div className='service-details-box h-full gap-20 shadow flex flex-row bg-white p-10 rounded pb-30'>
+        <div className={`service-details-box h-full gap-20 ${isMobile ? "" : 'shadow p-10'} flex flex-row bg-white  rounded pb-30`}>
           <div className={`service-details-left-box  ${isMobile ? 'w-full' : 'w-252'} `}>
             <div className={`photoes-box h-252 ${isMobile ? 'w-full' : 'w-252'}   bg-[#F4F4FF] rounded overflow-hidden flex items-center justify-center`}>
               {serviceDetails?.images?.length > 0 ? (
@@ -108,15 +109,15 @@ const ServiceDetails = () => {
           <div className='service-details-right-box flex-grow   '>
             <div className='flex  justify-between'>
               <div className='flex gap-10' >
-                <div className='h-80 w-80  bg-[#F4F4FF] overflow-hidden rounded'>
+                <div  className='h-80 w-80  bg-[#F4F4FF] overflow-hidden rounded'>
                   <img 
                     src={serviceDetails?.hospital_logo ? ` https://api.medisco.in/${serviceDetails?.hospital_logo}` : defaultOrganizationlogo}
                   
                   alt={serviceDetails.hospital_name} className='h-full w-full rounded aspect-square object-cover' />
                 </div>
                 <div>
-                  <h2 className='text-xl font-semibold color-secondary'>{serviceDetails.hospital_name}</h2>
-                  <p className='text-sm  mt-5 text-primary'>{findeServiceName(serviceDetails.service_type)}</p>
+                  <h2 className='md:text-xl text-sm  font-semibold color-secondary'>{serviceDetails.hospital_name}</h2>
+                  <p className='text-sm max-md:text-xs  mt-5 text-primary'>{findeServiceName(serviceDetails.service_type)}</p>
                 </div>
 
 
@@ -130,11 +131,11 @@ const ServiceDetails = () => {
                     {serviceDetails?.rating || '0'} &nbsp;
                     <span>Rating</span>
                   </span>
-                {serviceDetails?.availability && (  <span className='bg-primary px-10 py-5 rounded-[20px] select-none  text-white font-semibold'>{serviceDetails?.availability}</span>)}
+                {serviceDetails?.availability && (  <span className='bg-[#F4F4FF] px-10 py-5 rounded-[20px] select-none  text-primary border border-primary font-semibold'>{serviceDetails?.availability}</span>)}
                 </div>
 
                 <div className='mt-20'>
-                  <button style={{ fontSize: '15px' }} className='button cursor-pointer bg-primary  font-semibold block float-right  text-white px-20 py-5 rounded '>
+                  <button  className='button cursor-pointer bg-primary  font-semibold block float-right text-sm  text-white px-20 py-5 rounded '>
                     Connect
                   </button>
                 </div>
@@ -145,29 +146,29 @@ const ServiceDetails = () => {
 
             </div>
 
-            <p className='text-sm mt-20 break-words'>Info - {serviceDetails?.service_desc} </p>
+           {serviceDetails?.service_desc &&( <p className=' text-sm max-md:text-xs mt-20 break-words'> {serviceDetails?.service_desc} </p>)}
 
 
-            <p className='mt-40  font-semibold '>{serviceDetails.address} </p>
+            <p className='mt-40  font-semibold text-sm max-md:text-xs'><LocationCityIcon className='text-primary'/> {serviceDetails.address} </p>
 
-            <div className='flex gap-20 mt-40 flex-wrap '>
-              <div className='py-5 px-15 font-semibold bg-primary rounded text-white text-sm'>
+            <div className='flex md:gap-20  gap-10 mt-40  '>
+              {serviceDetails?.state && (<div className='py-5 px-15 font-semibold bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
                 State : {serviceDetails?.state}
-              </div>
-              <div className='py-5 px-10 font-semibold  bg-primary rounded text-white text-sm'>
+              </div>)}
+            {serviceDetails?.city && (  <div className='py-5 px-10 font-semibold  bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
                 City : {serviceDetails?.city}
-              </div>
-              <div className='py-5 px-10 font-semibold  bg-primary rounded text-white text-sm'>
+              </div>)}
+              {serviceDetails?.pincode && (<div className='py-5 px-10 font-semibold bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
                 Pincode : {serviceDetails?.pincode}
-              </div>
+              </div>)}
             </div>
 
             {serviceDetails.services?.length > 0 && (<div className='servicedetails-discount-box mt-40 select-none '>
               <h3 className='font-semibold text-primary'>Discounts</h3>
               <ul className='flex justify-between mt-10 gap-10'>
                 {serviceDetails.services.map((discount, index) => (
-                  <li key={index} className='rounded border  border-lightgary flex justify-between shadow'>
-                    <p className='p-10 font-semibold'>
+                  <li style={{height : isMobile ? '60px' : '70px'}} key={index} className={`rounded border  border-lightgary flex justify-between shadow `}>
+                    <p className='p-5 px-20 font-semibold'>
                       {discount.discount_name}
 
                     </p>

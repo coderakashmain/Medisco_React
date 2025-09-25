@@ -4,7 +4,7 @@ import Tooltip from '@mui/material/Tooltip';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import EditSquareIcon from '@mui/icons-material/EditSquare';
 
-
+import { useScreen } from '../../Context/ScreenProvider';
 
 
 const Table = lazy(() => import("../../components/Table"));
@@ -14,10 +14,11 @@ import { UpdateDiscountsApi } from '../../APIs/UpdateDiscountsApi';
 
 
 
+
 const DiscountSubp = () => {
     const [search, setSearch] = useState('');
     const { setSnackbar } = useSnackbar();
-
+    const {isMobile} = useScreen();
     const { userdata, profileLoading, profileDetails } = useUserDataContext();
     const [discountList, setDiscountList] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
@@ -131,10 +132,10 @@ const DiscountSubp = () => {
 
 
     return (
-        <section className='h-full w-full flex align-center justify-center'>
-            <section className='h-full w-full  p-20 pb-40 sm:p-10 ' >
+        <section className={` w-full flex align-center justify-center`}>
+            <section className={` w-full  ${isMobile ? "pt-10 " : ' p-20  sm:p-10'} pb-20  `}>
                 <div className='flex justify-between items-center'>
-                    <h2 className='text-2xl font-semibold text-secondary'>Discounts</h2>
+                    <h2 className={`${isMobile ? "text-xl " : ' text-2xl'}  font-semibold text-secondary`}>Discounts</h2>
                     <div className='flex gap-10'>
                         {/* <div className='flex items-center border border-lightgary py-5 px-10 rounded gap-5 bg-[#F4F4FF]   '>
                             <SearchIcon className='text-gary' />

@@ -521,6 +521,9 @@
   .col-auto {
     grid-column: auto;
   }
+  .col-span-1 {
+    grid-column: span 1 / span 1;
+  }
   .col-span-6 {
     grid-column: span 6 / span 6;
   }
@@ -987,6 +990,9 @@
   .h-8 {
     height: calc(var(--spacing) * 8);
   }
+  .h-20 {
+    height: calc(var(--spacing) * 20);
+  }
   .h-50 {
     height: calc(var(--spacing) * 50);
   }
@@ -995,6 +1001,9 @@
   }
   .h-60 {
     height: calc(var(--spacing) * 60);
+  }
+  .h-70 {
+    height: calc(var(--spacing) * 70);
   }
   .h-80 {
     height: calc(var(--spacing) * 80);
@@ -4730,6 +4739,11 @@
   .md\:bottom-\[0\%\] {
     @media (width >= 768px) {
       bottom: 0%;
+    }
+  }
+  .md\:col-span-2 {
+    @media (width >= 768px) {
+      grid-column: span 2 / span 2;
     }
   }
   .md\:col-span-6 {
