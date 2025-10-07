@@ -3,11 +3,9 @@ import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
 import { useSnackbar } from '../Context/SnackbarContext'
-import photo1card from '../assets/img/photo-1-card.png'
 import { useServiceListContex } from '../Context/Services';
 import Pagination from '../components/Pagination';
 import './Home.css'
-import DropdownOff from '../components/DropdownOff';
 import { GetServiceResult } from '../APIs/GetServiceResult';
 import { useUserDataContext } from '../Context/Userdata';
 import nodatafound from '../assets/img/nodatafound.png'
@@ -16,26 +14,18 @@ import { useScreen } from '../Context/ScreenProvider';
 import './SearchList.css'
 import sliceText from '../components/SliceTest';
 import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
+import LocationCityIcon from '@mui/icons-material/LocationCity';
 const Loading = lazy(() => import('../components/Loading'))
-import SwapHorizIcon from '@mui/icons-material/SwapHoriz';
-import IconButton from '@mui/material/IconButton';
-import Tooltip from '@mui/material/Tooltip';
 
 const SearchList = () => {
     const navigate = useNavigate();
-    const { search } = useLocation();
-    const { isTablet } = useScreen();
     const { setSnackbar } = useSnackbar();
     const { userdata } = useUserDataContext;
-    const params = new URLSearchParams(search);
     const { statesList } = useStatesContext();
     const searchResultRef = useRef(null);
     const { districtsList, setState, districtLoading, setDistrictsList } = useDistrictsContext();
     const { services } = useServiceListContex();
     const { state } = useLocation();
-    const [hideDropdown, setHideDropdown] = useState(false);
-    const [filterList, setFilterList] = useState([])
-    const dropdownRef = useRef(null);
     const [resultList, setResultList] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -65,7 +55,7 @@ const SearchList = () => {
 
 
     const fetchList = async () => {
-        if (!searchData.state && !searchData.city && !searchData.organization_name && !searchData.service_id) return;
+        if (!searchData?.state && !searchData.city && !searchData.organization_name && !searchData.service_id) return;
 
         setLoading(true);
         try {
@@ -226,13 +216,7 @@ const SearchList = () => {
                                 ))}
 
                             </select>
-                            {/* <IconButton >
-                                <Tooltip title="Change Service type">
-
-                                    <SwapHorizIcon className='text-white' />
-                                </Tooltip>
-
-                            </IconButton> */}
+                          
                         </div>
 
 
@@ -291,22 +275,7 @@ const SearchList = () => {
 
                             <div className="search-space-right-box ">
                                 <div className='search-space-right-box-1 gap-10'>
-                                    {/* <div className='border border-lightgary relative rounded  '>
-                                        <select
-                                            name="service_name"
-                                            id="service_name"
-                                            className='text-white outline-none   px-5  rounded !w-full text-sm'
-                                            value={searchData.service_name}
-                                            onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
-                                        >
-                                            <option disabled className='text-sm text-black' value="" >Search By Service</option>
-                                            {services.status && services.data.map((service, index) => (
-                                                <option className='text-sm p-10 text-black' key={index} value={service.service_name}>{service.service_name}</option>
-
-                                            ))}
-
-                                        </select>
-                                    </div> */}
+                                   
 
                                     <div className="  border border-lightgary overflow-hidden flex items-center relative rounded w-full">
                                         <i className="fa-solid fa-magnifying-glass text-white"></i>
@@ -317,27 +286,7 @@ const SearchList = () => {
                                             value={searchData.organization_name}
                                             onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
                                         />
-                                        {/* <DropdownOff setDropdownOpen={setHideDropdown} dropdownRef={dropdownRef}>
-                                        <div ref={dropdownRef} className='search-space-right-box-dropdown'>
-                                            <ul className='shadow'>
-                                                {searchData.organization_name && hideDropdown && filterList && (filterList.length > 0 && filterList.map((service, index) => (
-                                                    <li key={index} onClick={() => {
-                                                        setHideDropdown(false);
-                                                        setSearchData({
-                                                            ...searchData,
-                                                            organization_name: service.service_name,
-                                                            service_id: service.service_id
-                                                        })
-
-                                                    }} className='text-sm p-10 cursor-pointer  hover:bg-primary hover:text-white bg-white'>
-                                                        {service.service_name}
-                                                    </li>
-
-                                                )))}
-
-                                            </ul>
-                                        </div>
-                                    </DropdownOff> */}
+                                       
                                     </div>
                                 </div>
                                 <button type="submit" className="button cursor-pointer bg-white px-20 py-10 text-secondary rounded">
@@ -383,25 +332,21 @@ const SearchList = () => {
                                                         {/* Content */}
                                                         <div className="search-result-right-content-box  mt-10  ">
                                                             <h2 className="lg:text-3xl text-center md:text-2xl sm:text-2xl text-xl font-bold text-secondary">{data.hospital_name}</h2>
-                                                            <p className="text-xs mb-20 text-center mt-5">{findeServiceName(data.service_type)}</p>
+                                                            <p className="text-xs mb-10 text-center mt-5 text-primary">{findeServiceName(data.service_type)}</p>
                                                             {data?.service_desc && (<p className="text-sm mt-10"><span className="font-bold text-secondary"> </span>{sliceText(data?.service_desc, 60)}</p>)}
-                                                            <p className="uppercase text-sm font-semibold mt-30"><i className="fa-solid fa-location-dot mr-10"></i>{data?.address} || {data.pincode}</p>
+                                                            <p className="uppercase text-xs md:text-sm font-semibold mt-15 flex items-center gap-4 "><LocationCityIcon className='text-primary'/>{data?.address} || {data.pincode}</p>
                                                         </div>
                                                     </div>
                                                     {/* Rating + Button */}
                                                     <div className="flex flex-row justify-between mt-20 ">
                                                         <p className="text-primary font-semibold text-xs text-nowrap">
                                                             Customer Rating <br />
-                                                            <span className="text-sm pt-10 ">
+                                                            <span className="text-xs pt-10 flex gap-4 items-center ">
                                                                 <i className="fa-solid fa-star"></i>
-                                                                <i className="fa-solid fa-star"></i>
-                                                                <i className="fa-solid fa-star"></i>
-                                                                <i className="fa-solid fa-star"></i>
-                                                                <i className="fa-solid fa-star"></i>
-                                                                ({data?.service_rating})
+                                                               <span className='text-black flex items-center'> {data?.service_rating || '0'}  Rating</span>
                                                             </span>
                                                         </p>
-                                                        <button onClick={() => handleNavigate(data)} className="bg-primary button rounded py-5 text-sm px-20 cursor-pointer text-nowrap !text-white">View</button>
+                                                        <button  onClick={() => handleNavigate(data)} className="bg-primary button rounded text-sm  px-20  cursor-pointer text-nowrap !text-white">View</button>
                                                     </div>
                                                 </div>
                                             </li>
@@ -424,7 +369,7 @@ const SearchList = () => {
                                     <div  >
                                         <img src={loadingdata} style={{ width: "20rem" }} className=' h-full w-full object-cover' alt="loadingdata" />
                                     </div>
-                                    <p className='font-semibold mt-10 text-2xl'>Loading....</p>
+                                    <p className='font-semibold mt-10  text-md xl:text-xl'>Loading....</p>
                                 </div>
                             )
                         }

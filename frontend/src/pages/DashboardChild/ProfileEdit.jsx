@@ -47,7 +47,7 @@ const ProfileEdit = ({ setEditable }) => {
         gst: profileDetails?.data.gst || "",
         availability: profileDetails?.data.availability || "",
         noofbed: profileDetails?.data.noofbed || "",
-        ref_percentage: profileDetails?.data.ref_percentage ? [profileDetails?.data.ref_percentage] : [],
+        ref_percentage: profileDetails?.data.ref_percentage || "",
 
 
     });
@@ -114,7 +114,7 @@ const ProfileEdit = ({ setEditable }) => {
     const handleRefChange = (e) => {
         const name = e.target.name;
         const value = e.target.value;
-        setEditData((prev) => ({ ...prev, ref_percentage: [value] }));
+        setEditData((prev) => ({ ...prev, ref_percentage: value }));
     }
 
 

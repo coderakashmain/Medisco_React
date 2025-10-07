@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useEffect, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import { useLocation } from 'react-router-dom'
 import FallbackLoader from '../components/FallbackLoader';
 const NotFound = lazy(() => import("./NotFound"));
@@ -19,6 +19,7 @@ const ServiceDetails = () => {
   const { services } = useServiceListContex();
   const { isMobile } = useScreen();
   const [serviceDetails, setServiceDetails] = useState(null);
+  const  servicedetailsRef  = useRef();
 
   useEffect(() => {
 
@@ -35,7 +36,22 @@ const ServiceDetails = () => {
         setServiceDetails(JSON.parse(storedData));
       }
     }
+ 
+
   }, [location.state]);
+
+  useEffect(()=>{
+      const timer = setTimeout(() => {
+    if (servicedetailsRef.current) {
+      servicedetailsRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      });
+    }
+  }, 100); 
+
+  return () => clearTimeout(timer);
+  },[])
 
   if (!serviceDetails) {
     return (
@@ -59,10 +75,10 @@ const ServiceDetails = () => {
 
   return (
 
-    <section id='service-details' className={`min-h-[80vh] w-full ${isMobile ? 'bg-white' : 'bg-[#F4F4FF]'}  sm:pt-100 pt-80 sm:pt-40 lg:pt-80`}>
-      <div className='container   '>
+    <section id='service-details' ref={servicedetailsRef} className={`min-h-[80vh] w-full ${isMobile ? 'bg-white' : 'bg-[#F4F4FF]'}  sm:pt-100 pt-80 sm:pt-40 lg:pt-80`}>
+      <div className='container   ' >
 
-        <div className={`service-details-box h-full gap-20 ${isMobile ? "" : 'shadow p-10'} flex flex-row bg-white  rounded pb-30`}>
+        <div  className={`service-details-box h-full gap-20 ${isMobile ? "" : 'shadow p-10'} flex flex-row bg-white  rounded pb-30`}>
           <div className={`service-details-left-box  ${isMobile ? 'w-full' : 'w-252'} `}>
             <div className={`photoes-box h-252 ${isMobile ? 'w-full' : 'w-252'}   bg-[#F4F4FF] rounded overflow-hidden flex items-center justify-center`}>
               {serviceDetails?.images?.length > 0 ? (
@@ -78,7 +94,7 @@ const ServiceDetails = () => {
                       ? { delay: 2000, disableOnInteraction: false }
                       : false
                   }
-                 
+
                   breakpoints={{
                     10: { slidesPerView: 1 },
                     575: { slidesPerView: 1 },
@@ -109,11 +125,11 @@ const ServiceDetails = () => {
           <div className='service-details-right-box flex-grow   '>
             <div className='flex  justify-between'>
               <div className='flex gap-10' >
-                <div  className='h-80 w-80  bg-[#F4F4FF] overflow-hidden rounded'>
-                  <img 
+                <div className='h-80 w-80  bg-[#F4F4FF] overflow-hidden rounded'>
+                  <img
                     src={serviceDetails?.hospital_logo ? ` https://api.medisco.in/${serviceDetails?.hospital_logo}` : defaultOrganizationlogo}
-                  
-                  alt={serviceDetails.hospital_name} className='h-full w-full rounded aspect-square object-cover' />
+
+                    alt={serviceDetails.hospital_name} className='h-full w-full rounded aspect-square object-cover' />
                 </div>
                 <div>
                   <h2 className='md:text-xl text-sm  font-semibold color-secondary'>{serviceDetails.hospital_name}</h2>
@@ -131,11 +147,11 @@ const ServiceDetails = () => {
                     {serviceDetails?.rating || '0'} &nbsp;
                     <span>Rating</span>
                   </span>
-                {serviceDetails?.availability && (  <span className='bg-[#F4F4FF] px-10 py-5 rounded-[20px] select-none  text-primary border border-primary font-semibold'>{serviceDetails?.availability}</span>)}
+                  {serviceDetails?.availability && (<span className='bg-[#F4F4FF] px-10 py-5 rounded-[20px] select-none  text-primary border border-primary font-semibold'>{serviceDetails?.availability}</span>)}
                 </div>
 
                 <div className='mt-20'>
-                  <button  className='button cursor-pointer bg-primary  font-semibold block float-right text-sm  text-white px-20 py-5 rounded '>
+                  <button className='button cursor-pointer bg-primary  font-semibold block float-right text-sm  text-white px-20 py-5 rounded '>
                     Connect
                   </button>
                 </div>
@@ -146,16 +162,16 @@ const ServiceDetails = () => {
 
             </div>
 
-           {serviceDetails?.service_desc &&( <p className=' text-sm max-md:text-xs mt-20 break-words'> {serviceDetails?.service_desc} </p>)}
+            {serviceDetails?.service_desc && (<p className=' text-sm max-md:text-xs mt-20 break-words'> {serviceDetails?.service_desc} </p>)}
 
 
-            <p className='mt-40  font-semibold text-sm max-md:text-xs'><LocationCityIcon className='text-primary'/> {serviceDetails.address} </p>
+            <p className='mt-40  font-semibold text-sm max-md:text-xs flex items-center gap-4'><LocationCityIcon className='text-primary' /> {serviceDetails.address} </p>
 
-            <div className='flex md:gap-20  gap-10 mt-40  '>
-              {serviceDetails?.state && (<div className='py-5 px-15 font-semibold bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
+            <div className='flex md:gap-20  gap-5 mt-40  '>
+              {serviceDetails?.state && (<div className='py-5 px-10 font-semibold bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
                 State : {serviceDetails?.state}
               </div>)}
-            {serviceDetails?.city && (  <div className='py-5 px-10 font-semibold  bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
+              {serviceDetails?.city && (<div className='py-5 px-10 font-semibold  bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
                 City : {serviceDetails?.city}
               </div>)}
               {serviceDetails?.pincode && (<div className='py-5 px-10 font-semibold bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
@@ -167,7 +183,7 @@ const ServiceDetails = () => {
               <h3 className='font-semibold text-primary'>Discounts</h3>
               <ul className='flex justify-between mt-10 gap-10'>
                 {serviceDetails.services.map((discount, index) => (
-                  <li style={{height : isMobile ? '60px' : '70px'}} key={index} className={`rounded border  border-lightgary flex justify-between shadow `}>
+                  <li style={{ height: isMobile ? '60px' : '70px' }} key={index} className={`rounded border  border-lightgary flex justify-between shadow  ${isMobile ? 'text-sm' : 'text-md'}`}>
                     <p className='p-5 px-20 font-semibold'>
                       {discount.discount_name}
 
