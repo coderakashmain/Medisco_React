@@ -12,15 +12,30 @@ export const LocationProvider = ({ children }) => {
   const [locationLoading,setLocationLoading] = useState(false);
   const [locationMesage,setLocationMessage] = useState('');
 
-  const getLocation = () => {
-    if (!navigator.geolocation) {
-      setError("Geolocation is not supported by your browser.");
+const getLocation = async () => {
+  if (!navigator.geolocation) {
+    setError("Geolocation is not supported by your browser.");
+    return;
+  }
+
+  setLocationLoading(true);
+  setLocationMessage('');
+  setError('');
+
+  try {
+   
+    const permission = await navigator.permissions.query({ name: "geolocation" });
+
+    if (permission.state === "denied") {
+      setError("Location permission denied. Please enable it in your browser settings.");
+       window.alert(
+        "⚠️ Location access is blocked.\n\nTo enable it:\n1️⃣ Click the 🔒 (lock) icon in your browser’s address bar.\n2️⃣ Choose 'Site settings'.\n3️⃣ Set 'Location' to 'Allow'.\n\nThen click the 'Retry Location' button."
+      );
+      setLocationLoading(false);
       return;
     }
 
-    setLocationLoading(true);
-    setLocationMessage('');
-    setError('');
+    
     navigator.geolocation.getCurrentPosition(
       (position) => {
         setUserLocation({
@@ -28,22 +43,28 @@ export const LocationProvider = ({ children }) => {
           lng: position.coords.longitude,
         });
         setError("");
-        setLocationMessage('Detected')
+        setLocationMessage("Detected");
         setLocationLoading(false);
       },
       (err) => {
-        setError(err.message);
+        if (err.code === 1) {
+          setError("Permission denied. Please allow location access.");
+        } else {
+          setError(err.message);
+        }
         setLocationLoading(false);
       }
     );
-  };
+  } catch (err) {
+    setError("Error checking location permission: " + err.message);
+    setLocationLoading(false);
+  }
+};
 
 
 
   
-  useEffect(() => {
-    getLocation();
-  }, []);
+
 
    const value = useMemo(
     () => ({ userLocation,locationMesage, error, locationLoading, getLocation }),

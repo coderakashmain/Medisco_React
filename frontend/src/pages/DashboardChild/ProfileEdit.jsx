@@ -185,8 +185,8 @@ const ProfileEdit = ({ setEditable }) => {
                         <div  >
 
                             <button onClick={() => { setEditable(false) }} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
-                            {!isMobile && (<div className='flex gap-5 items-center' style={{ transform: 'translate(-22px)' }}>
-                                {!locationLoading && (<p className='text-xs'>Track your current Location</p>)}
+                            {!isMobile  && (<div className='flex gap-5 items-center' style={{ transform: 'translate(-22px)' }}>
+                                {!locationLoading && !error  &&(<p className='text-xs'>Track your current Location</p>)}
                                 {locationLoading && (<Loading size="15px" />)}
                                 {error && (<p className='text-red text-xs'>{error}</p>)}
                                 {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>({locationMesage})</p>)}
@@ -194,7 +194,6 @@ const ProfileEdit = ({ setEditable }) => {
                                     <IconButton onClick={() => {
                                         getLocation();
                                         setClick((e) => e + 1);
-
                                     }}>
                                         <GpsFixedIcon className=' active text-primary cursor-pointer items-center' />
                                     </IconButton>

@@ -139,7 +139,7 @@ const Navbar = () => {
                         onClick={() => {
                           setDropdownOpen(!dropDownOpen)
                         }}
-                        className="hover:text-primary text-xs">Join as Service Provider</span>
+                        className="hover:text-primary text-xs select-none">Join as Service Provider</span>
                       <div style={{ display: userdata ? 'none' : '' }} className={`${dropDownOpen ? 'dropdown-active' : 'dropdown-off'} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
                         <ul>
                           <li

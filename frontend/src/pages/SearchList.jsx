@@ -25,18 +25,19 @@ const SearchList = () => {
     const searchResultRef = useRef(null);
     const { districtsList, setState, districtLoading, setDistrictsList } = useDistrictsContext();
     const { services } = useServiceListContex();
-    const { state } = useLocation();
+    const location = useLocation();
+    const {searchdata} = location?.state || {};
     const [resultList, setResultList] = useState([]);
     const [loading, setLoading] = useState(false);
 
     const [searchData, setSearchData] = useState(() => {
-        if (state) {
+        if (searchdata) {
             return {
-                state: state?.searchData?.state || '',
-                city: state?.searchData?.city || '',
-                organization_name: state?.searchData?.organization_name || '',
-                service_id: state?.searchData?.service_id || '',
-                service_name: state?.searchData?.service_name || '',
+                state: searchdata?.state || '',
+                city: searchdata?.city || '',
+                organization_name: searchdata?.organization_name || '',
+                service_id: searchdata?.service_id || '',
+                service_name: searchdata?.service_name || '',
             };
         }
         const saved = sessionStorage.getItem('searchItems');

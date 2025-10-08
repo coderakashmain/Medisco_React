@@ -123,7 +123,7 @@ const Home = () => {
     navigate({
       pathname: "/search_result",
       search: `?${createSearchParams(searchData)}`
-    }, { state: { searchData } });
+    }, { state: { searchdata : searchData } });
   }
 
 

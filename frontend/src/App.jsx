@@ -13,6 +13,7 @@ import GlobalRouter from './Router/GlobalRouter';
 import { LocationProvider } from './Context/LocationProvider ';
 import SnackbarProvider from './Context/SnackbarContext';
 import ScreenProvider from './Context/ScreenProvider';
+import ErrorBoundary from './pages/ErrorBoundary';
 
 
 const ProfileSubP = lazy(() => import("./pages/DashboardChild/ProfileSubP"));
@@ -37,7 +38,7 @@ function App() {
       children: [
         {
           path: '',
-          element: <><HomeContext /></>,
+          element: <><ErrorBoundary><HomeContext /></ErrorBoundary></>,
           children: [
             {
               path: '*',

@@ -48,25 +48,25 @@ useEffect(() => {
 
   return (
     <div className="flex gap-10 items-center mt-10">
-   
+      
       <input
         type="number"
-        style={{margin : 0}}
+        style={{margin : 0 , background : 'var(--bg-white)' , boxShadow : 'none'}}
         placeholder="HH"
         value={startHour}
         onChange={e => setStartHour(handleNumberInput(e.target.value, 12))}
-        className=" px-2 py-5 w-12 text-center outline-none text-sm"
+        className=" px-2 py-5 w-12 text-center outline-none text-sm border border-lightgary rounded"
       />
       :
       <input
         type="number"
-        style={{margin : 0}}
+        style={{margin : 0 , background : 'var(--bg-white)' , boxShadow : 'none'}}
         placeholder="MM"
         value={startMinute}
         onChange={e => setStartMinute(handleNumberInput(e.target.value, 59))}
-        className=" px-2 py-5 w-12 text-center outline-none text-sm"
+       className=" px-2 py-5 w-12 text-center outline-none text-sm border border-lightgary rounded"
       />
-      <select value={startAMPM} onChange={e => setStartAMPM(e.target.value)} className=" border border-lightgary rounded px-5 py-5 text-sm">
+      <select value={startAMPM} onChange={e => setStartAMPM(e.target.value)} className=" border border-lightgary outline-none rounded px-5 py-5 text-sm">
         <option className="text-sm">AM</option>
         <option className="text-sm">PM</option>
       </select>
@@ -77,22 +77,22 @@ useEffect(() => {
       <input
 
         type="number"
-         style={{margin : 0}}
+        style={{margin : 0 , background : 'var(--bg-white)' , boxShadow : 'none'}}
         placeholder="HH"
         value={endHour}
         onChange={e => setEndHour(handleNumberInput(e.target.value, 12))}
-        className=" px-2 py-5 w-12 text-center outline-none text-sm"
+        className=" px-2 py-5 w-12 text-center outline-none text-sm border border-lightgary rounded"
       />
       :
       <input
         type="number"
-         style={{margin : 0}}
+        style={{margin : 0 , background : 'var(--bg-white)' , boxShadow : 'none'}}
         placeholder="MM"
         value={endMinute}
         onChange={e => setEndMinute(handleNumberInput(e.target.value, 59))}
-        className=" px-2 py-5 w-12 text-center outline-none text-sm"
+        className=" px-2 py-5 w-12 text-center outline-none text-sm border border-lightgary rounded"
       />
-      <select value={endAMPM} onChange={e => setEndAMPM(e.target.value)} className="border border-lightgary rounded px-5 py-5 text-sm">
+      <select value={endAMPM} onChange={e => setEndAMPM(e.target.value)} className="border border-lightgary outline-none rounded px-5 py-5 text-sm">
         <option className="text-sm">AM</option>
         <option className="text-sm">PM</option>
       </select>
