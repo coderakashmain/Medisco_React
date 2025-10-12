@@ -332,7 +332,7 @@ const ProfileEdit = ({ setEditable }) => {
                                     <GpsFixedIcon className=' active text-primary cursor-pointer items-center' />
                                 </IconButton>
                             </Tooltip>
-                            {!locationLoading && (<p className='text-xs'>Track your current Location</p>)}
+                            {!locationLoading && !error && (<p className='text-xs'>Track your current Location</p>)}
                             {locationLoading && (<Loading size="15px" />)}
                             {error && (<p className='text-red text-xs'>{error}</p>)}
                             {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>({locationMesage})</p>)}

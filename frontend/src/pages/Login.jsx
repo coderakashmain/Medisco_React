@@ -21,21 +21,21 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
     //Fetch email and password from localstorage
 
-    useEffect(() => {
-        const email = localStorage.getItem('email');
-        const password = localStorage.getItem("password");
-        if (email || password) {
-            setLoginData({
-                ...loginData,
-                email: email,
-                password: password,
-                remember: true
+    // useEffect(() => {
+    //     const email = localStorage.getItem('email');
+    //     const password = localStorage.getItem("password");
+    //     if (email || password) {
+    //         setLoginData({
+    //             ...loginData,
+    //             email: email,
+    //             password: password,
+    //             remember: true
 
-            })
-        }
+    //         })
+    //     }
 
 
-    }, [])
+    // }, [])
 
 
 
@@ -73,7 +73,6 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
             if (response.data.status === 201) {
                 setVerifypopup(true);
-                console.log(response.data);
 
                 sessionStorage.setItem("userId", response.data.data);
                 sessionStorage.setItem("email", loginData.email);
@@ -83,13 +82,13 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
             const userData = response.data;
             setSnackbar({ open: true, message: 'Login Successfully', type: 'success' })
             setMessage("Login Successfully")
-            if (loginData.remember) {
-                localStorage.setItem('email', loginData.email)
-                localStorage.setItem('password', loginData.password)
-            } else {
-                localStorage.removeItem('email');
-                localStorage.removeItem('password')
-            }
+            // if (loginData.remember) {
+            //     localStorage.setItem('email', loginData.email)
+            //     localStorage.setItem('password', loginData.password)
+            // } else {
+            //     localStorage.removeItem('email');
+            //     localStorage.removeItem('password')
+            // }
             localStorage.setItem('userdata', JSON.stringify(userData));
 
             setLoginP(false)

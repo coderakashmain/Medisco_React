@@ -1,5 +1,5 @@
 import React, { lazy, useEffect, useRef, useState } from 'react'
-import { createSearchParams, useLocation, useNavigate } from 'react-router-dom'
+import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
 import { useSnackbar } from '../Context/SnackbarContext'
@@ -15,7 +15,12 @@ import './SearchList.css'
 import sliceText from '../components/SliceTest';
 import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
 import LocationCityIcon from '@mui/icons-material/LocationCity';
+import FilterListIcon from '@mui/icons-material/FilterList';
+import IconButton from '@mui/material/IconButton';
+import Tooltip from '@mui/material/Tooltip';
 const Loading = lazy(() => import('../components/Loading'))
+import { motion } from 'framer-motion';
+import FilterAltIcon from '@mui/icons-material/FilterAlt';
 
 const SearchList = () => {
     const navigate = useNavigate();
@@ -26,9 +31,14 @@ const SearchList = () => {
     const { districtsList, setState, districtLoading, setDistrictsList } = useDistrictsContext();
     const { services } = useServiceListContex();
     const location = useLocation();
-    const {searchdata} = location?.state || {};
+    const { searchdata } = location?.state || {};
     const [resultList, setResultList] = useState([]);
     const [loading, setLoading] = useState(false);
+    const { isMobile ,width,isLargeDesktop} = useScreen();
+    const [searchParams] = useSearchParams();
+    const queryParams = Object.fromEntries([...searchParams]);
+    const { state, city, organization_name, service_id, service_name } = queryParams;
+    const [searchCollapsed, setSearchCollapsed] = useState(false);
 
     const [searchData, setSearchData] = useState(() => {
         if (searchdata) {
@@ -108,7 +118,7 @@ const SearchList = () => {
 
 
 
-     
+
 
     const findeServiceName = (serviceId) => {
         if (!services?.data) return;
@@ -119,10 +129,10 @@ const SearchList = () => {
 
         if (!matched) return undefined;
 
-        
+
         let name = decodeURIComponent(matched.service_name);
 
-       
+
         name = name.replace(/\//g, " ");
 
         return name.trim();
@@ -194,43 +204,50 @@ const SearchList = () => {
 
 
     return (
-        <div className="sm:pt-100 pt-80 sm:pt-40 lg:pt-80 bg-[#F4F4FF]  ">
+        <div className="sm:pt-100 pt-80 sm:pt-40 pb-80 lg:pt-80 bg-white  ">
             <div className="container">
-                {/* ---------- Search Form ---------- */}
-                <section className="lg:pt-60 md:pt-50 pt-30 lg:pb-60 md:pb-50  px-20 pb-50 bg-primary rounded-[10px] shadow" id="search-space-search-result ">
-                    <form onSubmit={handleSubmit} id="search-form ">
-                        <h2 className="text-center text-white  xxl:text-6xl xl:text-5xl md:text-4xl sm:text-2xl text-xl font-extrabold">
-                            Searching for
-                        </h2>
-                        <div className='text-sm mt-30 lg:pb-20 sm:pb-10   flex justify-center items-center rounded'>
-                            <select
-                                name="service_name"
-                                id="service_name"
-                                className='text-white outline-none max-sm:w-full px-5 py-10 rounded  border border-lightgary  font-semibold'
-                                value={searchData.service_name}
-                                onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
-                            >
-                                <option disabled className='text-sm text-black' value="" >Search By Service</option>
-                                {services.status && services.data.map((service, index) => (
-                                    <option className='text-sm p-10 text-black' key={index} value={service.service_name}>{service.service_name}</option>
+            
 
-                                ))}
+                <motion.section
+                    initial={{ opacity: 0, y: 50 }}
+                    animate={{ opacity: 1, y: 0, height: searchCollapsed ? isLargeDesktop ? 140 : width >= 576 ? 190  : isMobile ? 310 : 400 : 0, overflow: 'hidden' }}
+                    transition={{
+                        type: "spring",
+                        stiffness: 110, // lower = smoother
+                        damping: 20,    // lower = more bounce
+                        duration: 0.3,  // extra smooth
+                    }}
+                    className=''
+                >
 
-                            </select>
-                          
+                    <motion.form
+                        initial={{ opacity: 0, y: 50, marginTop: 0 }}
+                        animate={{ opacity: searchCollapsed ? 1 : 0, y: searchCollapsed ? 0 : 50, marginTop: searchCollapsed ? 30 : 0 }}
+                        transition={{
+                            type: "spring",
+                            stiffness: 110, // lower = smoother
+                            damping: 20,    // lower = more bounce
+                            duration: 0.3,  // extra smooth
+                        }}
+                        onSubmit={handleSubmit} id="search-form ">
+                        <div className={`flex items-center ${isMobile ? 'flex-col' : 'flex-row  '} justify-center gap-10`}>
+
+
+
                         </div>
 
 
                         <div className='search-space-box lg:pt-20 sm:pt-20 pt-10'>
 
 
-                            {/* State Dropdown */}
+
                             <div className="search-space-left-box ">
                                 <div className="search-space-left-box-1 border border-lightgary  rounded ">
-                                    <i className="fa-solid fa-location-dot text-white"></i>
+                                    <i className="fa-solid fa-location-dot "></i>
                                     <select
                                         name="state"
-                                        className='outline-none text-white text-sm  '
+                                        className={`outline-none ${searchData.state === "" ? ' opacity-50' : ''}   text-sm  `}
+
                                         onChange={(e) => {
                                             setSearchData(() => ({
                                                 ...searchData,
@@ -249,15 +266,15 @@ const SearchList = () => {
                                     </select>
                                 </div>
 
-                                {/* District Dropdown */}
+
 
 
 
                                 <div className=" search-space-left-box-2 border border-lightgary rounded">
-                                    <i className="fa-solid fa-location-dot text-white"></i>
+                                    <i className="fa-solid fa-location-dot "></i>
                                     <select
                                         disabled={districtLoading}
-                                        className={`outline-none py-5 text-sm text-white flex-grow ${districtLoading ? 'opacity-50' : ''}`}
+                                        className={`outline-none py-5  ${searchData.city === "" ? ' opacity-50' : ''}  text-sm  flex-grow ${districtLoading ? 'opacity-50' : ''}`}
                                         onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
                                         value={searchData.city}
                                         name='city'
@@ -271,50 +288,79 @@ const SearchList = () => {
                                 </div>
                             </div>
 
-                            {/* Service Input */}
+
 
 
                             <div className="search-space-right-box ">
+                                <div className={`search-space-right-box-2 `}>
+                                    <div className='text-sm  border border-lightgary h-full   flex justify-center items-center rounded '>
+
+                                      <i className="fa-solid fa-magnifying-glass "></i>
+                                    <select
+                                        name="service_name"
+                                        id="service_name"
+                                        className={`outline-none py-5  ${searchData.service_name === "" ? ' opacity-50' : ''}  text-sm  flex-grow ${districtLoading ? 'opacity-50' : ''}`}
+                                        value={searchData.service_name}
+                                        onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
+                                    >
+                                        <option disabled className='text-sm text-black' value="" >Search By Service</option>
+                                        {services.status && services.data.map((service, index) => (
+                                            <option className='text-sm p-10 text-black' key={index} value={service.service_name}>{service.service_name}</option>
+
+                                        ))}
+
+                                    </select>
+
+                                    </div>
+                                </div>
                                 <div className='search-space-right-box-1 gap-10'>
-                                   
+
 
                                     <div className="  border border-lightgary overflow-hidden flex items-center relative rounded w-full">
-                                        <i className="fa-solid fa-magnifying-glass text-white"></i>
+                                        <i className="fa-solid fa-magnifying-glass "></i>
                                         <input
                                             type="text"
                                             placeholder="Search By Organization Name"
-                                            className="outline-none flex-grow text-sm text-white"
+                                            className="outline-none flex-grow text-sm "
                                             value={searchData.organization_name}
                                             onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
                                         />
-                                       
+
                                     </div>
                                 </div>
-                                <button type="submit" className="button cursor-pointer bg-white px-20 py-10 text-secondary rounded">
-                                    <i className="fa fa-search"></i>
+                                <button type="submit" className="button cursor-pointer bg-primary text-white px-20 py-10 text-secondary rounded">
+                                   { isMobile ? "Search" : ( <i className="fa fa-search"></i>)}
                                 </button>
                             </div>
                         </div>
-                    </form>
-                </section>
+                    </motion.form>
+
+                </motion.section>
 
                 {/*  Search Results */}
 
 
-                <div className="pt-30" id='search-result' ref={searchResultRef}>
-                    <h2 className="text-1xl font-bold mb-30 mt-40 text-secondary">Search Results</h2>
+                <div className="" id='search-result' ref={searchResultRef}>
+                    <div className="flex items-center justify-between mb-30  gap-10">
+                        <h2 className="text-1xl font-bold  text-secondary">Search Results</h2>
+                        <IconButton style={{ background: !searchCollapsed ?  ""  : 'var(--color-primary)' }} onClick={() => setSearchCollapsed(!searchCollapsed)} >
+                            <Tooltip title="Filter">
+                                <FilterAltIcon className={` ${searchCollapsed ? 'text-white' : 'text-primary'}`} />
+                            </Tooltip>
+                        </IconButton>
+                    </div>
                     <div className="search-result-list-box">
 
                         {!loading ? (<Pagination
                             DataList={resultList}
-                            limit={6}
+                            limit={12}
                             targateRef={searchResultRef}
                         >
                             {(currentItems) => (
                                 <ul className='flex gap-10 justify-around  flex-wrap align-center'>
                                     {currentItems.length > 0 ? (
                                         currentItems.map((data, index) => (
-                                            <li style={{ flexBasis: '325px', maxWidth: '400px' }} key={index} className="bg-white flex-grow    shadow rounded overflow-hidden mb-20  min-h-400">
+                                            <li style={{ flexBasis: '325px', maxWidth: '400px' }} key={index} className="bg-white flex-grow     shadow rounded overflow-hidden mb-20  min-h-400">
                                                 <div className="p-10 pb-15 flex flex-col justify-between h-full">
                                                     {/* Image */}
                                                     <div className=''>
@@ -335,7 +381,7 @@ const SearchList = () => {
                                                             <h2 className="lg:text-3xl text-center md:text-2xl sm:text-2xl text-xl font-bold text-secondary">{data.hospital_name}</h2>
                                                             <p className="text-xs mb-10 text-center mt-5 text-primary">{findeServiceName(data.service_type)}</p>
                                                             {data?.service_desc && (<p className="text-sm mt-10"><span className="font-bold text-secondary"> </span>{sliceText(data?.service_desc, 60)}</p>)}
-                                                            <p className="uppercase text-xs md:text-sm font-semibold mt-15 flex items-center gap-4 "><LocationCityIcon className='text-primary'/>{data?.address} || {data.pincode}</p>
+                                                            <p className="uppercase text-xs md:text-sm font-semibold mt-15 flex items-center gap-4 "><LocationCityIcon className='text-primary' />{data?.address} || {data.pincode}</p>
                                                         </div>
                                                     </div>
                                                     {/* Rating + Button */}
@@ -344,10 +390,10 @@ const SearchList = () => {
                                                             Customer Rating <br />
                                                             <span className="text-xs pt-10 flex gap-4 items-center ">
                                                                 <i className="fa-solid fa-star"></i>
-                                                               <span className='text-black flex items-center'> {data?.service_rating || '0'}  Rating</span>
+                                                                <span className='text-black flex items-center'> {data?.service_rating || '0'}  Rating</span>
                                                             </span>
                                                         </p>
-                                                        <button  onClick={() => handleNavigate(data)} className="bg-primary button rounded text-sm  px-20  cursor-pointer text-nowrap !text-white">View</button>
+                                                        <button onClick={() => handleNavigate(data)} className="bg-primary button rounded text-sm  px-20  cursor-pointer text-nowrap !text-white">View</button>
                                                     </div>
                                                 </div>
                                             </li>
@@ -380,7 +426,7 @@ const SearchList = () => {
                     </div>
                 </div>
             </div>
-        </div>
+        </div >
     )
 }
 

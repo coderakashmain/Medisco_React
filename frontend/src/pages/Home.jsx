@@ -59,7 +59,14 @@ const Home = () => {
 
 
 
-
+useEffect(() => { 
+  if (districtsList.length === 0) {
+    setSearchData((prev) => ({
+      ...prev,
+      city: '',
+    }));
+  }
+},[districtsList]);
 
 
   useEffect(() => {
@@ -302,51 +309,17 @@ const Home = () => {
             </h2>
             <div className='search-space-box '>
 
-              <div
-                className="search-space-left-box "
-              >
-
-                <div className="search-space-left-box-1  border border-lightgary  rounded   ">
-                  <i className="fa-solid fa-location-dot text-gary "></i>
-                  <select name="states" id="states-box" className='bg-white rounded ' onChange={(e) => {
-                    setSearchData({ ...searchData, state: e.target.value });
-                    setState(e.target.value)
-                  }} defaultValue="">
-                    <option className='text-sm' value="">Search By State</option>
-                    {statesList.status && statesList.data.map((state, index) => (
-                      <option className='text-sm ' key={index} value={state}>{state}</option>
-
-                    ))}
-                    {stateLoading && (<option className='text-sm' disabled>Loading...</option>)}
-                  </select>
-
-                </div>
-                <div className=" search-space-left-box-2 border border-lightgary p-7 rounded  ">
-                  <i className="fa-solid fa-location-dot text-gary"></i>
-
-                  <select disabled={districtLoading} name="city" id="city" className={`bg-white outline-none  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} `}
-                    onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
-                    defaultValue="">
-                    <option className='text-sm' >Search By City</option>
-                    {districtsList.status && districtsList.data.map((district, index) => (
-                      <option className='text-sm' key={index} value={district}>{district}</option>
-
-                    ))}
-                  </select>
-                  {districtLoading && (<Loading size='20px' />)}
-                </div>
-
-              </div>
+             
 
 
-              <div className="search-space-right-box ">
+              <div style={{width : '40%'}}  className="search-space-right-box ">
                 <div className=" search-space-right-box-1 border border-lightgary p-7 rounded  ">
                   <i className="fa-solid fa-magnifying-glass text-gary"></i>
 
                   <select
                     name="service_name"
                     id="services"
-                    className='bg-white rounded flex-grow outline-none overflow-hidden text-sm'
+                    className={`bg-white rounded   flex-grow outline-none overflow-hidden text-sm ${searchData.service_name ? '' : 'text-gary'}`}
                     value={searchData.service_name}
                     onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
                   >
@@ -362,10 +335,47 @@ const Home = () => {
 
                 </div>
 
+                
+
+
+
+              </div>
+
+               <div  style={{width : '60%'}}
+                className="search-space-left-box "
+              >
+
+                <div className="search-space-left-box-1  border border-lightgary  rounded ">
+                  <i className="fa-solid fa-location-dot text-gary "></i>
+                  <select name="states" id="states-box" className={`bg-white rounded text-sm ${searchData.state ? '' : 'text-gary'}`} onChange={(e) => {
+                    setSearchData({ ...searchData, state: e.target.value });
+                    setState(e.target.value)
+                  }} defaultValue="">
+                    <option className='text-sm' value="">Search By State</option>
+                    {statesList.status && statesList.data.map((state, index) => (
+                      <option className='text-sm ' key={index} value={state}>{state}</option>
+
+                    ))}
+                    {stateLoading && (<option className='text-sm' disabled>Loading...</option>)}
+                  </select>
+
+                </div>
+                <div className=" search-space-left-box-2 border border-lightgary p-7 rounded  ">
+                  <i className="fa-solid fa-location-dot text-gary"></i>
+
+                  <select disabled={districtLoading} name="city" id="city" className={`bg-white outline-none text-sm  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} ${searchData.city ? '' : 'text-gary'}`}
+                    onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
+                    defaultValue="">
+                    <option className='text-sm' >Search By City</option>
+                    {districtsList.status && districtsList.data.map((district, index) => (
+                      <option className='text-sm' key={index} value={district}>{district}</option>
+
+                    ))}
+                  </select>
+                  {districtLoading && (<Loading size='20px' />)}
+                </div>
                 <button type="submit" className="cursor-pointer button bg-primary px-20 py-10 text-white rounded "><i className="fa fa-search"></i>
                 </button>
-
-
 
               </div>
             </div>

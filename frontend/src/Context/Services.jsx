@@ -25,8 +25,8 @@ const Services = ({children}) => {
            setServices(response.data)
         }
         catch(err){
-            console.log(err)
-            console.log("Error getting data",err.response?.data);
+            console.error(err)
+            console.error("Error getting data",err.response?.data);
         }
 
     };

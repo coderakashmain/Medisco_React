@@ -20,7 +20,10 @@ const Districts = ({ children }) => {
   useEffect(() => {
     
     const getDistricts = async () => {
-     if (!state) return;
+     if (!state) {
+      setDistrictsList([]);
+      return;
+     }
      setDistrictLoading(true);
      setDistrictsList([]);
       try {

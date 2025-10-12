@@ -13,13 +13,14 @@ import { Navigation, Autoplay, FreeMode } from "swiper/modules";
 import { useScreen } from '../Context/ScreenProvider';
 import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
 import LocationCityIcon from '@mui/icons-material/LocationCity';
+import MapView from '../components/MapView';
 
 const ServiceDetails = () => {
   const location = useLocation();
   const { services } = useServiceListContex();
-  const { isMobile } = useScreen();
+  const { isMobile,width } = useScreen();
   const [serviceDetails, setServiceDetails] = useState(null);
-  const  servicedetailsRef  = useRef();
+  const servicedetailsRef = useRef();
 
   useEffect(() => {
 
@@ -36,22 +37,22 @@ const ServiceDetails = () => {
         setServiceDetails(JSON.parse(storedData));
       }
     }
- 
+
 
   }, [location.state]);
 
-  useEffect(()=>{
-      const timer = setTimeout(() => {
-    if (servicedetailsRef.current) {
-      servicedetailsRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start",
-      });
-    }
-  }, 100); 
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (servicedetailsRef.current) {
+        servicedetailsRef.current.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        });
+      }
+    }, 100);
 
-  return () => clearTimeout(timer);
-  },[])
+    return () => clearTimeout(timer);
+  }, [])
 
   if (!serviceDetails) {
     return (
@@ -78,9 +79,9 @@ const ServiceDetails = () => {
     <section id='service-details' ref={servicedetailsRef} className={`min-h-[80vh] w-full ${isMobile ? 'bg-white' : 'bg-[#F4F4FF]'}  sm:pt-100 pt-80 sm:pt-40 lg:pt-80`}>
       <div className='container   ' >
 
-        <div  className={`service-details-box h-full gap-20 ${isMobile ? "" : 'shadow p-10'} flex flex-row bg-white  rounded pb-30`}>
-          <div className={`service-details-left-box  ${isMobile ? 'w-full' : 'w-252'} `}>
-            <div className={`photoes-box h-252 ${isMobile ? 'w-full' : 'w-252'}   bg-[#F4F4FF] rounded overflow-hidden flex items-center justify-center`}>
+        <div className={`service-details-box h-full gap-20 ${isMobile ? "" : 'shadow p-10'} flex flex-row bg-white  rounded pb-30`}>
+          <div className={`service-details-left-box flex flex-col  gap-10  ${isMobile ? 'w-full' : width > 991 ? 'w-252' : 'w-full'} `}>
+            <div style={{ width: isMobile ? '100%' : '252px' }} className={`photoes-box h-252    bg-[#F4F4FF] rounded overflow-hidden flex items-center justify-center`}>
               {serviceDetails?.images?.length > 0 ? (
                 <Swiper
                   modules={[Navigation, Autoplay, FreeMode]}
@@ -121,6 +122,12 @@ const ServiceDetails = () => {
             </div>
 
 
+            {!isMobile || ! width > 991 && (<div className="flex-1">
+              <MapView lat={serviceDetails?.latitude} lng={serviceDetails?.longitude} />
+            </div>)}
+
+
+
           </div>
           <div className='service-details-right-box flex-grow   '>
             <div className='flex  justify-between'>
@@ -150,11 +157,11 @@ const ServiceDetails = () => {
                   {serviceDetails?.availability && (<span className='bg-[#F4F4FF] px-10 py-5 rounded-[20px] select-none  text-primary border border-primary font-semibold'>{serviceDetails?.availability}</span>)}
                 </div>
 
-                <div className='mt-20'>
+                {serviceDetails?.organisation_url && (<div className='mt-20'>
                   <button className='button cursor-pointer bg-primary  font-semibold block float-right text-sm  text-white px-20 py-5 rounded '>
-                    Connect
+                    Explore
                   </button>
-                </div>
+                </div>)}
 
 
 
@@ -167,7 +174,7 @@ const ServiceDetails = () => {
 
             <p className='mt-40  font-semibold text-sm max-md:text-xs flex items-center gap-4'><LocationCityIcon className='text-primary' /> {serviceDetails.address} </p>
 
-            <div className='flex md:gap-20  gap-5 mt-40  '>
+            <div className='flex md:gap-20 flex-wrap  gap-5 mt-40  '>
               {serviceDetails?.state && (<div className='py-5 px-10 font-semibold bg-[#F4F4FF] rounded text-primary text-nowrap border text-xs'>
                 State : {serviceDetails?.state}
               </div>)}
@@ -210,9 +217,15 @@ const ServiceDetails = () => {
 
 
 
+
+
           </div>
 
-        </div>
+        </div>  
+
+         {(isMobile || width > 991) && ( <div style={{borderRadius : '10px'}} className={`${isMobile ? "mt-10 h-200" : "mt-40 p-10 h-400"} width-full   shadow bg-white  rounded pb-10`}>
+              <MapView lat={serviceDetails?.latitude} lng={serviceDetails?.longitude} />
+            </div>)}
 
       </div>
 

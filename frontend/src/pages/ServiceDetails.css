@@ -9,6 +9,7 @@
  max-width:  calc(var(--spacing) * 400);
 }
 
+
 @media (max-width : 1245px) {
    .servicedetails-discount-box ul li{
  flex-basis: calc(var(--spacing) * 300);

@@ -39,7 +39,7 @@ const VerifyOtp = ({ setVerifypopup }) => {
         try {
             const response = await axios.post(`${host}/user/verify-email`, { user_id: userId, otp: OTPValue });
 
-            console.log(response)
+            
 
             localStorage.setItem('userdata', JSON.stringify(response.data));
             setSnackbar({ open: true, message: 'OTP Verified.', type: 'success' })
@@ -66,7 +66,7 @@ const VerifyOtp = ({ setVerifypopup }) => {
 
 
     return (
-        <div className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad] cursor-default  w-screen h-screen z-1002 ">
+        <div style={{zIndex : 1003}} className=" verify-email-popup    fixed top-0 left-0 inset-0 bg-[#646464ad] cursor-default  w-screen h-screen z-1002 ">
 
 
             <div className="container flex items-center justify-center relative h-full   ">
