@@ -34,14 +34,12 @@ const SearchList = () => {
     const { searchdata } = location?.state || {};
     const [resultList, setResultList] = useState([]);
     const [loading, setLoading] = useState(false);
-    const { isMobile ,width,isLargeDesktop} = useScreen();
-    const [searchParams] = useSearchParams();
-    const queryParams = Object.fromEntries([...searchParams]);
-    const { state, city, organization_name, service_id, service_name } = queryParams;
+    const { isMobile, width, isLargeDesktop } = useScreen();
     const [searchCollapsed, setSearchCollapsed] = useState(false);
 
     const [searchData, setSearchData] = useState(() => {
         if (searchdata) {
+
             return {
                 state: searchdata?.state || '',
                 city: searchdata?.city || '',
@@ -65,8 +63,10 @@ const SearchList = () => {
 
 
 
+
+
     const fetchList = async () => {
-        if (!searchData?.state && !searchData.city && !searchData.organization_name && !searchData.service_id) return;
+        if (!searchData?.state && !searchData?.city && !searchData?.organization_name && !searchData?.service_id) return;
 
         setLoading(true);
         try {
@@ -86,21 +86,19 @@ const SearchList = () => {
     useEffect(() => {
 
 
-        if (!searchData.state) {
+        if (!searchData?.state) {
             setDistrictsList([])
         }
 
         sessionStorage.setItem('searchItems', JSON.stringify(searchData));
-        if (!searchData.service_id) return;
+        if (!searchData?.service_id) return;
+
 
 
 
 
         navigate(
-            {
-                pathname: "/search_result",
-                search: `?${createSearchParams(searchData)}`
-            },
+            `/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${searchData.service_name}`,
             { replace: true }
         )
         setResultList([]);
@@ -111,7 +109,7 @@ const SearchList = () => {
 
         fetchList();
 
-    }, [searchData.state, searchData.city, searchData.service_id]);
+    }, [searchData?.state, searchData?.city, searchData?.service_id]);
 
 
 
@@ -144,7 +142,7 @@ const SearchList = () => {
 
 
     useEffect(() => {
-        if (!services?.data || !searchData.service_name.trim()) {
+        if (!services?.data || !searchData?.service_name?.trim()) {
             setSearchData((prev) => ({
                 ...prev,
                 service_id: '',
@@ -154,7 +152,7 @@ const SearchList = () => {
 
         const matched = services.data.find(
             (value) =>
-                value.service_name.toLowerCase() === searchData.service_name.toLowerCase()
+                value.service_name.toLowerCase() === searchData?.service_name.toLowerCase()
         );
 
         if (matched) {
@@ -168,22 +166,19 @@ const SearchList = () => {
                 service_id: "",
             }));
         }
-    }, [searchData.service_name, services]);
+    }, [searchData?.service_name, services]);
 
 
 
     //handle submit 
     const handleSubmit = (e) => {
         e.preventDefault();
-        if (!searchData.state && !searchData.organization_name) {
+        if (!searchData?.state && !searchData?.organization_name) {
             setSnackbar({ open: true, message: 'Enter atleast one field.', type: "warning" })
             return;
         }
         navigate(
-            {
-                pathname: "/search_result",
-                search: `?${createSearchParams(searchData)}`
-            },
+            `/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${searchData.service_name}`,
             { replace: true }
         )
         fetchList();
@@ -204,13 +199,13 @@ const SearchList = () => {
 
 
     return (
-        <div className="sm:pt-100 pt-80 sm:pt-40 pb-80 lg:pt-80 bg-white  ">
+        <div className="sm:pt-100 pt-80 sm:pt-40 pb-80 lg:pt-80 bg-white min-h-screen  ">
             <div className="container">
-            
+
 
                 <motion.section
                     initial={{ opacity: 0, y: 50 }}
-                    animate={{ opacity: 1, y: 0, height: searchCollapsed ? isLargeDesktop ? 140 : width >= 576 ? 190  : isMobile ? 310 : 400 : 0, overflow: 'hidden' }}
+                    animate={{ opacity: 1, y: 0, height: searchCollapsed ? isLargeDesktop ? 140 : width >= 576 ? 190 : isMobile ? 350 : 400 : 0, overflow: 'hidden' }}
                     transition={{
                         type: "spring",
                         stiffness: 110, // lower = smoother
@@ -242,11 +237,33 @@ const SearchList = () => {
 
 
                             <div className="search-space-left-box ">
-                                <div className="search-space-left-box-1 border border-lightgary  rounded ">
+                                <div className={`search-space-right-box-2 `}>
+                                    <div className='  border border-lightgary h-full p-7  flex justify-center items-center rounded '>
+
+                                        <i className="fa-solid fa-magnifying-glass "></i>
+                                        <select
+                                            name="service_name"
+                                            id="service_name"
+                                            className={`outline-none py-5  ${searchData?.service_name === "" ? ' opacity-50' : ''}  text-sm  flex-grow ${districtLoading ? 'opacity-50' : ''}`}
+                                            value={searchData?.service_name}
+                                            onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
+                                        >
+                                            <option disabled className='text-sm text-black' value="" >Search By Service</option>
+                                            {services.status && services.data.map((service, index) => (
+                                                <option className='text-sm p-10 text-black' key={index} value={service.service_name}>{service.service_name}</option>
+
+                                            ))}
+
+                                        </select>
+
+                                    </div>
+                                </div>
+                                
+                                <div className="search-space-left-box-1 border border-lightgary  p-7 rounded ">
                                     <i className="fa-solid fa-location-dot "></i>
                                     <select
                                         name="state"
-                                        className={`outline-none ${searchData.state === "" ? ' opacity-50' : ''}   text-sm  `}
+                                        className={`outline-none ${searchData?.state === "" ? ' opacity-50' : ''}   text-sm  `}
 
                                         onChange={(e) => {
                                             setSearchData(() => ({
@@ -257,7 +274,7 @@ const SearchList = () => {
 
                                             setState(e.target.value);
                                         }}
-                                        value={searchData.state}
+                                        value={searchData?.state}
                                     >
                                         <option value="" className='text-black text-sm '>Search By State</option>
                                         {statesList.status && statesList.data.map((state, index) => (
@@ -270,13 +287,22 @@ const SearchList = () => {
 
 
 
-                                <div className=" search-space-left-box-2 border border-lightgary rounded">
+
+                            </div>
+
+
+
+
+                            <div className="search-space-right-box ">
+                                
+
+                                <div className=" search-space-left-box-2 border border-lightgary rounded p-7">
                                     <i className="fa-solid fa-location-dot "></i>
                                     <select
                                         disabled={districtLoading}
-                                        className={`outline-none py-5  ${searchData.city === "" ? ' opacity-50' : ''}  text-sm  flex-grow ${districtLoading ? 'opacity-50' : ''}`}
+                                        className={`outline-none py-5  ${searchData?.city === "" ? ' opacity-50' : ''}  text-sm  flex-grow ${districtLoading ? 'opacity-50' : ''}`}
                                         onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
-                                        value={searchData.city}
+                                        value={searchData?.city}
                                         name='city'
                                     >
                                         <option value="" className='text-black text-sm'>Search By City</option>
@@ -286,50 +312,23 @@ const SearchList = () => {
                                     </select>
                                     {districtLoading && (<Loading size='20px' />)}
                                 </div>
-                            </div>
-
-
-
-
-                            <div className="search-space-right-box ">
-                                <div className={`search-space-right-box-2 `}>
-                                    <div className='text-sm  border border-lightgary h-full   flex justify-center items-center rounded '>
-
-                                      <i className="fa-solid fa-magnifying-glass "></i>
-                                    <select
-                                        name="service_name"
-                                        id="service_name"
-                                        className={`outline-none py-5  ${searchData.service_name === "" ? ' opacity-50' : ''}  text-sm  flex-grow ${districtLoading ? 'opacity-50' : ''}`}
-                                        value={searchData.service_name}
-                                        onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
-                                    >
-                                        <option disabled className='text-sm text-black' value="" >Search By Service</option>
-                                        {services.status && services.data.map((service, index) => (
-                                            <option className='text-sm p-10 text-black' key={index} value={service.service_name}>{service.service_name}</option>
-
-                                        ))}
-
-                                    </select>
-
-                                    </div>
-                                </div>
                                 <div className='search-space-right-box-1 gap-10'>
 
 
-                                    <div className="  border border-lightgary overflow-hidden flex items-center relative rounded w-full">
+                                    <div className="  border border-lightgary p-7 overflow-hidden flex items-center relative rounded w-full">
                                         <i className="fa-solid fa-magnifying-glass "></i>
                                         <input
                                             type="text"
                                             placeholder="Search By Organization Name"
                                             className="outline-none flex-grow text-sm "
-                                            value={searchData.organization_name}
+                                            value={searchData?.organization_name}
                                             onChange={(e) => setSearchData({ ...searchData, organization_name: e.target.value })}
                                         />
 
                                     </div>
                                 </div>
                                 <button type="submit" className="button cursor-pointer bg-primary text-white px-20 py-10 text-secondary rounded">
-                                   { isMobile ? "Search" : ( <i className="fa fa-search"></i>)}
+                                    {isMobile ? "Search" : (<i className="fa fa-search"></i>)}
                                 </button>
                             </div>
                         </div>
@@ -343,7 +342,7 @@ const SearchList = () => {
                 <div className="" id='search-result' ref={searchResultRef}>
                     <div className="flex items-center justify-between mb-30  gap-10">
                         <h2 className="text-1xl font-bold  text-secondary">Search Results</h2>
-                        <IconButton style={{ background: !searchCollapsed ?  ""  : 'var(--color-primary)' }} onClick={() => setSearchCollapsed(!searchCollapsed)} >
+                        <IconButton style={{ background: !searchCollapsed ? "" : 'var(--color-primary)' }} onClick={() => setSearchCollapsed(!searchCollapsed)} >
                             <Tooltip title="Filter">
                                 <FilterAltIcon className={` ${searchCollapsed ? 'text-white' : 'text-primary'}`} />
                             </Tooltip>

@@ -122,7 +122,7 @@ const ServiceDetails = () => {
             </div>
 
 
-            {!isMobile || ! width > 991 && (<div className="flex-1">
+            {!isMobile || ! width > 991 && (serviceDetails?.latitude && serviceDetails?.latitude !== '00') && (serviceDetails?.longitude && serviceDetails?.longitude!== '00') && (<div className="flex-1">
               <MapView lat={serviceDetails?.latitude} lng={serviceDetails?.longitude} />
             </div>)}
 
@@ -223,7 +223,7 @@ const ServiceDetails = () => {
 
         </div>  
 
-         {(isMobile || width > 991) && ( <div style={{borderRadius : '10px'}} className={`${isMobile ? "mt-10 h-200" : "mt-40 p-10 h-400"} width-full   shadow bg-white  rounded pb-10`}>
+         {(isMobile || width > 991) && (serviceDetails?.latitude && serviceDetails?.latitude !== '00') && (serviceDetails?.longitude && serviceDetails?.longitude!== '00') && ( <div style={{borderRadius : '10px'}} className={`${isMobile ? "mt-10 h-252" : "mt-40 p-10 h-400"} width-full   shadow bg-white  rounded pb-10`}>
               <MapView lat={serviceDetails?.latitude} lng={serviceDetails?.longitude} />
             </div>)}
 

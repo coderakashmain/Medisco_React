@@ -115,17 +115,7 @@ const DiscountSubp = () => {
 
 
 
-    // const [filterList, setFilterList] = useState(discountList);
-    // useEffect(() => {
-    //     if (search.trim() === "") {
-    //         setFilterList(discountList);
-    //     } else {
-    //         const filtered = discountList.filter((row) =>
-    //             row.discount_name?.toLowerCase().includes(search.toLowerCase())
-    //         );
-    //         setFilterList(filtered);
-    //     }
-    // }, [search, discountList]);
+
 
 
 

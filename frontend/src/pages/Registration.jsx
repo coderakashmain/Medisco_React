@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import { useUserDataContext } from '../Context/Userdata';
 import { useServiceListContex } from '../Context/Services';
 import { useStatesContext } from '../Context/States';
@@ -10,6 +10,8 @@ import axios from 'axios';
 import FallbackLoader from '../components/FallbackLoader';
 import { useSnackbar } from '../Context/SnackbarContext';
 import { useScreen } from '../Context/ScreenProvider';
+import DropdownOff from '../components/DropdownOff';
+
 
 const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
 
@@ -17,7 +19,7 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
     const { userLocation } = useLocationContext();
     const { services } = useServiceListContex();
     const { statesList } = useStatesContext();
-    const { districtsList, setState, state } = useDistrictsContext();
+    const { districtsList, setState, state, districtLoading } = useDistrictsContext();
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
     const location = useLocation();
@@ -27,8 +29,14 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
     const host = import.meta.env.VITE_HOST;
     const { setSnackbar } = useSnackbar();
     const [isOtherCity, setIsOtherCity] = useState(false);
-    const {isMobile} = useScreen();
-
+    const { isMobile } = useScreen();
+    const [filterStates, setFilterStates] = useState([])
+    const [filterCity, setFilterCity] = useState([])
+    const [showStatePopup, setShowStatePopup] = useState(false);
+    const [showCityPopup, setShowCityPopup] = useState(false);
+    const stateListRef = useRef();
+    const cityListRef = useRef();
+    const [allowCity, setAllowCity] = useState(false);
 
 
     const [userdetails, setUserdetails] = useState({
@@ -36,14 +44,14 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
         organization_name: '',
         contact_person: '',
         contact_email: '',
-        contact_mobileno: null,
+        contact_mobileno: '',
         password: "",
         state: '',
         city: '',
         address: '',
         pincode: '',
-        longitude: `${userLocation?.lng}` || '00',
-        latitude: `${userLocation?.lat}` || '00'
+        longitude: `${userLocation?.lng}` || '',
+        latitude: `${userLocation?.lat}` || ''
 
     })
 
@@ -54,7 +62,11 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
         e.preventDefault();
 
 
-
+        const exists = statesList.data.some(s => s.toLowerCase() === userdetails.state.toLowerCase());
+        if (!exists) {
+            setError("Please enter correct State name!");
+            return;
+        }
 
         if (!userdetails.service_type || !userdetails.organization_name || !userdetails.contact_person || !userdetails.contact_email || !userdetails.contact_mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
         ) {
@@ -62,6 +74,7 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
             setError("Please fill the all Boxes");
             return;
         }
+
 
         const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]+$/;
 
@@ -108,17 +121,23 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
         const value = e.target.value;
         const name = e.target.name;
 
+
+
         if (name === "citySelect") {
-            if (value === "Other") {
+            if (value.toLowerCase() === "other") {
                 setIsOtherCity(true);
-                setUserdetails((prev) => ({ ...prev, city: "" })); 
+                setUserdetails((prev) => ({ ...prev, city: "" }));
             } else {
                 setIsOtherCity(false);
                 setUserdetails((prev) => ({ ...prev, city: value }));
             }
         } else if (name === "city") {
-           
+
             setUserdetails((prev) => ({ ...prev, city: value }));
+        } else if (name === 'state') {
+            const formattedValue =
+                value.charAt(0).toUpperCase() + value.slice(1).toLowerCase();
+            setUserdetails((prev) => ({ ...prev, state: formattedValue }));
         } else {
             setUserdetails((prev) => ({ ...prev, [name]: value }));
         }
@@ -127,13 +146,77 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
 
 
 
+    useEffect(() => {
+
+        if (userdetails.state) {
+            setShowStatePopup(true);
+            const datalist = statesList.data.filter(state =>
+                state.toLowerCase().includes(userdetails.state.toLowerCase())
+            );
+            setFilterStates(datalist);
+            const exists = statesList.data.some(s => s.toLowerCase() === userdetails.state.toLowerCase());
+            if (exists) {
+                setShowStatePopup(false);
+            } else {
+                setShowStatePopup(true);
+            }
+        } else {
+            setFilterStates(statesList.data);
+            setShowStatePopup(false);
+            setUserdetails({
+                ...userdetails,
+                city: ''
+            })
+        }
+    }, [statesList, userdetails.state]);
+
+    useEffect(() => {
+        const exists = statesList.data.some(s => s.toLowerCase() === userdetails.state.toLowerCase());
+        if (exists) {
+            setAllowCity(true);
+        } else {
+            setAllowCity(false);
+        }
+    }, [statesList, userdetails.state])
+
+
+    useEffect(() => {
+        const exists = statesList.data.some(s => s.toLowerCase() === userdetails.state.toLowerCase());
+        if (!exists) {
+            return;
+        }
+
+
+        if (districtsList.length === 0) return;
+
+        if (userdetails.city) {
+            if (!districtsList || districtLoading) return;
+            setShowCityPopup(true);
+            const datalist = districtsList?.data?.filter(city =>
+                city.toLowerCase().includes(userdetails.city.toLowerCase())
+            );
+            setFilterCity(datalist);
+            const exists = districtsList?.data.some(s => s.toLowerCase() === userdetails.city.toLowerCase());
+            if (exists) {
+                setShowCityPopup(false);
+            } else {
+                setShowCityPopup(true);
+            }
+        } else {
+            setFilterCity(districtsList.data);
+            setShowCityPopup(false);
+        }
+    }, [districtsList, userdetails.city]);
+
+
+
     return (
         <div style={{ zIndex: 10 }} className=" register-popup  cursor-default  fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
 
             <div className="container flex items-center justify-center relative h-full   ">
-                <div className={`register-box relative  md:w-[60%] lg:w-1/2 w-full ${isMobile ? "max-h-[80vh]" : "max-h-[90vh]" }  scroll  bg-white shadow rounded-[10px]  px-30 pb-30`}>
+                <div className={`register-box relative  md:w-[60%] lg:w-1/2 w-full ${isMobile ? "max-h-[80vh]" : "max-h-[90vh]"}  scroll  bg-white shadow rounded-[10px]  px-30 pb-30`}>
                     <form onSubmit={hanldeRegistration}>
-                        <div className="sticky pt-30 pb-10 top-0 left-0 bg-white">
+                        <div style={{ zIndex: 10 }} className="sticky pt-30 pb-10 top-0 left-0 bg-white">
 
                             <button
                                 onClick={() => setSignIn(false)}
@@ -174,7 +257,7 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
                             type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
 
-                        <p className=" text-sm mb-10">Contact Person Name *</p>
+                        <p className=" text-sm mb-10">Contact Person *</p>
                         <input
                             name='contact_person'
                             value={userdetails.contact_person}
@@ -199,41 +282,87 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
                             type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
                         <p className=" text-sm mb-10">State *</p>
-                        <select
-                            value={userdetails.state}
-                            onChange={(e) => {
-                                handleChange(e);
-                                setState(e.target.value);
-                            }}
-                            className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
-                            defaultValue=""
-                            name="state" id="state">
-                            <option value="">-- Select State --</option>
-                            {statesList.status && statesList.data.map((state, index) => (
-                                <option value={state} key={index}>{state}</option>
+                        <div className='relative'>
 
-                            ))}
-                        </select>
+
+                            <input
+                                value={userdetails.state}
+                                onChange={(e) => {
+                                    handleChange(e);
+                                    setState(e.target.value);
+                                }}
+                                className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
+
+                                name="state" id="state" />
+                            <DropdownOff dropdownRef={stateListRef} setDropdownOpen={setShowStatePopup}>
+
+                                {showStatePopup && <ul style={{ zIndex: 1 }} ref={stateListRef} className='absolute bg-[#F4F4FF] shadow max-h-200 scroll rounded w-full top-[100%] left-0 border border-lightgary '>
+                                    {filterStates?.length > 0 ? filterStates.map((state, index) => (
+                                        <li className='py-7 px-10 hover:bg-primary hover:text-white cursor-pointer transition text-sm'
+                                            onClick={() => {
+                                                setUserdetails({
+                                                    ...userdetails,
+                                                    state: state
+                                                })
+                                                setState(state);
+                                                setShowStatePopup(false);
+                                            }}
+                                            key={index}>{state}</li>
+
+                                    )) : (
+                                        <li className='py-7 px-10 hover:bg-primary hover:text-white cursor-pointer transition text-sm'>No State Found</li>
+                                    )}
+                                </ul>}
+                            </DropdownOff>
+
+
+                        </div>
 
                         <p className=" text-sm mb-10">City *</p>
-                        <select
-                            value={isOtherCity ? "Other" : userdetails.city}
+                        <div className='relative'>
+                            <input
+                                value={isOtherCity ? "Other" : userdetails.city}
+                                disabled={!allowCity || districtsList.length === 0}
+                                onChange={handleChange}
+                                className={`w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none ${!allowCity || districtsList.length === 0 ? 'cursor-notAllow  opacity-50' : ''}`}
 
-                            onChange={handleChange}
-                            className='w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none'
-                            defaultValue=""
-                            name="citySelect" id="city">
-                            <option value="">-- Select City --</option>
-                            {districtsList?.status && districtsList.data.map((dist, index) => (
-                                <option value={dist} key={index}>{dist}</option>
+                                name="citySelect" id="city" />
+                            <DropdownOff dropdownRef={cityListRef} setDropdownOpen={setShowCityPopup}>
 
-                            ))}
+                                {showCityPopup && !isOtherCity && <ul ref={cityListRef} className='absolute bg-[#F4F4FF] shadow max-h-200 scroll rounded w-full top-[100%] left-0 border border-lightgary'>
+                                    {filterCity?.length > 0 && filterCity.map((dist, index) => (
 
-                            {districtsList?.status && (
-                                <option value="Other">Other</option>
-                            )}
+                                        <li className='py-7 px-10 hover:bg-primary hover:text-white cursor-pointer transition text-sm'
+                                            onClick={() => {
+                                                setUserdetails({
+                                                    ...userdetails,
+                                                    city: dist
+                                                })
+                                                setShowCityPopup(false);
+                                            }}
+                                            key={index}>{dist}</li>
 
-                        </select>
+
+
+
+
+                                    ))}
+                                    <li name='citySelect' value='Other' className='py-7 px-10 hover:bg-primary hover:text-white cursor-pointer transition text-sm'
+                                        onClick={(e) => {
+                                            setIsOtherCity(true);
+                                            setUserdetails((prev) => ({ ...prev, city: "" }));
+
+                                            setShowCityPopup(false);
+                                        }}
+                                    >Other</li>
+                                </ul>}
+                            </DropdownOff>
+
+
+
+
+
+                        </div>
                         {isOtherCity && (
                             <input
                                 type="text"

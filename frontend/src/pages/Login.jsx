@@ -71,24 +71,24 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                 }
             );
 
-            if (response.data.status === 201) {
-                setVerifypopup(true);
+             const otpVerify = response.data.data.otp_verify;
 
-                sessionStorage.setItem("userId", response.data.data);
-                sessionStorage.setItem("email", loginData.email);
-                return;
+            
+            if (otpVerify === false) {
+               
+                    setVerifypopup(true);
+
+                    sessionStorage.setItem("userId", response.data.data.user_id);
+                    sessionStorage.setItem("email", loginData.email);
+                    return;
+
             }
-
+            if(otpVerify === undefined || otpVerify === true){
+                
             const userData = response.data;
             setSnackbar({ open: true, message: 'Login Successfully', type: 'success' })
             setMessage("Login Successfully")
-            // if (loginData.remember) {
-            //     localStorage.setItem('email', loginData.email)
-            //     localStorage.setItem('password', loginData.password)
-            // } else {
-            //     localStorage.removeItem('email');
-            //     localStorage.removeItem('password')
-            // }
+         
             localStorage.setItem('userdata', JSON.stringify(userData));
 
             setLoginP(false)
@@ -100,6 +100,8 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                 password: ''
             })
             setMessage('');
+
+            }
 
 
         } catch (error) {

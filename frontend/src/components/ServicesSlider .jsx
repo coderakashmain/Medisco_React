@@ -24,11 +24,12 @@ const ServicesSlider = ({ services }) => {
 
 
   const handleSubmit = (e) => {
- 
+  sessionStorage.setItem('searchItems', JSON.stringify(searchData));
     if (!searchData.service_id) {
       setSnackbar({ open: true, message: 'Service name is required.', type: "error" })
       return;
     }
+ 
     navigate({
       pathname: "/search_result",
       search: `?${createSearchParams(searchData)}`
@@ -36,6 +37,7 @@ const ServicesSlider = ({ services }) => {
   }
 
 useEffect(() => {
+  
   if (searchData.service_id) {
     handleSubmit();
   }

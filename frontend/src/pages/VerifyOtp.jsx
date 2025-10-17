@@ -56,7 +56,7 @@ const VerifyOtp = ({ setVerifypopup }) => {
 
         } catch (error) {
             setMessage('');
-            setOTPError(error.response?.data?.error?.message || "Something went wrong");
+         setOTPError(error.response?.data?.error?.otp || "Something went wrong");
             console.error("Registration  failed:", error.response?.data || error.message);
         } finally {
             setLoading(false);

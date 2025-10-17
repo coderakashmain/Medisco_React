@@ -38,7 +38,7 @@ import ServicesSlider from '../components/ServicesSlider ';
 import ReviewSlider from '../components/ReviewSlider';
 import BrandSlider from '../components/BrandSlider';
 import DropdownOff from '../components/DropdownOff';
-
+import { useScreen } from '../Context/ScreenProvider';
 
 const Home = () => {
   const [searchData, setSearchData] = useState({
@@ -53,6 +53,7 @@ const Home = () => {
   const { services } = useServiceListContex();
   const { statesList, stateLoading } = useStatesContext();
   const { districtsList, setState, districtLoading } = useDistrictsContext();
+  const {isMobile} = useScreen();
   const [hideDropdown, setHideDropdown] = useState(false);
   const [filterList, setFilterList] = useState([])
  
@@ -127,10 +128,7 @@ useEffect(() => {
       setSnackbar({ open: true, message: 'Service name is required.', type: "error" })
       return;
     }
-    navigate({
-      pathname: "/search_result",
-      search: `?${createSearchParams(searchData)}`
-    }, { state: { searchdata : searchData } });
+    navigate(`/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${searchData.service_name}`, { state: { searchdata : searchData } });
   }
 
 
@@ -313,13 +311,13 @@ useEffect(() => {
 
 
               <div style={{width : '40%'}}  className="search-space-right-box ">
-                <div className=" search-space-right-box-1 border border-lightgary p-7 rounded  ">
+                <div className=" search-space-right-box-1 items-center border border-lightgary p-7 rounded  ">
                   <i className="fa-solid fa-magnifying-glass text-gary"></i>
 
                   <select
                     name="service_name"
                     id="services"
-                    className={`bg-white rounded   flex-grow outline-none overflow-hidden text-sm ${searchData.service_name ? '' : 'text-gary'}`}
+                    className={`bg-white rounded h-100  flex-grow outline-none overflow-hidden text-sm ${searchData.service_name ? '' : 'text-gary'}`}
                     value={searchData.service_name}
                     onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
                   >
@@ -345,9 +343,9 @@ useEffect(() => {
                 className="search-space-left-box "
               >
 
-                <div className="search-space-left-box-1  border border-lightgary  rounded ">
+                <div className="search-space-left-box-1  border border-lightgary p-7 rounded ">
                   <i className="fa-solid fa-location-dot text-gary "></i>
-                  <select name="states" id="states-box" className={`bg-white rounded text-sm ${searchData.state ? '' : 'text-gary'}`} onChange={(e) => {
+                  <select name="states" id="states-box" className={`bg-white rounded text-sm h-full ${searchData.state ? '' : 'text-gary'}`} onChange={(e) => {
                     setSearchData({ ...searchData, state: e.target.value });
                     setState(e.target.value)
                   }} defaultValue="">
@@ -363,7 +361,7 @@ useEffect(() => {
                 <div className=" search-space-left-box-2 border border-lightgary p-7 rounded  ">
                   <i className="fa-solid fa-location-dot text-gary"></i>
 
-                  <select disabled={districtLoading} name="city" id="city" className={`bg-white outline-none text-sm  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} ${searchData.city ? '' : 'text-gary'}`}
+                  <select disabled={districtLoading} name="city" id="city" className={`bg-white outline-none h-full text-sm  py-5 flex-grow ${districtLoading ? 'opacity-50' : ''} ${searchData.city ? '' : 'text-gary'}`}
                     onChange={(e) => setSearchData({ ...searchData, city: e.target.value })}
                     defaultValue="">
                     <option className='text-sm' >Search By City</option>
@@ -374,7 +372,8 @@ useEffect(() => {
                   </select>
                   {districtLoading && (<Loading size='20px' />)}
                 </div>
-                <button type="submit" className="cursor-pointer button bg-primary px-20 py-10 text-white rounded "><i className="fa fa-search"></i>
+                <button type="submit" className="cursor-pointer button bg-primary px-20 py-10 text-white rounded ">
+                {isMobile ? "Search " : (  <i className="fa fa-search"></i>)}
                 </button>
 
               </div>

@@ -49,7 +49,7 @@ function App() {
               element: <><Home /></>
             },
             {
-              path: '/search_result',
+              path: '/search_result/:state/:city/:organization_name/:service_name',
               element: <><Suspense fallback={<FallbackLoader fixed={true} />}><SearchList /></Suspense></>
             },
 
