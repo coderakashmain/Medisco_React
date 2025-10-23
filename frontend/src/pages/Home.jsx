@@ -53,21 +53,21 @@ const Home = () => {
   const { services } = useServiceListContex();
   const { statesList, stateLoading } = useStatesContext();
   const { districtsList, setState, districtLoading } = useDistrictsContext();
-  const {isMobile} = useScreen();
+  const { isMobile } = useScreen();
   const [hideDropdown, setHideDropdown] = useState(false);
   const [filterList, setFilterList] = useState([])
- 
 
 
 
-useEffect(() => { 
-  if (districtsList.length === 0) {
-    setSearchData((prev) => ({
-      ...prev,
-      city: '',
-    }));
-  }
-},[districtsList]);
+
+  useEffect(() => {
+    if (districtsList.length === 0) {
+      setSearchData((prev) => ({
+        ...prev,
+        city: '',
+      }));
+    }
+  }, [districtsList]);
 
 
   useEffect(() => {
@@ -128,7 +128,16 @@ useEffect(() => {
       setSnackbar({ open: true, message: 'Service name is required.', type: "error" })
       return;
     }
-    navigate(`/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${searchData.service_name}`, { state: { searchdata : searchData } });
+
+    let name = decodeURIComponent(searchData.service_name);
+
+
+    name = name.replace(/\//g, " ");
+
+  
+
+
+    navigate(`/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${name}`, { state: { searchdata: searchData } });
   }
 
 
@@ -307,10 +316,10 @@ useEffect(() => {
             </h2>
             <div className='search-space-box '>
 
-             
 
 
-              <div style={{width : '40%'}}  className="search-space-right-box ">
+
+              <div style={{ width: '40%' }} className="search-space-right-box ">
                 <div className=" search-space-right-box-1 items-center border border-lightgary p-7 rounded  ">
                   <i className="fa-solid fa-magnifying-glass text-gary"></i>
 
@@ -319,7 +328,10 @@ useEffect(() => {
                     id="services"
                     className={`bg-white rounded h-100  flex-grow outline-none overflow-hidden text-sm ${searchData.service_name ? '' : 'text-gary'}`}
                     value={searchData.service_name}
-                    onChange={(e) => setSearchData({ ...searchData, service_name: e.target.value })}
+                    onChange={(e) => {
+
+                      setSearchData({ ...searchData, service_name: e.target.value })
+                    }}
                   >
                     <option className='text-sm' value="" >Search By Service</option>
                     {services.status && services.data.map((service, index) => (
@@ -333,13 +345,13 @@ useEffect(() => {
 
                 </div>
 
-                
+
 
 
 
               </div>
 
-               <div  style={{width : '60%'}}
+              <div style={{ width: '60%' }}
                 className="search-space-left-box "
               >
 
@@ -373,7 +385,7 @@ useEffect(() => {
                   {districtLoading && (<Loading size='20px' />)}
                 </div>
                 <button type="submit" className="cursor-pointer button bg-primary px-20 py-10 text-white rounded ">
-                {isMobile ? "Search " : (  <i className="fa fa-search"></i>)}
+                  {isMobile ? "Search " : (<i className="fa fa-search"></i>)}
                 </button>
 
               </div>

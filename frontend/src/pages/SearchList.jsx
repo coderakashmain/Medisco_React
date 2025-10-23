@@ -93,12 +93,15 @@ const SearchList = () => {
         sessionStorage.setItem('searchItems', JSON.stringify(searchData));
         if (!searchData?.service_id) return;
 
+          let name = decodeURIComponent(searchData.service_name);
 
+
+    name = name.replace(/\//g, " ");
 
 
 
         navigate(
-            `/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${searchData.service_name}`,
+            `/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${name}`,
             { replace: true }
         )
         setResultList([]);
@@ -177,8 +180,14 @@ const SearchList = () => {
             setSnackbar({ open: true, message: 'Enter atleast one field.', type: "warning" })
             return;
         }
+
+         let name = decodeURIComponent(matched.service_name);
+
+
+        name = name.replace(/\//g, " ");
+        
         navigate(
-            `/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${searchData.service_name}`,
+            `/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${name}`,
             { replace: true }
         )
         fetchList();
