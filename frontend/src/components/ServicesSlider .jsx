@@ -29,11 +29,14 @@ const ServicesSlider = ({ services }) => {
       setSnackbar({ open: true, message: 'Service name is required.', type: "error" })
       return;
     }
+
+    let name = decodeURIComponent(searchData.service_name);
+
+
+    name = name.replace(/\//g, " ");
+    navigate(`/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${name}`, { state: { searchData } });
  
-    navigate({
-      pathname: "/search_result",
-      search: `?${createSearchParams(searchData)}`
-    }, { state: { searchData } });
+ 
   }
 
 useEffect(() => {

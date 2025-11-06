@@ -71,35 +71,40 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                 }
             );
 
-             const otpVerify = response.data.data.otp_verify;
+            if (response.data.data.role === "Customer") {
+                setLoginError("You are not a Service Provider.");
+                return;
+            }
 
-            
+            const otpVerify = response.data.data.otp_verify;
+
+
             if (otpVerify === false) {
-               
-                    setVerifypopup(true);
 
-                    sessionStorage.setItem("userId", response.data.data.user_id);
-                    sessionStorage.setItem("email", loginData.email);
-                    return;
+                setVerifypopup(true);
+
+                sessionStorage.setItem("userId", response.data.data.user_id);
+                sessionStorage.setItem("email", loginData.email);
+                return;
 
             }
-            if(otpVerify === undefined || otpVerify === true){
-                
-            const userData = response.data;
-            setSnackbar({ open: true, message: 'Login Successfully', type: 'success' })
-            setMessage("Login Successfully")
-         
-            localStorage.setItem('userdata', JSON.stringify(userData));
+            if (otpVerify === undefined || otpVerify === true) {
 
-            setLoginP(false)
-            window.location.href = '/dashboard';
+                const userData = response.data;
+                setSnackbar({ open: true, message: 'Login Successfully', type: 'success' })
+                setMessage("Login Successfully")
 
-            setLoginData({
-                ...loginData,
-                email: '',
-                password: ''
-            })
-            setMessage('');
+                localStorage.setItem('userdata', JSON.stringify(userData));
+
+                setLoginP(false)
+                window.location.href = '/dashboard';
+
+                setLoginData({
+                    ...loginData,
+                    email: '',
+                    password: ''
+                })
+                setMessage('');
 
             }
 
