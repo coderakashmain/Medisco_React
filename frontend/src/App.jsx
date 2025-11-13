@@ -14,8 +14,15 @@ import { LocationProvider } from './Context/LocationProvider ';
 import SnackbarProvider from './Context/SnackbarContext';
 import ScreenProvider from './Context/ScreenProvider';
 import ErrorBoundary from './pages/ErrorBoundary';
+import CustomerData from './Context/CustomerData';
 
 
+
+
+const Card = lazy(() => import("./pages/CustomerDashboardChild/Card"));
+const Plans = lazy(() => import("./pages/CustomerDashboardChild/Plans"));
+const CustomerProfile = lazy(() => import("./pages/CustomerDashboardChild/CustomerProfile"));
+const CustomerDashboard = lazy(() => import("./pages/CustomerDashboard"));
 const ProfileSubP = lazy(() => import("./pages/DashboardChild/ProfileSubP"));
 const DiscountSubp = lazy(() => import("./pages/DashboardChild/DiscountSubp"));
 const Photos = lazy(() => import("./pages/DashboardChild/Photos"));
@@ -34,7 +41,7 @@ function App() {
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <><ScreenProvider><SnackbarProvider><LocationProvider><Userdata><Services><States><Districts><GlobalRouter /></Districts></States></Services></Userdata></LocationProvider></SnackbarProvider></ScreenProvider></>,
+      element: <><ScreenProvider><SnackbarProvider><LocationProvider><Userdata><CustomerData> <Services><States><Districts><GlobalRouter /></Districts></States></Services></CustomerData></Userdata></LocationProvider></SnackbarProvider></ScreenProvider></>,
       children: [
         {
           path: '',
@@ -77,6 +84,26 @@ function App() {
                   path: 'statistics',
                   element: <><Statistics /></>
                 },
+
+              ]
+            },
+            {
+              path: '/customer_dashboard',
+              element: <><Suspense fallback={<FallbackLoader fixed={true} />}><CustomerDashboard /></Suspense></>,
+              children: [
+                {
+                  path: '',
+                  element: <><CustomerProfile /></>
+                },
+                {
+                  path: 'card',
+                  element: <><Card /></>
+                },
+                {
+                  path: 'plans',
+                  element: <><Plans /></>
+                },
+
 
               ]
             }

@@ -1,10 +1,10 @@
 
+
+
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import Avatar from '../../components/Avatar'
-import './ProfileSubP.css'
-import CustomTimePicker from '../../components/AvailabilityPicker';
-
-import { useUserDataContext } from '../../Context/Userdata';
+import '../DashboardChild/ProfileSubP.css'
+import { useCustomerData } from '../../Context/CustomerData';
 import { useStatesContext } from '../../Context/States';
 import { useDistrictsContext } from '../../Context/Districts';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
@@ -13,15 +13,15 @@ import Tooltip from '@mui/material/Tooltip';
 import FallbackLoader from '../../components/FallbackLoader';
 import { useLocationContext } from '../../Context/LocationProvider ';
 import Loading from '../../components/Loading';
-import { UpdateProfileApi } from '../../APIs/UpdateProfileApi';
+import { UpdateCustomerProfileApi } from '../../APIs/UpdateCustomerProfileApi';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import { useScreen } from '../../Context/ScreenProvider';
 import { useServiceListContex } from '../../Context/Services';
 
 
-const ProfileEdit = ({ setEditable }) => {
-    const { userdata, profileDetails, setProfileDetails } = useUserDataContext();
-    const {services} = useServiceListContex();
+const CustomerProfileEdit = ({ setEditable }) => {
+    const { customerData, profileDetails, setProfileDetails } = useCustomerData();
+  
     const { setSnackbar } = useSnackbar();
     const { isMobile } = useScreen();
     const { statesList } = useStatesContext();
@@ -33,25 +33,17 @@ const ProfileEdit = ({ setEditable }) => {
     const [isOtherCity, setIsOtherCity] = useState(false);
     const { districtsList, districtLoading, setState } = useDistrictsContext();
     const [editData, setEditData] = useState({
-        hospital_name: profileDetails?.data.hospital_name || '',
-
-        service_type: profileDetails?.data.service_type || '',
-        contact_person: userdata?.data?.fullname || '',
-        contact_mobileno: profileDetails?.data.mobileno || '',
-        contact_email: profileDetails?.data.email || '',
+        name: profileDetails?.data.first_name || '',
+        email: profileDetails?.data.email || '',
+        mobileno: profileDetails?.data.mobileno || '',
         state: profileDetails?.data.state || '',
         city: profileDetails?.data.city || '',
         address: profileDetails?.data.address || '',
-        pincode: profileDetails?.data.pincode || '',
+        pincode: String(profileDetails?.data?.pincode ?? ''),
         latitude: profileDetails?.data.latitude ? String(profileDetails.data.latitude) : "",
         longitude: profileDetails?.data.longitude ? String(profileDetails.data.longitude) : "",
-        registration_no: profileDetails?.data.registration_no || "",
-        gst: profileDetails?.data.gst || "",
-        availability: profileDetails?.data.availability || "",
-        noofbed: profileDetails?.data.noofbed || "",
-        ref_percentage: profileDetails?.data.ref_percentage || "",
-
-
+        adhaar_no: profileDetails?.data.adhaar_no || "",
+        pan_no: profileDetails?.data.pan_no || ""
     });
 
 
@@ -130,8 +122,13 @@ const ProfileEdit = ({ setEditable }) => {
         setApiError("");
         setSuccess("");
 
+        if( profileDetails?.data.email !== editData.email){
+             setSnackbar({ open: true, message: 'You can not change your email.', type: 'warning' })
+             return;
+        }
+
         try {
-            const res = await UpdateProfileApi(userdata?.token, editData);
+            const res = await UpdateCustomerProfileApi(customerData?.token, editData);
 
 
             setProfileDetails((prev) => ({
@@ -156,15 +153,7 @@ const ProfileEdit = ({ setEditable }) => {
         }
     };
 
-        const findeServiceName = (serviceId) => {
-        if (!services?.data) return;
 
-        const matched = services.data.find(
-            (value) => value.service_id === serviceId
-        );
-
-        return matched ? matched.service_name : undefined;
-    };
 
 
 
@@ -176,11 +165,11 @@ const ProfileEdit = ({ setEditable }) => {
                     <div className='dash-p-top-bar flex flex-row justify-between items-center '>
                         <div className='flex gap-10 '>
                             <div className=''>
-                                <Avatar username='Organisation Name' profile_pic={profileDetails?.data?.hospital_logo} size={isMobile ? '50px' : '80px'} />
+                                <Avatar username='Organisation Name' profile_pic={profileDetails?.data?.photo} size={isMobile ? '50px' : '80px'} />
                             </div>
                             <div className='flex flex-col  align-center justify-center max-sm:gap-3 gap-5'>
-                                <h2 className='font-bold max-sm:text-sm'>{profileDetails?.data.hospital_name}</h2>
-                                <p className='text-xs text-gary'>{userdata?.data?.role}</p>
+                                <h2 className='font-bold max-sm:text-sm'>{profileDetails?.data.first_name}</h2>
+                                <p className='text-xs text-gary'>{customerData?.data?.role}</p>
                             </div>
                         </div>
 
@@ -209,24 +198,20 @@ const ProfileEdit = ({ setEditable }) => {
                         <ul>
 
                             <li>
-                                <label htmlFor="hospital_name">Organisation Name</label>
-                                <input type="text" onChange={handleChange} name='hospital_name' value={editData.hospital_name} className={`rounded outline-none p-7 text-sm px-10 `} id='hospital_name' />
+                                <label htmlFor="name">Name</label>
+                                <input type="text" onChange={handleChange} name='name' value={editData.name} className={`rounded outline-none p-7 text-sm px-10 `} id='name' />
 
                             </li>
 
                             <li>
-                                <label htmlFor="parson-name">Parson Name</label>
-                                <input type="text" onChange={handleChange} name='contact_person' value={editData.contact_person} className={`rounded outline-none p-7 text-sm px-10 `} id="parson-name" />
+                                <label htmlFor="email">Email</label>
+                                <input type="text" onChange={handleChange} disabled name='email' value={editData.email} className={`rounded select-none outline-none p-7 text-sm px-10  opacity-50 cursor-notAllow`} id="email" />
 
                             </li>
+                          
                             <li>
-                                <label htmlFor="email">Email </label>
-                                <input type="email" value={userdata?.data?.email} name='email' className='rounded outline-none p-7 text-sm px-10 opacity-80 ' disabled id='email' />
-
-                            </li>
-                            <li>
-                                <label htmlFor="mobile-no">Contact Number </label>
-                                <input onChange={handleChange} value={editData.contact_mobileno} name='contact_mobileno' type="number" className={`rounded outline-none p-7 text-sm px-10  `} id='mobile-no' />
+                                <label htmlFor="mobileno">Mobile No</label>
+                                <input onChange={handleChange} value={editData.mobileno} name='mobileno' type="number" className={`rounded outline-none p-7 text-sm px-10  `} id='mobileno' />
 
                             </li>
                             <li>
@@ -292,33 +277,18 @@ const ProfileEdit = ({ setEditable }) => {
                                 <input type="number" onChange={handleChange} name='pincode' value={editData.pincode} className={`rounded outline-none p-7 text-sm px-10 `} id='pincode' />
 
                             </li>
+                      
                             <li>
-                                <label htmlFor="registration_no">Registration No</label>
-                                <input type="number" onChange={handleChange} name='registration_no' value={editData.registration_no} className={`rounded outline-none p-7 text-sm px-10 `} id='registration_no' />
+                                <label htmlFor="adhaar_no">Aadhaar No</label>
+                                <input type="number" onChange={handleChange} name='adhaar_no' value={editData.adhaar_no} className={`rounded outline-none p-7 text-sm px-10 `} id='adhaar_no' />
 
                             </li>
                             <li>
-                                <label htmlFor="gst">GST</label>
-                                <input type="number" onChange={handleChange} name='gst' value={editData.gst} className={`rounded outline-none p-7 text-sm px-10 `} id='gst' />
+                                <label htmlFor="pan_no">PAN No</label>
+                                <input type="text" onChange={handleRefChange} name='pan_no' value={editData.pan_no} className={`rounded outline-none p-7 text-sm px-10 `} id='pan_no' />
 
                             </li>
-                            <li>
-                                <label htmlFor="ref_percentage">Referral Percentage</label>
-                                <input type="number" onChange={handleRefChange} name='ref_percentage' value={editData.ref_percentage} className={`rounded outline-none p-7 text-sm px-10 `} id='ref_percentage' />
-
-                            </li>
-                             {findeServiceName(profileDetails?.data?.service_type) === 'HOSPITALS' && (  <li>
-                                <label htmlFor="noofbed">No of Bed</label>
-                                <input type="number" onChange={handleChange} name='noofbed' value={editData.noofbed} className={`rounded outline-none p-7 text-sm px-10 `} id='noofbed' />
-
-                            </li>)}
-                            <li>
-                                <label htmlFor="availability">Availability</label>
-                                <CustomTimePicker
-                                    value={editData.availability}
-                                    onChange={(val) => setEditData((prev) => ({ ...prev, availability: val }))}
-                                />
-                            </li>
+                           
 
 
                         </ul>
@@ -357,4 +327,5 @@ const ProfileEdit = ({ setEditable }) => {
     )
 }
 
-export default ProfileEdit
+export default CustomerProfileEdit
+

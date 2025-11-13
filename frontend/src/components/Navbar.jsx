@@ -10,21 +10,29 @@ const Login = lazy(() => import("../pages/Login"));
 const ForgotePassword = lazy(() => import("../pages/ForgotePassword"));
 const Registration = lazy(() => import("../pages/Registration"));
 const VerifyOtp = lazy(() => import("../pages/VerifyOtp"));
+const CustomerRegistration = lazy(() => import("../pages/CustomerRegistration"));
 import DropdownOff from './DropdownOff'
 import FallbackLoader from './FallbackLoader'
+import AddBusinessRoundedIcon from '@mui/icons-material/AddBusinessRounded';
+import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 
-
-
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+import { useCustomerData } from '../Context/CustomerData'
 
 const Navbar = () => {
   const navigate = useNavigate();
   const { userdata, setUserdata, profileDetails } = useUserDataContext();
+  const {customerData,setCustomerData,profileDetails : customerProfiledetails} = useCustomerData();
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [logingP, setLoginP] = useState(false);
   const [signInP, setSignIn] = useState(false);
   const [otpVerify, setOtpVerify] = useState(false);
   const [forgotePassword, setForgotePassword] = useState(false);
+  const [customerLogin,setCustomerLogin] = useState(false);
+  const [customerRegister,setCustomerRegister] = useState(false);
+
   const [dropDownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
   const [ProfileDropdown, setProfileDropdown] = useState(false);
@@ -59,7 +67,7 @@ const Navbar = () => {
   //Logout 
   const handleLogout = (() => {
     window.location.href = "/";
-    localStorage.removeItem('userdata');
+    localStorage.clear();
     setUserdata(null);
   })
 
@@ -107,12 +115,13 @@ const Navbar = () => {
 
             <div className="flex gap-15 align-center">
               <div className="header-menu-right h-full flex items-center gap-15 cursor-pointer">
-                {userdata ? (<div className='font-semibold relative' onClick={() => setProfileDropdown(!ProfileDropdown)} >
+                {userdata || customerData ? (
+                  <div className='font-semibold relative' onClick={() => setProfileDropdown(!ProfileDropdown)} >
 
                   <div >
 
 
-                    <Avatar username={profileDetails?.data?.hospital_name} profile_pic={profileDetails?.data?.hospital_logo} size={35} />
+                    <Avatar username={userdata ? profileDetails?.data?.hospital_name  : customerProfiledetails?.data?.first_name} profile_pic={ userdata ? profileDetails?.data?.hospital_logo : customerProfiledetails?.data?.photo} size={35} />
 
                   </div>
                   <div ref={avatarRef} className={`${ProfileDropdown ? 'dropdown-active' : 'dropdown-off'} absolute top-[100%] right-0  opacity-0   bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
@@ -121,7 +130,13 @@ const Navbar = () => {
                         <li onClick={(e) => {
                           e.stopPropagation();
                           setProfileDropdown(false)
-                          navigate('/dashboard')
+                          if(userdata){
+
+                            navigate('/dashboard')
+                          }
+                          if(customerData){
+                            navigate('/customer_dashboard')
+                          }
                         }} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Dashborad</li>
                         <li onClick={handleLogout} className='font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap'>Log Out</li>
                       </ul>
@@ -139,16 +154,16 @@ const Navbar = () => {
                         onClick={() => {
                           setDropdownOpen(!dropDownOpen)
                         }}
-                        className="hover:text-primary text-xs select-none">Join as Service Provider</span>
-                      <div style={{ display: userdata ? 'none' : '' }} className={`${dropDownOpen ? 'dropdown-active' : 'dropdown-off'} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow`}>
-                        <ul>
+                        className=" text-xs select-none bg-primary px-10 py-5 rounded-full text-white">Join now <KeyboardArrowDownRoundedIcon sx={{fontSize : 18}}/></span>
+                      <div style={{ display: userdata ? 'none' : '' }} className={`${dropDownOpen ? 'dropdown-active' : 'dropdown-off'} header-auth-dropdown dropdown-box absolute top-[100%] right-0     bg-white font-normal  z-99 mt-5  flex flex-col  shadow rounded overflow-hidden select-none `}>
+                        <ul className=''>
                           <li
                             onClick={(e) => {
                               e.stopPropagation();
-                              setSignIn(true)
+                              setCustomerLogin(true)
                               setDropdownOpen(false)
                             }}
-                            className="register-btn font-normal text-sm text-black  hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user-plus w-25 "></i> Register</li>
+                            className="register-btn font-normal text-sm text-black rounded font-semibold   hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><PersonRoundedIcon sx={{ fontSize : 20}}/> <span style={{marginLeft  : 6.2}}>Join as Customer</span></li>
 
 
 
@@ -159,7 +174,7 @@ const Navbar = () => {
                               setLoginP(!logingP)
                               setDropdownOpen(false)
                             }}
-                            className="login-btn font-normal text-sm text-black px-10 hover:bg-primary hover:text-white px-12 py-10 text-nowrap"><i className="fa-solid fa-user w-25 "></i> Log In</li>
+                            className="login-btn font-normal font-semibold text-sm text-black  hover:bg-primary rounded hover:text-white px-12 py-10 text-nowrap"><AddBusinessRoundedIcon sx={{ fontSize : 20}}/><span style={{marginLeft  : 10}}>Join   as Service Provider</span> </li>
 
                         </ul>
 
@@ -172,7 +187,9 @@ const Navbar = () => {
 
                 {/* <!-- Login popUp --> */}
 
-                {logingP && (<Suspense fallback={<FallbackLoader fixed={true} />}><Login setLoginP={setLoginP} setForgotePassword={setForgotePassword} setSignIn={setSignIn} /></Suspense>)}
+                {(logingP || customerLogin) && (<Suspense fallback={<FallbackLoader fixed={true} />}><Login customerLogin={customerLogin}
+                setCustomerRegister={setCustomerRegister}
+                setCustomerLogin={setCustomerLogin} setLoginP={setLoginP} setForgotePassword={setForgotePassword} setSignIn={setSignIn} /></Suspense>)}
 
                 {/* <!-- Registration popUp --> */}
 
@@ -183,12 +200,21 @@ const Navbar = () => {
                   </Suspense>
 
                 )}
+                {/* <!-- Customer Registration popUp --> */}
+
+                {customerRegister  && (
+                  <Suspense fallback={<FallbackLoader fixed={true} />}>
+
+                    <CustomerRegistration setCustomerRegister={setCustomerRegister} setCustomerLogin={setCustomerLogin} setOtpVerify={setOtpVerify} />
+                  </Suspense>
+
+                )}
 
                 {/* <!-- Verify email popUp --> */}
 
                 {otpVerify && (
                   <Suspense fallback={<FallbackLoader fixed={true} />}>
-                    <VerifyOtp setVerifypopup={setOtpVerify} />
+                    <VerifyOtp customerRegister={customerRegister} setVerifypopup={setOtpVerify} />
 
 
                   </Suspense>

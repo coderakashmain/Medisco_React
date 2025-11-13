@@ -5,7 +5,7 @@ import axios from 'axios';
 import FallbackLoader from '../components/FallbackLoader';
 const VerifyOtp = lazy(() => import("./VerifyOtp"));
 import { useSnackbar } from '../Context/SnackbarContext';
-const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
+const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLogin, setCustomerLogin, setCustomerRegister }) => {
     const { setSnackbar } = useSnackbar();
     const [message, setMessage] = useState('');
     const [loginError, setLoginError] = useState('');
@@ -71,10 +71,19 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                 }
             );
 
-            if (response.data.data.role === "Customer") {
-                setLoginError("You are not a Service Provider.");
-                return;
+            if (!customerLogin) {
+                if (response.data.data.role === "Customer") {
+                    setLoginError("You are not a Service Provider.");
+                    return;
+                }
+            } else {
+                if (response?.data?.data?.role !== "Customer" &&response?.data?.data?.role !== undefined ) {
+                    setLoginError("You are not a Customer");
+                    return;
+                }
             }
+
+
 
             const otpVerify = response.data.data.otp_verify;
 
@@ -93,11 +102,19 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                 const userData = response.data;
                 setSnackbar({ open: true, message: 'Login Successfully', type: 'success' })
                 setMessage("Login Successfully")
-
-                localStorage.setItem('userdata', JSON.stringify(userData));
-
                 setLoginP(false)
-                window.location.href = '/dashboard';
+
+                if (customerLogin) {
+                    localStorage.setItem('customerData', JSON.stringify(userData));
+                    window.location.href = '/customer_dashboard';
+
+                } else {
+
+                    localStorage.setItem('userdata', JSON.stringify(userData));
+                    window.location.href = '/dashboard';
+                }
+
+
 
                 setLoginData({
                     ...loginData,
@@ -128,17 +145,24 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
 
 
                 <div className="container flex items-center justify-center relative h-full   ">
-                    <div className="login-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
+                    <div className="login-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px] p-20 sm:p-30">
                         <form onSubmit={loginUser}>
 
                             <div className=" sticky">
-                                <button onClick={() => { setLoginP(false) }} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
+                                <button onClick={() => {
+                                    if (customerLogin) {
+                                        setCustomerLogin(false);
+                                    } else {
+
+                                        setLoginP(false)
+                                    }
+                                }} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
                                 <div className="text-center mb-40">
                                     <a href="#" className="mb-5 inline-block">
                                         <img src={logo} alt="logo" className="max-w-[160px]" />
                                     </a>
                                     <h3 className="text-2xl font-semibold text-secondary">Welcome Back!</h3>
-                                    <p className="text-base text-body-color text-gary text-sm">Log in to your account</p>
+                                    <p className="text-base text-body-color text-gary text-sm">Log in to your {customerLogin ? "Customer" : "Service Provider"} Account</p>
                                     {loginError && (<p className='text-xs text-[#FC4F4F]'>{loginError}</p>)}
                                     {message && (<p className='text-xs text-primary'>{message}</p>)}
                                 </div>
@@ -167,7 +191,8 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                                     } name="remember" id="remember" className="h-4 w-4 rounded border border-[#E9EDF4] bg-white checked:bg-primary checked:border-primary focus:ring-0" />
                                     <label htmlFor="remember" className="text-sm text-body-color ">Remember me</label>
                                 </div>
-                                <button onClick={() => {
+                                <button onClick={(e) => {
+                                    e.preventDefault();
                                     setForgotePassword(true)
                                     setLoginP(false);
                                 }} className="text-sm text-primary hover:underline font-semibold cursor-pointer">
@@ -180,13 +205,19 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
                             <div className="flex  items-center gap-10  mt-10">
 
                                 <p className="text-center text-sm text-body-color">Don't have an account? </p>
-                                <p className=" switch-register cursor-pointer text-center font-semibold text-sm text-primary hover:underline block"
-                                    onClick={() => {
-                                        setSignIn(true);
-                                        setLoginP(false);
-                                    }}
-                                >Sign Up</p>
                             </div>
+
+                            <button onClick={(e) => {
+                                e.preventDefault();
+                                if (customerLogin) {
+                                    setCustomerLogin(false);
+                                    setCustomerRegister(true)
+                                } else {
+                                    setSignIn(true);
+                                    setLoginP(false);
+                                }
+
+                            }} className=' w-full mt-15 border border-lightgary py-7 cursor-pointer rounded shadow bg-[#dadadac2]'>Create a new Account</button>
 
 
 
@@ -200,7 +231,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn }) => {
             {verifypopup && (
                 <Suspense fallback={<FallbackLoader fixed={true} />}>
 
-                    <VerifyOtp setVerifypopup={setVerifypopup} />
+                    <VerifyOtp customerLogin={customerLogin} setVerifypopup={setVerifypopup} />
                 </Suspense>
             )}
         </>

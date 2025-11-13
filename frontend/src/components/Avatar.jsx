@@ -3,7 +3,7 @@ import MuiAvatar  from '@mui/material/Avatar';
 const Avatar = React.memo(({size=26,profile_pic,username}) => {
   return (
     <>
-      <MuiAvatar  alt={username} src={profile_pic}  sx={{ width: size, height: size }}/>
+      <MuiAvatar  alt={username} src={`https://api.medisco.in/${profile_pic}`}  sx={{ width: size, height: size }}/>
     </>
   )
 })

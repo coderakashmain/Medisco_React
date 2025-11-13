@@ -1,51 +1,38 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { useUserDataContext } from '../Context/Userdata';
-import { useServiceListContex } from '../Context/Services';
-import { useStatesContext } from '../Context/States';
-import { useDistrictsContext } from '../Context/Districts';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useLocationContext } from '../Context/LocationProvider ';
+import { useScreen } from '../Context/ScreenProvider'
 import logo from '../assets/img/logo.png'
-import axios from 'axios';
-import FallbackLoader from '../components/FallbackLoader';
-import { useSnackbar } from '../Context/SnackbarContext';
-import { useScreen } from '../Context/ScreenProvider';
-import DropdownOff from '../components/DropdownOff';
+import { useLocationContext } from '../Context/LocationProvider '
+import DropdownOff from '../components/DropdownOff'
+import { useDistrictsContext } from '../Context/Districts'
+import { useStatesContext } from '../Context/States'
+import FallbackLoader from '../components/FallbackLoader'
+import { useSnackbar } from '../Context/SnackbarContext'
+import axios from 'axios'
 
-
-const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
-
-    const { userdata, setUserdata, profileDetails } = useUserDataContext();
-    const { userLocation } = useLocationContext();
-    const { services } = useServiceListContex();
-    const { statesList } = useStatesContext();
-    const { districtsList, setState, state, districtLoading } = useDistrictsContext();
-    const [loading, setLoading] = useState(false);
-    const [error, setError] = useState('');
-    const location = useLocation();
-    const navigate = useNavigate();
-    const [passwordShow, setPasswordShow] = useState(false);
-    const [custumeCity, setCustumeCity] = useState('');
-    const host = import.meta.env.VITE_HOST;
-    const { setSnackbar } = useSnackbar();
-    const [isOtherCity, setIsOtherCity] = useState(false);
+const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin, setOtpVerify }) => {
     const { isMobile } = useScreen();
-    const [filterStates, setFilterStates] = useState([])
-    const [filterCity, setFilterCity] = useState([])
+    const [error, setError] = useState('');
+        const { setSnackbar } = useSnackbar();
+    const { userLocation } = useLocationContext();
+    const host = import.meta.env.VITE_HOST;
+    const { statesList } = useStatesContext();
+     const [loading, setLoading] = useState(false);
+    const { districtsList, setState, state, districtLoading } = useDistrictsContext();
     const [showStatePopup, setShowStatePopup] = useState(false);
     const [showCityPopup, setShowCityPopup] = useState(false);
     const stateListRef = useRef();
     const cityListRef = useRef();
     const [allowCity, setAllowCity] = useState(false);
-
+    const [filterStates, setFilterStates] = useState([])
+    const [filterCity, setFilterCity] = useState([])
+    const [isOtherCity, setIsOtherCity] = useState(false);
+    const [passwordShow, setPasswordShow] = useState(false);
 
     const [userdetails, setUserdetails] = useState({
-        service_type: '',
-        organization_name: '',
-        contact_person: '',
-        contact_email: '',
-        contact_mobileno: '',
-        password: "",
+        name: '',
+        email: '',
+        mobileno: '',
+        password: '',
         state: '',
         city: '',
         address: '',
@@ -53,13 +40,13 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
         longitude: `${userLocation?.lng}` || '',
         latitude: `${userLocation?.lat}` || ''
 
+
     })
 
 
 
-
-    const hanldeRegistration = async (e) => {
-        e.preventDefault();
+    const hanldeRegistration = async (e)=>{
+                e.preventDefault();
 
 
         const exists = statesList.data.some(s => s.toLowerCase() === userdetails.state.toLowerCase());
@@ -68,15 +55,14 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
             return;
         }
 
-        if (!userdetails.service_type || !userdetails.organization_name || !userdetails.contact_person || !userdetails.contact_email || !userdetails.contact_mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
+             if (!userdetails.name || !userdetails.email || !userdetails.mobileno || !userdetails.password || !userdetails.state || !userdetails.city  || !userdetails.address || !userdetails.pincode
         ) {
             console.warn("Please Enter all the fileds.")
             setError("Please fill the all Boxes");
             return;
         }
 
-
-        const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]+$/;
+                const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]+$/;
 
         if (!passwordPattern.test(userdetails.password)) {
             console.warn("*Password must include uppercase, lowercase, number & special character.");
@@ -91,28 +77,29 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
         setError('');
         setLoading(true);
 
-        try {
-            const response = await axios.post(`${host}/user/register`, userdetails);
-            const userdata = response.data;
+                try {
+                    const response = await axios.post(`${host}/user/customer-register`, userdetails);
+                    const userdata = response.data;
+        
+        
+                    sessionStorage.setItem("email", userdetails.contact_email);
+                    sessionStorage.setItem("userId", response?.data?.data.user_id);
+                    setSnackbar({ open: true, message: 'OTP send to your Email.', type: 'success' })
+        
+                    setOtpVerify(true);
+                } catch (error) {
+                    if (error.response?.data?.error?.password) {
+                        setError("*Password must include uppercase, lowercase, number & special character.")
+                        console.error(error.response?.data?.error?.password)
+                    } else {
+                        setError(error.response?.data?.error?.message || "Something went wrong");
+                        console.error("Registration  failed:", error.response?.data || error.message);
+                    }
+        
+                } finally {
+                    setLoading(false);
+                }
 
-
-            sessionStorage.setItem("email", userdetails.contact_email);
-            sessionStorage.setItem("userId", response.data.data.user_id);
-            setSnackbar({ open: true, message: 'OTP send to your Email.', type: 'success' })
-
-            setOtpVerify(true);
-        } catch (error) {
-            if (error.response?.data?.error?.password) {
-                setError("*Password must include uppercase, lowercase, number & special character.")
-                console.error(error.response?.data?.error?.password)
-            } else {
-                setError(error.response?.data?.error?.message || "Something went wrong");
-                console.error("Registration  failed:", error.response?.data || error.message);
-            }
-
-        } finally {
-            setLoading(false);
-        }
 
     }
 
@@ -208,18 +195,15 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
         }
     }, [districtsList, userdetails.city]);
 
-
-
     return (
-        <div style={{ zIndex: 10 }} className=" register-popup  cursor-default  fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
-
+        <div style={{ zIndex: 10 }} className=" Customerregister-popup  cursor-default  fixed top-0 left-0 inset-0 bg-[#646464ad]  w-screen h-screen z-1002 ">
             <div className="container flex items-center justify-center relative h-full   ">
-                <div className={`register-box relative  md:w-[60%] lg:w-1/2 w-full ${isMobile ? "max-h-[80vh]" : "max-h-[90vh]"}  scroll  bg-white shadow rounded-[10px]   p-20 sm:p-30 `}style={{paddingTop : 0}} >
+                <div className={`Customerregister-box relative  md:w-[60%] lg:w-1/2 w-full ${isMobile ? "max-h-[80vh]" : "max-h-[90vh]"}  scroll  bg-white shadow rounded-[10px]   p-20 sm:p-30 `} style={{ paddingTop: 0 }} >
                     <form onSubmit={hanldeRegistration}>
                         <div style={{ zIndex: 10 }} className="sticky pt-30 pb-10 top-0 left-0 bg-white">
 
                             <button
-                                onClick={() => setSignIn(false)}
+                                onClick={() => setCustomerRegister(false)}
                                 className='close-btn  registration-close'><i className="fa-solid fa-xmark"></i></button>
                             <div className="text-center mb-40">
                                 <a href="#" className="mb-5 inline-block">
@@ -227,59 +211,31 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
                                 </a>
                                 <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
 
-                                <p className="text-base text-body-color text-gary text-sm">Create your Service Provider Account </p>
+                                <p className="text-base text-body-color text-gary text-sm">Create your Customer Account </p>
                                 {error && (<p className='text-xs text-[#FC4F4F] pt-10'>{error}</p>)}
                             </div>
                         </div>
 
-                        <p className=" text-sm mb-10">Select Service Type *</p>
-                        <select
-
-                            name="service_type" id="service-list"
-                            onChange={handleChange}
-                            value={userdetails.service_type}
-                            className="w-full text-sm bg-[#F4F4FF] outline-none px-10 py-10 border border-lightgary rounded mb-20">
-
-                            <option value="" disabled selected>-- Select a Service --</option>
-                            {services.status && services.data.map((service, index) => (
-                                <option key={index} value={service.service_id}>
-                                    {service.service_name}
-                                </option>
-                            ))}
-
-                        </select>
-
-                        <p className=" text-sm mb-10">Name of the Organization *</p>
+                        <p className=" text-sm mb-10">Name  *</p>
                         <input
-                            name='organization_name'
+                            name='name'
                             onChange={handleChange}
-                            value={userdetails.organization_name}
+                            value={userdetails.name}
                             type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
-
-                        <p className=" text-sm mb-10">Contact Person *</p>
+                        <p className=" text-sm mb-10">Email  *</p>
                         <input
-                            name='contact_person'
-                            value={userdetails.contact_person}
+                            name='email'
                             onChange={handleChange}
+                            value={userdetails.email}
                             type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
-
-
-
-
-                        <p className=" text-sm mb-10">Email *</p>
-                        <input
-                            name='contact_email'
-                            value={userdetails.contact_email}
-                            onChange={handleChange}
-                            type="email" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
                         <p className=" text-sm mb-10">Mobile No *</p>
                         <input
-                            name='contact_mobileno'
-                            value={userdetails.contact_mobileno}
+                            name='mobileno'
                             onChange={handleChange}
-                            type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
+                            value={userdetails.mobileno}
+                            type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
                         <p className=" text-sm mb-10">State *</p>
                         <div className='relative'>
@@ -374,8 +330,6 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
                             />
                         )}
 
-
-
                         <p className=" text-sm mb-10">Address *</p>
                         <input
                             name='address'
@@ -383,14 +337,13 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
                             onChange={handleChange}
                             type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
+
                         <p className=" text-sm mb-10">Pincode *</p>
                         <input
                             name='pincode'
                             value={userdetails.pincode}
                             onChange={handleChange}
                             type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-30 outline-none" placeholder="" />
-
-
 
                         <p className=" text-sm mb-10">Password *</p>
                         <div className='border border-lightgary rounded flex flex-row gap-10 overflow-hidden bg-[#F4F4FF] items-center'>
@@ -404,9 +357,6 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
                         </div>
                         <p style={{ fontSize: '10px', marginTop: '2px' }} className='text-xs text-gary mb-30'> *Password atleast six charecters must include uppercase, lowercase, number & special character.</p>
 
-
-
-
                         <div className="mb-10">
                             <button type="submit"
                                 disabled={loading}
@@ -416,21 +366,17 @@ const Registration = ({ setSignIn, setLoginP, setOtpVerify }) => {
                             <p className="text-center text-sm text-body-color">Already have an account? </p>
                         </div>
                         <button onClick={() => {
-                            setLoginP(true);
-                            setSignIn(false);
+                            setCustomerLogin(true);
+                            setCustomerRegister(false);
                         }} className=' w-full mt-15 border border-lightgary py-7 cursor-pointer rounded shadow bg-[#dadadac2]'>Log In</button>
-
-
-
                     </form>
+                    {loading && (
+                                    <FallbackLoader fixed={true} />
+                                )}
                 </div>
-
             </div>
-            {loading && (
-                <FallbackLoader fixed={true} />
-            )}
         </div>
     )
-}
+})
 
-export default Registration
+export default CustomerRegistration

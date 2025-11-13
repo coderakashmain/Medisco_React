@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useUserDataContext } from '../Context/Userdata';
 import { useSnackbar } from '../Context/SnackbarContext';
 
-const VerifyOtp = ({ setVerifypopup }) => {
+const VerifyOtp = React.memo(({ setVerifypopup ,customerLogin,customerRegister}) => {
     const [loading, setLoading] = useState(false);
     const [OTPValue, setOTPValue] = useState('');
     const [OTPError, setOTPError] = useState('');
@@ -41,10 +41,17 @@ const VerifyOtp = ({ setVerifypopup }) => {
 
             
 
-            localStorage.setItem('userdata', JSON.stringify(response.data));
+           
             setSnackbar({ open: true, message: 'OTP Verified.', type: 'success' })
             setMessage('Otp Verified.')
-            window.location.href = "/dashboard";
+            if(customerLogin || customerRegister){
+                 localStorage.setItem('customerData', JSON.stringify(response.data));
+                window.location.href = "/customer_dashboard";
+            }else{
+                localStorage.setItem('userdata', JSON.stringify(response.data));
+                  window.location.href = "/dashboard";
+            }
+                
             setOTPError('');
             setVerifypopup(false);
             sessionStorage.removeItem('email');
@@ -70,7 +77,7 @@ const VerifyOtp = ({ setVerifypopup }) => {
 
 
             <div className="container flex items-center justify-center relative h-full   ">
-                <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
+                <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-20 sm:p-30">
                     <form onSubmit={hanldeOtpvelidation}>
 
                         <div className=" sticky">
@@ -114,6 +121,6 @@ const VerifyOtp = ({ setVerifypopup }) => {
 
         </div>
     )
-}
+})
 
 export default VerifyOtp

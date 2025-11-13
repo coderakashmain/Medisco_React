@@ -6,9 +6,7 @@ import EditSquareIcon from '@mui/icons-material/EditSquare';
 import MuiAvatar from '@mui/material/Avatar';
 import MailIcon from '@mui/icons-material/Mail';
 import { useUserDataContext } from '../../Context/Userdata';
-// const PopUp = lazy(() => import("../../components/PopUp"))
 import TimeAgo from '../../components/TimeAgo'
-import OnOffToggle from '../../components/OnOffToggle';
 import { useScreen } from '../../Context/ScreenProvider';
 
 import PopUp from '../../components/PopUp';
@@ -23,11 +21,11 @@ import NotFound from '../NotFound'
 
 
 const ProfileSubP = React.memo(() => {
-  const { userdata, profileLoading, profileDetails } = useUserDataContext();
+  const { profileLoading, profileDetails } = useUserDataContext();
   const [editable, setEditable] = useState(false);
   const [forgotePassword, setForgotePassword] = useState(false);
   const { isMobile } = useScreen();
-  const {services} = useServiceListContex();
+  const { services } = useServiceListContex();
 
 
   useEffect(() => {
@@ -54,15 +52,15 @@ const ProfileSubP = React.memo(() => {
 
 
 
-    const findeServiceName = (serviceId) => {
-        if (!services?.data) return;
+  const findeServiceName = (serviceId) => {
+    if (!services?.data) return;
 
-        const matched = services.data.find(
-            (value) => value.service_id === serviceId
-        );
+    const matched = services.data.find(
+      (value) => value.service_id === serviceId
+    );
 
-        return matched ? matched.service_name : undefined;
-    };
+    return matched ? matched.service_name : undefined;
+  };
 
 
 

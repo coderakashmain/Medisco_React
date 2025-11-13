@@ -1227,6 +1227,9 @@
   .flex-grow {
     flex-grow: 1;
   }
+  .flex-grow-1\.5{
+    flex-grow: 1.5;
+  }
   .grow {
     flex-grow: 1;
   }
@@ -2069,8 +2072,8 @@
   .bg-\[\#ffffff1c\] {
     background-color: #ffffff1c;
   }
-  .bg-\[\#ffffff14\] {
-    background-color: #ffffff14;
+  .bg-\[\#dadadac2\] {
+    background-color: #dadadac2;
   }
   .bg-\[\#ffffff26\] {
     background-color: #ffffff26;
@@ -2450,6 +2453,9 @@
   }
   .pt-150 {
     padding-top: calc(var(--spacing) * 150);
+  }
+  .pr-5 {
+    padding-right: calc(var(--spacing) * 10);
   }
   .pr-10 {
     padding-right: calc(var(--spacing) * 10);
@@ -4401,6 +4407,11 @@
   .sm\:pt-20 {
     @media (width >= 576px) {
       padding-top: calc(var(--spacing) * 20);
+    }
+  }
+  .sm\:p-30 {
+    @media (width >= 576px) {
+         padding: calc(var(--spacing) * 30);
     }
   }
   .sm\:pt-50 {

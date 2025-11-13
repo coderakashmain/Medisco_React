@@ -1,21 +1,23 @@
+
+
+
 import React, { lazy, Suspense, useEffect, useState } from 'react'
-import { useUserDataContext } from '../Context/Userdata'
+import { useCustomerData } from '../Context/CustomerData';
 import FallbackLoader from '../components/FallbackLoader';
 import NotFound from './NotFound';
 import "./Dashboard.css"
 import { NavLink, Outlet } from 'react-router-dom';
-import { ProfilApi } from '../APIs/ProfileApi';
 import { useScreen } from '../Context/ScreenProvider';
 
 
 
-const Dashboard = () => {
-  const { userdata, userDataloading } = useUserDataContext();
+const CustomerDashboard = () => {
+  const {customerData,customerDataloading} = useCustomerData();
   const {isMobile} = useScreen();
-if (userDataloading) {
+if (customerDataloading) {
   return <FallbackLoader />;
 }
-if (!userdata ) {
+if (!customerData ) {
   return <NotFound />;
 }
 
@@ -34,26 +36,26 @@ if (!userdata ) {
                 <div className='flex-grow '>
 
                   <div className='dashboard-subtab flex flex-row gap-30  mb-10 font-semibold' >
-                    <NavLink to="/dashboard" end className={({ isActive }) =>
+                    <NavLink to="/customer_dashboard" end className={({ isActive }) =>
                       `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
                       Profile
                     </NavLink>
-                    <NavLink to="discount" className={({ isActive }) =>
+                    <NavLink to="card" className={({ isActive }) =>
                       `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
-                      Discount
+                    My Card
                     </NavLink>
-                    <NavLink to="photos" className={({ isActive }) =>
+                    <NavLink to="Plans" className={({ isActive }) =>
                       `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
-                      Photos
+                      Plans
                     </NavLink>
-                    <NavLink to="statistics" className={({ isActive }) =>
+                    {/* <NavLink to="Plans" className={({ isActive }) =>
                       `rounded shadow ${isActive ? 'sub-tab-active' : ''} ${isMobile ? 'bg-[#F4F4FF]' : 'bg-white'}`
                     }>
                       Statistics
-                    </NavLink>
+                    </NavLink> */}
                   </div>
                   <div style={{ scrollbarWidth: 'none' }} className={` w-full mt-20 min-h-252 bg-white  rounded ${isMobile ? "" : 'shadow '}`}>
                     <Outlet />
@@ -77,4 +79,4 @@ if (!userdata ) {
   )
 }
 
-export default Dashboard
+export default CustomerDashboard

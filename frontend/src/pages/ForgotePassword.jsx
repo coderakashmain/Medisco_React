@@ -48,7 +48,7 @@ const ForgotePassword = React.memo(({setForgotePassword}) => {
     
     
                       <div className="container flex items-center justify-center relative h-full   ">
-                        <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-30">
+                        <div className="verify-email-box relative md:w-[60%] lg:w-1/2 w-full  bg-white shadow rounded-[10px]  p-20 sm:p-30">
                           <form onSubmit={handleForgotPassword}>
     
                             <div className=" sticky">
