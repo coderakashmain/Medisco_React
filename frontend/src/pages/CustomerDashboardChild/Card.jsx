@@ -5,8 +5,8 @@ const Card = () => {
     const {isMobile} = useScreen();
     
     return (
-        <section className={`h-full w-full ${isMobile ? "pt-10 " : ' p-20  sm:p-10'} pb-20`}>
-
+        <section style={{minHeight : '500px'}} className={`h-full w-full ${isMobile ? "pt-10 " : ' p-20  sm:p-10'} pb-20`}>
+            <h1 className='mb-20 text-xl font-semibold'>Card</h1>
         <CardLayout/>
         </section>
     )

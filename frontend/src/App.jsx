@@ -15,6 +15,7 @@ import SnackbarProvider from './Context/SnackbarContext';
 import ScreenProvider from './Context/ScreenProvider';
 import ErrorBoundary from './pages/ErrorBoundary';
 import CustomerData from './Context/CustomerData';
+import QrCodeProvider from './Context/QrCodeProvider';
 
 
 
@@ -89,7 +90,7 @@ function App() {
             },
             {
               path: '/customer_dashboard',
-              element: <><Suspense fallback={<FallbackLoader fixed={true} />}><CustomerDashboard /></Suspense></>,
+              element: <><Suspense fallback={<FallbackLoader fixed={true} />}><QrCodeProvider><CustomerDashboard /></QrCodeProvider></Suspense></>,
               children: [
                 {
                   path: '',
