@@ -7,7 +7,6 @@ export const GetQrcode = async (token, payload) => {
   const HOST = import.meta.env.VITE_HOST;
   const API_URL = `${HOST}/user/qrcode`;
 
-  console.log("This is token : ",token);
 
 
   try {

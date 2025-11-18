@@ -126,7 +126,7 @@ const CustomerProfile = () => {
     if (customerDataloading) {
         return <FallbackLoader />;
     }
-    if (!customerProfileDetails &&!customerData) {
+    if (!customerProfileDetails ) {
         return <NotFound />;
     }
 
@@ -192,17 +192,17 @@ const CustomerProfile = () => {
                     <ul>
                         <li>
                             <label htmlFor="name"> Name</label>
-                            <input type="text" className={`rounded outline-none p-7 text-sm px-10 opacity-80`} disabled id='name' value={customerProfileDetails.data.first_name} />
+                            <input type="text" className={`rounded outline-none p-7 text-sm px-10 opacity-80`} disabled id='name' value={customerProfileDetails?.data?.first_name} />
 
                         </li>
                         <li>
                             <label htmlFor="email"> Email</label>
-                            <input type="text" className={`rounded outline-none p-7 text-sm px-10 opacity-80`} disabled id='email' value={customerProfileDetails.data.email} />
+                            <input type="text" className={`rounded outline-none p-7 text-sm px-10 opacity-80`} disabled id='email' value={customerProfileDetails?.data?.email} />
 
                         </li>
                         <li>
                             <label htmlFor="mobileno"> Mobile</label>
-                            <input type="number" className={`rounded outline-none p-7 text-sm px-10 opacity-80`} disabled id='mobileno' value={customerProfileDetails.data.mobileno} />
+                            <input type="number" className={`rounded outline-none p-7 text-sm px-10 opacity-80`} disabled id='mobileno' value={customerProfileDetails?.data?.mobileno} />
 
                         </li>
                         <li>
