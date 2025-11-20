@@ -18,14 +18,14 @@ const reviews = [
     id: 1,
     name: "Ananya Sharma",
     role: "College Student",
-    text: "MeDiSco helped me save on my monthly medicines. The discount card works instantly at my local pharmacy—super convenient and affordable!",
+    text: "Mediscopluss helped me save on my monthly medicines. The discount card works instantly at my local pharmacy—super convenient and affordable!",
     image: reviewimg1,
   },
   {
     id: 2,
     name: "Rajesh Kumar",
     role: "Small Business Owner",
-    text: "I don’t have insurance, but with MeDiSco, I still manage to save a lot on doctor visits and diagnostic tests. Highly recommended!",
+    text: "I don’t have insurance, but with Mediscopluss, I still manage to save a lot on doctor visits and diagnostic tests. Highly recommended!",
     image: reviewimg2,
   },
   {

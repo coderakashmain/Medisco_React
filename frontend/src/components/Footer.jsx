@@ -3,7 +3,7 @@ import logo from '../assets/img/logo.png'
 
 const Footer = () => {
   return (
-    <footer className="lg:pt-120 md:pt-80 pt-60 relative bg-[#F4F4FF] " id ='contact'>
+    <footer className="lg:pt-120 md:pt-80 pt-60 relative bg-[#F4F4FF] " id='contact'>
       <div className="container">
         <div
           className="bg-primary max-lg:flex-wrap max-lg:gap-20 sm:p-50 p-20 flex items-center rounded-[20px] w-full lg:justify-between"
@@ -47,14 +47,14 @@ const Footer = () => {
             <div className="lg:col-span-3 sm:col-span-6 col-span-12">
               <div className="footre-logo">
                 <a href="index-2.html"
-                  ><img src={logo} alt="img"
-                /></a>
+                ><img src={logo} alt="img"
+                  /></a>
                 <p
                   className="pt-14 pb-30 text-base leading-30 text-gary font-normal"
                 >
-                  MeDiSco is dedicated to making healthcare affordable and accessible. 
-      With our medical discount cards, you can save on hospitals, medicines, 
-      diagnostics, and wellness services—all under one trusted platform.
+                  Mediscopluss is dedicated to making healthcare affordable and accessible.
+                  With our medical discount cards, you can save on hospitals, medicines,
+                  diagnostics, and wellness services—all under one trusted platform.
                 </p>
                 <ul className="flex gap-x-10">
                   <li>
@@ -62,7 +62,7 @@ const Footer = () => {
                       href="https://www.facebook.com/"
                       className="flex items-center justify-center xxl:size-50 size-40 max-xxl:text-sm border border-[#444] rounded-full hover:bg-primary duration-500 hover:text-white hover:border-transparent"
                       target="_blank"
-                      ><i className="fa-brands fa-facebook-f"></i
+                    ><i className="fa-brands fa-facebook-f"></i
                     ></a>
                   </li>
                   <li>
@@ -70,7 +70,7 @@ const Footer = () => {
                       href="https://x.com/"
                       className="flex items-center justify-center xxl:size-50 size-40 max-xxl:text-sm border border-[#444] rounded-full hover:bg-primary duration-500 hover:text-white hover:border-transparent"
                       target="_blank"
-                      ><i className="fa-brands fa-x-twitter"></i
+                    ><i className="fa-brands fa-x-twitter"></i
                     ></a>
                   </li>
                   <li>
@@ -78,7 +78,7 @@ const Footer = () => {
                       href="https://www.instagram.com/"
                       className="flex items-center justify-center xxl:size-50 size-40 max-xxl:text-sm border border-[#444] rounded-full hover:bg-primary duration-500 hover:text-white hover:border-transparent"
                       target="_blank"
-                      ><i className="fa-brands fa-instagram"></i
+                    ><i className="fa-brands fa-instagram"></i
                     ></a>
                   </li>
                   <li>
@@ -86,7 +86,7 @@ const Footer = () => {
                       href="https://www.youtube.com/"
                       className="flex items-center justify-center xxl:size-50 size-40 max-xxl:text-sm border border-[#444] rounded-full hover:bg-primary duration-500 hover:text-white hover:border-transparent"
                       target="_blank"
-                      ><i className="fa-brands fa-youtube"></i
+                    ><i className="fa-brands fa-youtube"></i
                     ></a>
                   </li>
                 </ul>
@@ -114,14 +114,14 @@ const Footer = () => {
                     <a
                       href="services.html"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                      >Services</a
+                    >Services</a
                     >
                   </li>
                   <li>
                     <a
                       href="contact.html"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                      >Contact Us</a
+                    >Contact Us</a
                     >
                   </li>
                 </ul>
@@ -149,28 +149,28 @@ const Footer = () => {
                     <a
                       href="services-details.html"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                      >Hospital Partnerships</a
+                    >Hospital Partnerships</a
                     >
                   </li>
                   <li className="pb-16">
                     <a
                       href="services-details.html"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                      >Pharmacy Savings</a
+                    >Pharmacy Savings</a
                     >
                   </li>
                   <li className="pb-16">
                     <a
                       href="services-details.html"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                      >Diagnostic Discounts</a
+                    >Diagnostic Discounts</a
                     >
                   </li>
                   <li>
                     <a
                       href="appointment.html"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                      >Wellness Packages</a
+                    >Wellness Packages</a
                     >
                   </li>
                 </ul>
@@ -212,7 +212,8 @@ const Footer = () => {
                     </h6>
                     <span
                       className="font-bold font-urbanist text-secondary hover:text-primary duration-500"
-                      >1901 Thornridge Cir. Shiloh</span
+                    >Near Unitech computer training centre, PSR Cinemas line, New colony, Rayagada, Odisha- 765001
+                    </span
                     >
                   </li>
                   <li className="pb-16">
@@ -236,8 +237,9 @@ const Footer = () => {
                     </h6>
                     <a
                       className="font-bold font-urbanist text-secondary hover:text-primary duration-500"
-                      href="callto:013221392132"
-                      >013 354 213 - 92132</a
+                      href="callto:9437234628"
+                    >+91-9437234628
+                    </a
                     >
                   </li>
                   <li>
@@ -262,8 +264,8 @@ const Footer = () => {
                     </h6>
                     <a
                       className="font-bold font-urbanist text-secondary hover:text-primary duration-500"
-                      href="mailto:info123@gmail.com"
-                      >info123@gmail.com</a
+                      href="mailto:medisco.in@gmail.com"
+                    >medisco.in@gmail.com</a
                     >
                   </li>
                 </ul>
@@ -277,7 +279,7 @@ const Footer = () => {
           <p className="text-base leading-30 text-gary font-normal">
             Copyright © <span className="current-year"> 2024 </span>
             <span className="text-primary"
-              ><a href="https://medisco.in/"> Medisco.</a></span
+            ><a href="https://medisco.in/"> Mediscopluss.</a></span
             >
             All Rights Reserved.
           </p>
@@ -286,14 +288,14 @@ const Footer = () => {
               <a
                 href="javascript:void(0);"
                 className="text-gary text-base font-Urbanist hover:text-primary duration-500"
-                >Terms & Conditions</a
+              >Terms & Conditions</a
               >
             </li>
             <li>
               <a
                 href="javascript:void(0);"
                 className="text-gary text-base font-Urbanist hover:text-primary duration-500"
-                >Privacy policy</a
+              >Privacy policy</a
               >
             </li>
           </ul>

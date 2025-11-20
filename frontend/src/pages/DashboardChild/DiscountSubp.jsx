@@ -144,7 +144,7 @@ const DiscountSubp = () => {
                         ) : (
                             <Tooltip title='Edit' >
                                 <button
-
+                                
                                     onClick={() => setIsEditing(true)}
                                     className={`button  bg-primary font-semibold rounded py-5 px-10 text-white text-sm cursor-pointer text-nowrap flex items-center gap-5`}
                                 >

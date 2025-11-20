@@ -49,7 +49,7 @@ const CardLayout = () => {
         </div>
       </div>
       <div style={{ height: '27%' }} className='flex flex-col justify-center align-center text-white select-none py-4'>
-        <h5 className='text-center  text-xs sm:text-sm font-semibold '>MEDISCO Health Solution, Bhubaneswar, Odisha</h5>
+        <h5 className='text-center  text-xs sm:text-sm font-semibold '>Mediscopluss Health Solution, Bhubaneswar, Odisha</h5>
         <p className='text-center text-xs '>+913298328434 | support@medisco.in</p>
       </div>
 

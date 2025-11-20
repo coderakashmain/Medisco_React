@@ -53,7 +53,7 @@ const Home = () => {
   const { services } = useServiceListContex();
   const { statesList, stateLoading } = useStatesContext();
   const { districtsList, setState, districtLoading } = useDistrictsContext();
-  const { isMobile } = useScreen();
+  const { isMobile, width } = useScreen();
   const [hideDropdown, setHideDropdown] = useState(false);
   const [filterList, setFilterList] = useState([])
 
@@ -134,7 +134,7 @@ const Home = () => {
 
     name = name.replace(/\//g, " ");
 
-  
+
 
 
     navigate(`/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${name}`, { state: { searchdata: searchData } });
@@ -172,7 +172,7 @@ const Home = () => {
                 <p
                   className="xxl:text-xxl xl:text-xl text-lg leading-32 xl:leading-34 pb-45 text-gary font-normal"
                 >
-                  With MeDiSco Discount Cards, you can access top hospitals,
+                  With Mediscopluss Discount Cards, you can access top hospitals,
                   pharmacies, and diagnostic centers at affordable prices.
                   Better healthcare doesn’t have to mean higher costs.
                 </p>
@@ -202,7 +202,7 @@ const Home = () => {
                         className="max-xxl:w-50"
                       />
                     </li>
-                    <li className="-ml-15"><a href="javascript:void(0);">+</a></li>
+                    <li className="-ml-15 "><a href="javascript:void(0);">+</a></li>
                   </ul>
                   <div>
                     <h6 className="font-bold text-secondary font-sora text-base">
@@ -261,13 +261,21 @@ const Home = () => {
                   className="4xl:max-w-[125%] max-xl:mt-150 max-lg:mt-50 lg:absolute lg:bottom-0  "
                 />
                 <ul className="shaps">
-                  <li className="absolute">
+                  {/* <li className="absolute">
+                    <img
+                      src={shape4}
+                      alt="img"
+                      className="max-w-[125%] animate-fa-spin"
+                    />
+                  </li> */}
+                  {/* <li className="absolute">
                     <img
                       src={shape1}
                       alt="img"
                       className="max-w-[125%] animate-topshap max-md:w-70"
                     />
-                  </li>
+                  </li> */}
+                  <li></li>
                   <li className="absolute">
                     <img
                       src={shape2}
@@ -275,14 +283,8 @@ const Home = () => {
                       className="max-w-[125%] animate-topshap max-md:w-130 max-sm:w-70"
                     />
                   </li>
-                  <li className="absolute">
-                    <img
-                      src={shape4}
-                      alt="img"
-                      className="max-w-[125%] animate-fa-spin"
-                    />
-                  </li>
-                  <li className="absolute">
+
+                  {/* <li className="absolute">
                     <img
                       src={shape5}
                       alt="img"
@@ -296,7 +298,7 @@ const Home = () => {
                       alt="img"
                       className="max-w-[125%] animate-fa-spin"
                     />
-                  </li>
+                  </li> */}
                 </ul>
               </div>
             </div>
@@ -432,23 +434,29 @@ const Home = () => {
               <div className="lg:ml-16">
                 <span
                   className="capitalize font-semibold xxl:text-xxl xl:text-xl sm:text-lg text-base text-primary font-sora pb-6 block"
-                ># About Us</span
+                ># About Mediscopluss
+                </span
                 >
                 <h2
                   className="xxl:text-4.8xl xl:text-4xl sm:text-3xl text-2xl font-semibold text-secondary xl:leading-[1.2] font-sora"
                 >
-                  Making Healthcare Affordable and Accessible.
+                  Affordable Health for Every Home.
                 </h2>
                 <p
                   className="text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30"
                 >
-                  At MeDiSco, we believe quality healthcare should never be out of reach.
-                  Our medical discount cards help individuals and families save on hospital
-                  visits, medicines, diagnostics, and wellness services. By partnering with
-                  trusted healthcare providers, we bring affordability, convenience, and
-                  support under one roof—empowering you to focus on your health without
-                  financial stress.
+                  Mediscopluss (Medical Discount Card Network) is a social initiative designed to make healthcare more accessible, affordable, and transparent for everyone. Our goal is to build a strong network connecting patients, hospitals, diagnostic centers, pharmacies, and charitable organizations under one platform.
                 </p>
+
+                <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>Through the Mediscopluss Discount Card, members can avail special discounts and offers on hospital services, diagnostic tests, and medicines at partner healthcare centers across various cities and towns.</p>
+                {isMobile && (<>
+                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>Beyond discounts, Mediscopluss aims to create an information bridge between the public and institutions offering free or concessional medical services, such as charitable hospitals, trusts, and Section 8 companies.</p>
+
+                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>The platform also works to generate local employment and encourage small healthcare businesses, including new medical shops, diagnostic centers, and clinics — thereby boosting both community health and economic growth.</p>
+
+                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>Mediscopluss additionally helps companies and organizations promote their CSR and charitable healthcare activities, ensuring that genuine social work reaches those who need it most.</p>
+                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>We also extend support to individuals in understanding and managing medical insurance claims, helping them receive the benefits they deserve.
+                  </p></>)}
               </div>
             </div>
           </div>
@@ -457,27 +465,52 @@ const Home = () => {
               <div className="max-lg:pb-15">
                 <ul className="pt-40 pb-34">
                   <li
-                    className="pb-21 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
+                    className="pb-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
                   >
-                    Making healthcare affordable with exclusive discounts
+                    Affordable Healthcare Access
                   </li>
+                  <p className='ml-15'>To ensure every individual can avail hospital and healthcare services at their own or nearby location at a discounted or reduced cost</p>
                   <li
-                    className="pb-21 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
+                    className="pb-5 mt-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
                   >
-                    Partnering with trusted hospitals, pharmacies, and wellness centers
-                  </li>
+                    Healthcare Information Channel
+                  </li >
+                  <p className='ml-15'>To create a proper and reliable information network where people can easily access details of free or concessional medical services provided by hospitals, charitable trusts, and Section 8 companies.
+                  </p>
                   <li
-                    className="pb-21 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
+                    className="pb-5 mt-5   font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
                   >
-                    Ensuring savings on medicines, diagnostics, and treatments
+                    Employment Generation
                   </li>
+                  <p className='ml-15'>To create local job opportunities in the healthcare and related service sectors.
+                  </p>
                   <li
-                    className="pb-21 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
+                    className="pb-5 mt-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
                   >
-                    Empowering individuals and families with accessible healthcare
+                    Business Development in the Medical Sector
                   </li>
+                  <p className='ml-15'>To encourage and support the establishment of new medical shops, diagnostic centers, and hospitals, fostering entrepreneurship in the healthcare field.
+                  </p>
+                  {isMobile && (<>
+                    <li
+                      className="pb-5 mt-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
+                    >
+                      Promotion of CSR and Charitable Activities
+                    </li>
+                    <p className='ml-15'>To promote and publicize Corporate Social Responsibility (CSR) initiatives and charitable medical services of various companies among the public.
+
+                    </p>
+                    <li
+                      className="pb-5 mt-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
+                    >
+                      Support for Medical Claim Process
+                    </li>
+                    <p className='ml-15'>To assist members and the public in understanding and completing medical claim processes smoothly and efficiently.
+
+                    </p>
+                  </>)}
                 </ul>
-                <div className="flex items-center">
+                {/* <div className="flex items-center">
                   <a href="about.html" className="btn two"
                   ><span
                   >More About Us<i className="fa-solid fa-arrow-right"></i></span
@@ -488,7 +521,7 @@ const Home = () => {
                     alt="img"
                     className="sm:ml-30 ml-20 sm:border-l sm:border-[#D8D8D8] sm:pl-30 py-20 sm:py-10"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="lg:col-span-4 col-span-12">
@@ -543,7 +576,7 @@ const Home = () => {
         </div>
       </section>
 
-      <div className="flex overflow-hidden relative z-[11]">
+      {/* <div className="flex overflow-hidden relative z-[11]">
         <div className="py-20 bg-primary flex">
           <div className="animate-scroll-one flex">
             <div
@@ -670,9 +703,9 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
-      <div
+      {/* <div
         className="gap-30 flex items-center -mt-70 z-[1] md:pb-120 pb-70 -ml-10 overflow-hidden relative"
       >
         <div className="flex bg-secondary py-20 rotate-[357deg]">
@@ -801,7 +834,7 @@ const Home = () => {
             </div>
           </div>
         </div>
-      </div>
+      </div> */}
 
       <section className="xxl:pb-200 lg:pb-120 md:pb-80 pb-60">
         <div className="container">
@@ -813,7 +846,7 @@ const Home = () => {
                 <figure className="overflow-hidden">
                   <img src={whyusphoto1} alt="img" loading='lazy' className="w-full" />
                 </figure>
-                <div
+                {/* <div
                   className="absolute xl:top-[-15%] xl:left-[-10%] lg:top-[-11%] lg:left-[-11%] top-[-12%] left-[-6%] xl:size-200 size-170 bg-white rounded-full flex items-center justify-center max-md:size-165"
                 >
                   <img
@@ -828,7 +861,7 @@ const Home = () => {
                     src={circleimage}
                     className="circle absolute size-auto bg-transparent p-17 mx-auto mt-10 text-center z-[1] animate-fa-spin"
                   />
-                </div>
+                </div> */}
               </div>
             </div>
             <div className="lg:col-span-6 col-span-12">
@@ -845,7 +878,7 @@ const Home = () => {
                 <p
                   className="text-base leading-28 text-gary font-normal border-l-3 border-primary pl-27 mt-25"
                 >
-                  At MeDiSco, we focus on reducing the financial burden of healthcare. With
+                  At Mediscopluss, we focus on reducing the financial burden of healthcare. With
                   exclusive discounts on hospitals, medicines, diagnostics, and wellness
                   services, our platform bridges the gap between quality healthcare and
                   affordability—ensuring that individuals and families get the care they
@@ -887,7 +920,7 @@ const Home = () => {
                     Wide Network Access
                   </h4>
                   <p className="text-base leading-30 text-gary fobt-normal">
-                    MeDiSco partners with hospitals, pharmacies, diagnostic labs, and
+                    Mediscopluss partners with hospitals, pharmacies, diagnostic labs, and
                     wellness centers to ensure members get trusted services with exclusive
                     discounts at every step of care.
                   </p>
@@ -921,7 +954,7 @@ const Home = () => {
                   </h4>
                   <p className="text-base leading-30 text-gary fobt-normal">
                     With discounts on doctor visits, medicines, diagnostics, and wellness
-                    services, MeDiSco ensures that quality healthcare is accessible without
+                    services, Mediscopluss ensures that quality healthcare is accessible without
                     overwhelming medical costs.
                   </p>
                 </div>
@@ -961,9 +994,18 @@ const Home = () => {
                   Basic Plan
                 </h5>
                 <h3 className="text-5.2xl font-bold pb-10 text-secondary font-sora">
-                  ₹590<span className="pl-6 text-base">/Year</span>
+                  699<span className="pl-6 text-base">/Year</span>
                 </h3>
-                <span>Discount Card Access</span>
+                <ul className='list-style border-t border-[#D8D8D8] pt-26 mt-21 pb-30 relative before:absolute before:w-1/2 before:bg-primary before:-top-px before:h-px '>
+                  <li className='font-normal pb-10 pl-20  font-sora relative text-secondary max-xxl:text-sm'>Valid for 1 Member</li>
+                  <li className='font-normal pb-10 pl-20  font-sora relative text-secondary max-xxl:text-sm'>Unlimited access to exclusive discounts
+                  </li>
+                  <li className='font-normal pb-10 pl-20  font-sora relative text-secondary max-xxl:text-sm'>Offers visible in Mediscopluss App / Website
+                  </li>
+                  <li className='font-normal pb-10 pl-20  font-sora relative text-secondary max-xxl:text-sm'>✔ Savings start from Day 1!
+                  </li>
+                </ul>
+                <span>Discounts available on</span>
 
                 <ul
                   className="list-style border-t border-[#D8D8D8] pt-26 mt-21 pb-30 relative before:absolute before:w-1/2 before:bg-primary before:-top-px before:h-px"
@@ -971,22 +1013,37 @@ const Home = () => {
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
-                    Discounts on medicines at partnered pharmacies
+                    Doctor Consultation
                   </li>
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
-                    Savings on doctor consultations
+                    Hospitals & Nursing Homes
+
                   </li>
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
-                    Access to diagnostic test discounts
+                    Diagnostic Labs
+
                   </li>
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
-                    Use at select healthcare providers
+                    Medical Stores
+
+                  </li>
+                  <li
+                    className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
+                  >
+                    Ayurvedic & Wellness Centers
+
+                  </li>
+                  <li
+                    className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
+                  >
+                    Physiotherapy & Clinics
+
                   </li>
 
                 </ul>
