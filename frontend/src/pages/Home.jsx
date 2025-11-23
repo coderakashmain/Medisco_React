@@ -173,33 +173,33 @@ const Home = () => {
                   className="xxl:text-xxl xl:text-xl text-lg leading-32 xl:leading-34 pb-45 text-gary font-normal"
                 >
                   With Mediscopluss Discount Cards, you can access top hospitals,
-                  pharmacies, and diagnostic centers at affordable prices.
+                  pharmacy, and diagnostic centers at affordable prices.
                   Better healthcare doesn’t have to mean higher costs.
                 </p>
                 <div className="flex items-center gap-18 max-xl:flex-wrap">
-                  <a href="about.html" className="btn"
+                  <NavLink to="/about" className="btn"
                   ><span>Learn More<i className="fa-solid fa-arrow-right"></i></span
-                  ></a>
+                  ></NavLink>
                   <ul className="flex ml-14 experience-team">
                     <li className="-ml-15">
                       <img
                         src={team1}
                         alt="img"
-                        className="max-xxl:w-50"
+                        className="max-xxl:w-50 rounded-[50%] "
                       />
                     </li>
                     <li className="-ml-15">
                       <img
                         src={team2}
                         alt="img"
-                        className="max-xxl:w-50"
+                        className="max-xxl:w-50 rounded-[50%] "
                       />
                     </li>
                     <li className="-ml-15">
                       <img
                         src={team3}
                         alt="img"
-                        className="max-xxl:w-50"
+                        className="max-xxl:w-50 rounded-[50%] "
                       />
                     </li>
                     <li className="-ml-15 "><a href="javascript:void(0);">+</a></li>
@@ -449,14 +449,7 @@ const Home = () => {
                 </p>
 
                 <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>Through the Mediscopluss Discount Card, members can avail special discounts and offers on hospital services, diagnostic tests, and medicines at partner healthcare centers across various cities and towns.</p>
-                {isMobile && (<>
-                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>Beyond discounts, Mediscopluss aims to create an information bridge between the public and institutions offering free or concessional medical services, such as charitable hospitals, trusts, and Section 8 companies.</p>
-
-                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>The platform also works to generate local employment and encourage small healthcare businesses, including new medical shops, diagnostic centers, and clinics — thereby boosting both community health and economic growth.</p>
-
-                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>Mediscopluss additionally helps companies and organizations promote their CSR and charitable healthcare activities, ensuring that genuine social work reaches those who need it most.</p>
-                  <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>We also extend support to individuals in understanding and managing medical insurance claims, helping them receive the benefits they deserve.
-                  </p></>)}
+                
               </div>
             </div>
           </div>
@@ -484,44 +477,15 @@ const Home = () => {
                   </li>
                   <p className='ml-15'>To create local job opportunities in the healthcare and related service sectors.
                   </p>
-                  <li
-                    className="pb-5 mt-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
-                  >
-                    Business Development in the Medical Sector
-                  </li>
-                  <p className='ml-15'>To encourage and support the establishment of new medical shops, diagnostic centers, and hospitals, fostering entrepreneurship in the healthcare field.
-                  </p>
-                  {isMobile && (<>
-                    <li
-                      className="pb-5 mt-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
-                    >
-                      Promotion of CSR and Charitable Activities
-                    </li>
-                    <p className='ml-15'>To promote and publicize Corporate Social Responsibility (CSR) initiatives and charitable medical services of various companies among the public.
+                  
 
-                    </p>
-                    <li
-                      className="pb-5 mt-5 font-semibold font-sora pl-20 relative text-secondary before:absolute before:size-10 before:bg-primary before:rounded-full before:left-0 before:top-8 max-xl:text-sm"
-                    >
-                      Support for Medical Claim Process
-                    </li>
-                    <p className='ml-15'>To assist members and the public in understanding and completing medical claim processes smoothly and efficiently.
-
-                    </p>
-                  </>)}
                 </ul>
-                {/* <div className="flex items-center">
-                  <a href="about.html" className="btn two"
+                <div className="flex items-center">
+                  <NavLink to="/about" className="btn two"
                   ><span
                   >More About Us<i className="fa-solid fa-arrow-right"></i></span
-                    ></a>
-                  <img
-                    loading='lazy'
-                    src={signature}
-                    alt="img"
-                    className="sm:ml-30 ml-20 sm:border-l sm:border-[#D8D8D8] sm:pl-30 py-20 sm:py-10"
-                  />
-                </div> */}
+                    ></NavLink>
+                </div>
               </div>
             </div>
             <div className="lg:col-span-4 col-span-12">
@@ -1055,7 +1019,7 @@ const Home = () => {
                   ></a>
               </div>
             </div>
-            <div className="lg:col-span-4 col-span-12">
+            {/* <div className="lg:col-span-4 col-span-12">
               <div
                 className="pricing-plan two bg-primary p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
@@ -1155,7 +1119,7 @@ const Home = () => {
                 ></i></span
                   ></a>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <ul className="shaps">

@@ -20,6 +20,12 @@ import QrCodeProvider from './Context/QrCodeProvider';
 
 
 
+
+const BusinessPartnerPolicy = lazy(() => import("./pages/BusinessPartnerPolicy"));
+const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
+const Terms = lazy(() => import("./pages/Terms"));
+const Policy = lazy(() => import("./pages/Policy"));
+const About = lazy(() => import("./pages/About"));
 const Card = lazy(() => import("./pages/CustomerDashboardChild/Card"));
 const Plans = lazy(() => import("./pages/CustomerDashboardChild/Plans"));
 const CustomerProfile = lazy(() => import("./pages/CustomerDashboardChild/CustomerProfile"));
@@ -107,7 +113,27 @@ function App() {
 
 
               ]
-            }
+            },
+            {
+              path : '/about',
+              element : <Suspense fallback = {<FallbackLoader fixed={true}/>}><About/></Suspense>
+            },
+            {
+              path : '/policy',
+              element : <Suspense fallback = {<FallbackLoader fixed={true}/>}><Policy/></Suspense>
+            },
+            {
+              path : '/terms',
+              element : <Suspense fallback = {<FallbackLoader fixed={true}/>}><Terms/></Suspense>
+            },
+            {
+              path : '/refundpolicy',
+              element : <Suspense fallback = {<FallbackLoader fixed={true}/>}><RefundPolicy/></Suspense>
+            },
+            {
+              path : '/partnerpolicy',
+              element : <Suspense fallback = {<FallbackLoader fixed={true}/>}><BusinessPartnerPolicy/></Suspense>
+            },
           ]
         },
         {

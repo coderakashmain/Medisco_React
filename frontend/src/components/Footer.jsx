@@ -1,5 +1,6 @@
 import React from 'react'
 import logo from '../assets/img/logo.png'
+import { NavLink } from 'react-router-dom'
 
 const Footer = () => {
   return (
@@ -103,23 +104,22 @@ const Footer = () => {
                 </h5>
                 <ul>
                   <li className="pb-16">
-                    <a
-                      href="about.html"
+                    <NavLink
+                      to="/about"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
                     >
-                      About Us</a
-                    >
+                      About Us</NavLink>
                   </li>
                   <li className="pb-16">
                     <a
-                      href="services.html"
+                      href="/#services"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
                     >Services</a
                     >
                   </li>
                   <li>
                     <a
-                      href="contact.html"
+                      href="/#contact"
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
                     >Contact Us</a
                     >
@@ -276,27 +276,37 @@ const Footer = () => {
         <div
           className="copyright py-20 max-md:flex-wrap flex md:justify-between justify-center border-t border-[#d7d7d7]"
         >
-          <p className="text-base leading-30 text-gary font-normal">
+          <p className="text-base leading-30 text-gary text-sm md:text-md font-normal">
             Copyright © <span className="current-year"> 2024 </span>
             <span className="text-primary"
             ><a href="https://medisco.in/"> Mediscopluss.</a></span
             >
             All Rights Reserved.
           </p>
-          <ul className="flex gap-x-25">
+          <ul className="flex gap-x-25 flex-wrap">
             <li>
-              <a
-                href="javascript:void(0);"
-                className="text-gary text-base font-Urbanist hover:text-primary duration-500"
-              >Terms & Conditions</a
-              >
+              <NavLink
+                to="/terms"
+                className="text-gary text-base text-xs md:text-md font-Urbanist hover:text-primary duration-500"
+              >Terms & Conditions</NavLink >
             </li>
             <li>
-              <a
-                href="javascript:void(0);"
-                className="text-gary text-base font-Urbanist hover:text-primary duration-500"
-              >Privacy policy</a
-              >
+              <NavLink
+                to="/policy"
+                className="text-gary text-base text-xs md:text-md font-Urbanist hover:text-primary duration-500"
+              >Privacy policy</NavLink >
+            </li>
+            <li>
+              <NavLink
+                to="/refundpolicy"
+                className="text-gary text-base text-xs md:text-md font-Urbanist hover:text-primary duration-500"
+              >Refund policy</NavLink >
+            </li>
+            <li>
+              <NavLink
+                to="/partnerpolicy"
+                className="text-gary text-base text-xs md:text-md font-Urbanist hover:text-primary duration-500"
+              >Partner policy</NavLink >
             </li>
           </ul>
         </div>

@@ -81,9 +81,9 @@ const Navbar = () => {
           <div className="bottom-bar">
             <div className="two-bar">
               <div className="flex items-center justify-between">
-                <div className="logo">
+                <div className="logo" >
                   <a href="/">
-                    <img alt="logo" src={logo} />
+                    <img alt="logo" src={logo}  className='w-full f-full object-cover'/>
 
                   </a>
                 </div>
@@ -100,7 +100,7 @@ const Navbar = () => {
                   <HashLink smooth to="/#services">Services</HashLink>
                 </li>
                 <li className="navbar-dropdown">
-                  <HashLink smooth to="/#about">About</HashLink>
+                  <HashLink smooth to="/about">About</HashLink>
                 </li>
                 <li className="navbar-dropdown">
                   <HashLink smooth to="/#section-pricing">Plans</HashLink>
@@ -282,7 +282,7 @@ const Navbar = () => {
                 <a href="/">Home</a>
               </li>
               <li>
-                <HashLink to="/#about">About Us</HashLink>
+                <HashLink to="/about">About Us</HashLink>
               </li>
               <li>
                 <HashLink to="/#services">Services</HashLink>

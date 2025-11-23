@@ -6,8 +6,8 @@ import "swiper/css/navigation";
 
 // Images
 import quotes from '../assets/img/quotes.png'
-import reviewimg1 from '../assets/img/review-img-1.jpg'
-import reviewimg2 from '../assets/img/review-img-2.jpg'
+import reviewimg1 from '../assets/img/review-img-1.png'
+import reviewimg2 from '../assets/img/review-img-2.png'
 import team3 from '../assets/img/team-3.png'
 
 const ReviewSlider = () => {
