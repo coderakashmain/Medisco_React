@@ -26,10 +26,7 @@ const Userdata = ({ children }) => {
 
   // Fetch profile
 
-
-
-  useEffect(() => {
-    const fetchProfile = async () => {
+  const fetchProfile = async () => {
       if (!userdata?.token) return;
 
       setProfileLoading(true);
@@ -44,6 +41,7 @@ const Userdata = ({ children }) => {
       }
     };
 
+  useEffect(() => {
     fetchProfile();
   }, [userdata]);
 
@@ -56,7 +54,8 @@ const Userdata = ({ children }) => {
       profileDetails,
       profileLoading,
       profileError,
-      setProfileDetails
+      setProfileDetails,
+      fetchProfile
     }),
     [userdata, userDataloading, profileDetails, profileLoading, profileError]
   );

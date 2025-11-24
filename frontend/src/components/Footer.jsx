@@ -47,7 +47,7 @@ const Footer = () => {
           <div className="grid grid-cols-12 gap-25">
             <div className="lg:col-span-3 sm:col-span-6 col-span-12">
               <div className="footre-logo">
-                <a href="index-2.html"
+                <a href="#"
                 ><img src={logo} alt="img"
                   /></a>
                 <p

@@ -6358,15 +6358,24 @@ input[type=number] {
   margin-left: calc(var(--spacing) * -40);
   width: calc(var(--spacing) * 70);
   height: calc(var(--spacing) * 70);
-  background-image: url(./assets/img/preloader.png);
+  background-image: url(./assets/img/favicon_white.png);
   background-position: center;
   background-repeat: no-repeat;
   --tw-content: '';
   content: var(--tw-content);
 }
 #loader:after {
-  animation: fa-spin 10s infinite linear;
+  animation: fa-spin-loader 0.7s infinite alternate;
 }
+@keyframes fa-spin-loader {
+  0% {
+    transform: translateX(5px);
+  }
+  100% {
+    transform: translateX(-5px);
+  }
+}
+
 @keyframes spinner {
   0% {
     stroke-dashoffset: 33px;

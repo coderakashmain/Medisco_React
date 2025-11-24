@@ -12,11 +12,11 @@ import axios from 'axios'
 const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin, setOtpVerify }) => {
     const { isMobile } = useScreen();
     const [error, setError] = useState('');
-        const { setSnackbar } = useSnackbar();
+    const { setSnackbar } = useSnackbar();
     const { userLocation } = useLocationContext();
     const host = import.meta.env.VITE_HOST;
     const { statesList } = useStatesContext();
-     const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(false);
     const { districtsList, setState, state, districtLoading } = useDistrictsContext();
     const [showStatePopup, setShowStatePopup] = useState(false);
     const [showCityPopup, setShowCityPopup] = useState(false);
@@ -38,15 +38,16 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
         address: '',
         pincode: '',
         longitude: `${userLocation?.lng}` || '',
-        latitude: `${userLocation?.lat}` || ''
+        latitude: `${userLocation?.lat}` || '',
+        referral_code: ''
 
 
     })
 
 
 
-    const hanldeRegistration = async (e)=>{
-                e.preventDefault();
+    const hanldeRegistration = async (e) => {
+        e.preventDefault();
 
 
         const exists = statesList.data.some(s => s.toLowerCase() === userdetails.state.toLowerCase());
@@ -55,14 +56,14 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
             return;
         }
 
-             if (!userdetails.name || !userdetails.email || !userdetails.mobileno || !userdetails.password || !userdetails.state || !userdetails.city  || !userdetails.address || !userdetails.pincode
+        if (!userdetails.name || !userdetails.email || !userdetails.mobileno || !userdetails.password || !userdetails.state || !userdetails.city || !userdetails.address || !userdetails.pincode
         ) {
             console.warn("Please Enter all the fileds.")
             setError("Please fill the all Boxes");
             return;
         }
 
-                const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]+$/;
+        const passwordPattern = /^(?=.*[A-Z])(?=.*[a-z])(?=.*\d)(?=.*\W)[A-Za-z\d\W]+$/;
 
         if (!passwordPattern.test(userdetails.password)) {
             console.warn("*Password must include uppercase, lowercase, number & special character.");
@@ -77,28 +78,28 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
         setError('');
         setLoading(true);
 
-                try {
-                    const response = await axios.post(`${host}/user/customer-register`, userdetails);
-                    const userdata = response.data;
-        
-        
-                    sessionStorage.setItem("email", userdetails.contact_email);
-                    sessionStorage.setItem("userId", response?.data?.data.user_id);
-                    setSnackbar({ open: true, message: 'OTP send to your Email.', type: 'success' })
-        
-                    setOtpVerify(true);
-                } catch (error) {
-                    if (error.response?.data?.error?.password) {
-                        setError("*Password must include uppercase, lowercase, number & special character.")
-                        console.error(error.response?.data?.error?.password)
-                    } else {
-                        setError(error.response?.data?.error?.message || "Something went wrong");
-                        console.error("Registration  failed:", error.response?.data || error.message);
-                    }
-        
-                } finally {
-                    setLoading(false);
-                }
+        try {
+            const response = await axios.post(`${host}/user/customer-register`, userdetails);
+            const userdata = response.data;
+
+
+            sessionStorage.setItem("email", userdetails.contact_email);
+            sessionStorage.setItem("userId", response?.data?.data.user_id);
+            setSnackbar({ open: true, message: 'OTP send to your Email.', type: 'success' })
+
+            setOtpVerify(true);
+        } catch (error) {
+            if (error.response?.data?.error?.password) {
+                setError("*Password must include uppercase, lowercase, number & special character.")
+                console.error(error.response?.data?.error?.password)
+            } else {
+                setError(error.response?.data?.error?.message || "Something went wrong");
+                console.error("Registration  failed:", error.response?.data || error.message);
+            }
+
+        } finally {
+            setLoading(false);
+        }
 
 
     }
@@ -235,7 +236,7 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
                             name='mobileno'
                             onChange={handleChange}
                             value={userdetails.mobileno}
-                            type="text" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
+                            type="number" className="w-full text-sm bg-[#F4F4FF] py-10 px-10 border border-lightgary rounded mb-20 outline-none" placeholder="" />
 
                         <p className=" text-sm mb-10">State *</p>
                         <div className='relative'>
@@ -355,7 +356,18 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
                                 type={passwordShow ? 'text' : 'password'} className="w-full text-sm  py-10 px-10   outline-none" placeholder="" />
                             <i onClick={() => setPasswordShow(!passwordShow)} className={`fa-solid ${passwordShow ? "fa-eye-slash" : 'fa-eye'}  text-gary  cursor-pointer pr-10`}></i>
                         </div>
-                        <p style={{ fontSize: '10px', marginTop: '2px' }} className='text-xs text-gary mb-30'> *Password atleast six charecters must include uppercase, lowercase, number & special character.</p>
+                        <p style={{ fontSize: '10px', marginTop: '2px' }} className='text-xs text-gary '> *Password atleast six charecters must include uppercase, lowercase, number & special character.</p>
+
+                        <p className=" text-sm mb-10 mt-10">Referral code (optional) </p>
+                        <div className='border border-lightgary rounded flex flex-row gap-10 overflow-hidden bg-[#F4F4FF] items-center mt-10  mb-30'>
+
+                            <input
+                                name='referral_code'
+                                value={userdetails.referral_code}
+                                onChange={handleChange}
+                                type='text' className="w-full text-sm  py-10 px-10   outline-none" placeholder="" />
+
+                        </div>
 
                         <div className="mb-10">
                             <button type="submit"
@@ -371,8 +383,8 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
                         }} className=' w-full mt-15 border border-lightgary py-7 cursor-pointer rounded shadow bg-[#dadadac2]'>Log In</button>
                     </form>
                     {loading && (
-                                    <FallbackLoader fixed={true} />
-                                )}
+                        <FallbackLoader fixed={true} />
+                    )}
                 </div>
             </div>
         </div>

@@ -169,7 +169,7 @@ const CustomerProfile = () => {
 
                         </div>
                     </div>
-                    <div className=' flex-nowrap select-none'>
+                    <div className=' flex-nowrap select-none hidden'>
                         <h4 className='font-semibold select-none max-sm:text-sm text-md text-nowrap text-end'>Total Savings on Bills</h4>
                         <p className='text-success text-end mt-5 font-bold '> <ShowChartIcon />₹ 23239</p>
                         <p className=' rounded text-sm border inline-block float-right border-primary px-10 py-5 mt-10 font-bold text-primary cursor-pointer  text-xs sm:text-sm text-nowrap'>VIEW DETAILS</p>

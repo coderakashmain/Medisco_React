@@ -1,5 +1,6 @@
 import React, { lazy, Suspense, useEffect, useState } from 'react'
 import Avatar from '../../components/Avatar'
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 import './ProfileSubP.css'
 import EditSquareIcon from '@mui/icons-material/EditSquare';
@@ -13,7 +14,10 @@ import PopUp from '../../components/PopUp';
 import FallbackLoader from '../../components/FallbackLoader';
 const ProfileEdit = lazy(() => import("./ProfileEdit"));
 const ForgotePassword = lazy(() => import("../ForgotePassword"));
+const UpdateAbout = lazy(() => import("./UpdateAbout"));
+const UpdateSpecialization = lazy(() => import("./UpdateSpecialization"));
 import { useServiceListContex } from '../../Context/Services';
+import { getSpecializationByService } from '../../APIs/getSpecializationByService';
 import NotFound from '../NotFound'
 
 
@@ -21,11 +25,15 @@ import NotFound from '../NotFound'
 
 
 const ProfileSubP = React.memo(() => {
-  const { profileLoading, profileDetails } = useUserDataContext();
+  const { profileLoading, profileDetails, userdata } = useUserDataContext();
   const [editable, setEditable] = useState(false);
   const [forgotePassword, setForgotePassword] = useState(false);
   const { isMobile } = useScreen();
   const { services } = useServiceListContex();
+  const [updateAbout, setUpdateAbout] = useState(false);
+  const [specializationList, setSpecializationList] = useState([]);
+  const [updateSpecialization,setUpdateSpecialization] = useState(false);
+
 
 
   useEffect(() => {
@@ -40,6 +48,24 @@ const ProfileSubP = React.memo(() => {
       document.body.style.overflow = "auto";
     };
   }, [editable, forgotePassword]);
+
+
+  useEffect(() => {
+    if (!userdata.token) return;
+
+    const fetchSpecialization = async () => {
+      try {
+        const list = await getSpecializationByService(userdata?.token, profileDetails?.data?.service_type);
+
+        setSpecializationList(list.data);
+
+      } catch (error) {
+        setApiError(error.message);
+      }
+    }
+    fetchSpecialization();
+
+  }, [userdata])
 
 
 
@@ -88,6 +114,71 @@ const ProfileSubP = React.memo(() => {
             <button onClick={() => setEditable(true)} className='button bg-primary rounded py-5 px-10 text-white text-xs cursor-pointer text-nowrap flex font-semibold items-center gap-5'><EditSquareIcon sx={{ height: 18, width: 18 }} /> Edit</button>
           </div>
         </div>
+        <h5 className='text-primary font-bold mt-20 select-none'>About Service</h5>
+
+        {profileDetails?.data?.about ? (<p style={{ background: '#f3f3f3', padding: '13px', borderRadius: '5px' }} className='text-sm  mt-10 text-gary font-semibold border border-lightgary text-black p-6 flex justify-between'>
+          <span>{profileDetails.data.about}</span> <EditSquareIcon sx={{ fontSize: 15 }} onClick={() => setUpdateAbout(true)} className='text-primary cursor-pointer' />
+        </p>) : (
+          <p style={{ background: '#f3f3f3', padding: '13px', borderRadius: '5px' }} className=' flex justify-between text-primary mt-10  font-semibold text-sm  border border-primary'>
+            <span> Add about Us</span> <AddCircleIcon className='cursor-pointer active' onClick={() => setUpdateAbout(true)} />
+          </p>
+        )}
+
+
+        {specializationList.length > 0 && (<h5 className='text-primary font-bold mt-20 select-none'>Specialization</h5>)}
+
+        {specializationList.length > 0 && (
+          profileDetails?.data?.specialization?.length > 0 ? (
+            <>
+
+              <div
+                style={{ background: '#f3f3f3', padding: '13px', borderRadius: '5px' }}
+                className="mt-10 border border-lightgary p-4"
+              >
+                <div className="flex justify-between items-center mb-3">
+                  <span className="font-semibold text-black text-sm">Your Specializations</span>
+                  <EditSquareIcon
+                    sx={{ fontSize: 15 }}
+                    onClick={() => setUpdateSpecialization(true)}
+                    className="text-primary cursor-pointer"
+                  />
+                </div>
+
+                {/* Chips Section */}
+                <div className="flex flex-wrap gap-5 mt-10">
+                  {profileDetails.data.specialization.map((item) => (
+                    <span
+                      key={item.specialized_id}
+                      style={{padding :"3px 10px"}}
+                      className="bg-primary text-white text-xs rounded-full shadow-sm"
+                    >
+                      {item.name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            </>
+
+          ) : (
+
+            <p
+              style={{ background: '#f3f3f3', padding: '13px', borderRadius: '5px' }}
+              className="flex justify-between text-primary mt-10 font-semibold text-sm border border-primary"
+            >
+              <span>Add Specialization</span>
+              <AddCircleIcon
+                className="cursor-pointer active"
+                onClick={() => setUpdateSpecialization(true)}
+              />
+            </p>
+
+          )
+        )}
+
+
+
+
+        <h5 className='text-primary font-bold mt-20 select-none'>Profile Details</h5>
         <div className="dashboard-pg-profile-details mt-20">
           <ul>
 
@@ -194,6 +285,38 @@ const ProfileSubP = React.memo(() => {
 
             <Suspense fallback={<FallbackLoader fixed={true} />}>
               <ProfileEdit setEditable={setEditable} />
+            </Suspense>
+          </div>
+        </PopUp>
+
+
+      )}
+      {updateAbout && (
+
+
+        <PopUp>
+
+          <div className={`profile-edit-box relative md:w-[80%] lg:w-[60%]  bg-white shadow  rounded-[10px]  `}>
+
+            <Suspense fallback={<FallbackLoader fixed={true} />}>
+              <UpdateAbout setUpdateAbout={setUpdateAbout} />
+            </Suspense>
+          </div>
+        </PopUp>
+
+
+      )}
+      {updateSpecialization && (
+
+
+        <PopUp>
+
+          <div className={`profile-edit-box relative md:w-[80%] lg:w-[60%]  bg-white shadow  rounded-[10px] max-h-[80vh] scroll `}>
+
+            <Suspense fallback={<FallbackLoader fixed={true} />}>
+              <UpdateSpecialization specializationList={specializationList} setUpdateSpecialization={setUpdateSpecialization}
+              
+              />
             </Suspense>
           </div>
         </PopUp>

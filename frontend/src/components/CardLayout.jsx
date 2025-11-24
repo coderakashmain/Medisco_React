@@ -1,5 +1,5 @@
 import React from 'react'
-import logo from '../assets/img/logo.png'
+import logo from '../assets/img/logo-white.png'
 import { useCustomerData } from '../Context/CustomerData'
 import { useQrcode } from '../Context/QrCodeProvider'
 import { useScreen } from '../Context/ScreenProvider'
@@ -15,15 +15,16 @@ const CardLayout = () => {
 
 
   return (
-    <div style={{ borderRadius: '1rem' , boxShadow: "0 8px 30px rgba(0, 0, 0, 0.15)" , width  : width <370 ? "100%" : isMobile ? '320px' : '400px', height : width < 370 ? "100%" :  isMobile ? '220px' : '252px'}} className='select-none rounded bg-primary  flex flex-col shadow' >
-      <div style={{ height: '27%' }} className='flex justify-between items-center py-5'>
+    <>
+   {qrCode?.data?.card_no ? ( <div style={{ borderRadius: '1rem' , boxShadow: "0 8px 30px rgba(0, 0, 0, 0.15)" , width  : width <370 ? "100%" : isMobile ? '320px' : '400px', height : width < 370 ? "100%" :  isMobile ? '220px' : '252px'}} className='select-none rounded bg-primary  flex flex-col shadow' >
+      <div style={{ height: '27%' }} className='flex justify-between items-center py-5 pl-5'>
         <img  style={{width : isMobile ?  120 : ''}} loading='lazy' src={logo} alt="logo" />
         <aside className='text-white pr-5 select-none'>
           <h5 className='text-end font-semibold '>Medisco.in</h5>
           <p className='text-end text-xs'>Privillege Card</p>
         </aside>
       </div>
-      <div style={{ height: '46%' , background : '#F4F4FF' }} className='bg-white flex px-10 py-10  justify-between  items-center'   >
+      <div style={{ height: '46%' , background : '#F4F4FF'  }} className='bg-white flex px-10 py-10  justify-between  items-center'   >
         <div className='flex flex-col justify-between'>
           <pre className='text-md  sm:text-xl font-bold '>{formattedCardNumber}</pre>
 
@@ -49,11 +50,16 @@ const CardLayout = () => {
         </div>
       </div>
       <div style={{ height: '27%' }} className='flex flex-col justify-center align-center text-white select-none py-4'>
-        <h5 className='text-center  text-xs sm:text-sm font-semibold '>Mediscopluss Health Solution, Bhubaneswar, Odisha</h5>
-        <p className='text-center text-xs '>+913298328434 | support@medisco.in</p>
+        <h5 className='text-center  text-xs sm:text-sm font-semibold '>Near Unitech computer training centre, Rayagada, Odisha</h5>
+        <p className='text-center text-xs '>+919437234628 | medisco.in@gmail.com</p>
       </div>
 
-    </div>
+    </div>)
+     : (
+      <p className='text-center'>No card available.</p>
+     )
+    } 
+    </>
   )
 }
 
