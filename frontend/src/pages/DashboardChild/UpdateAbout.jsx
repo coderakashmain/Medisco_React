@@ -46,7 +46,7 @@ const UpdateAbout = React.memo(({ setUpdateAbout }) => {
 
             </div>
             <form onSubmit={handleSubmit}>
-                <textarea value={about} onChange={(e) => setAbout(e.target.value)} className='w-full  border border-lightgary   outline-none resize-none h-200   rounded mt-30 p-7'>
+                <textarea placeholder='Write something...' value={about.trim() ? about : ''}  onChange={(e) => setAbout(e.target.value)} className='w-full text-sm  border border-lightgary   outline-none resize-none h-200   rounded mt-30 p-7'>
 
                 </textarea>
 

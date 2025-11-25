@@ -37,11 +37,11 @@ const Pagination = React.memo(({ DataList, limit = 6, children, targateRef }) =>
             {children(currentItems)}
 
             {DataList.length > itemsPerPage && (
-                <div className="flex items-center justify-center mt-10 gap-10 mt-10">
+                <div className="flex items-center justify-center mt-10 gap-10 mt-10 select-none">
                     <button
                         onClick={handlePrev}
                         disabled={currentPage === 1}
-                        className="cursor-pointer hover:text-primary bg-white px-10 py-5 rounded shadow disabled:opacity-50"
+                        className="cursor-pointer active text-white  bg-primary px-10 py-5 rounded shadow disabled:opacity-50"
                     >
                         Prev
                     </button>
@@ -49,7 +49,7 @@ const Pagination = React.memo(({ DataList, limit = 6, children, targateRef }) =>
                     <button
                         onClick={handleNext}
                         disabled={currentPage === totalPages}
-                        className="cursor-pointer px-10 py-5 rounded shadow bg-white hover:text-primary disabled:opacity-50"
+                        className="cursor-pointer active px-10 py-5 rounded shadow bg-primary text-white  disabled:opacity-50"
                     >
                         Next
                     </button>

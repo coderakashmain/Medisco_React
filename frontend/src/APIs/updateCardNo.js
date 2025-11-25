@@ -1,31 +1,32 @@
-// src/APIs/GetSpecializationByServiceApi.js
+// src/APIs/updateCardNo.js
 import axios from "axios";
 
-export const getSpecializationByService = async (token, serviceId) => {
+export const updateCardNo = async (token, cardNo) => {
   const HOST = import.meta.env.VITE_HOST;
-  const API_URL = `${HOST}/user/specializationbyservice/${serviceId}`;
+  const API_URL = `${HOST}/user/update-cardno`;
 
   try {
-    let response;
-    if(token){
-       response = await axios.get(API_URL, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
+    const response = await axios.post(
+      API_URL,
+      {
+        card_no: cardNo,   
       },
-    });
-    }else{
-         response = await axios.get(API_URL);
-    }
-    
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
     return response.data;
+
   } catch (error) {
     if (error.response) {
       const errorMessage =
         error.response.data?.error?.message ||
         error.response.data?.message ||
-        "Failed to fetch specializations";
+        "Failed to update card number";
 
       console.error("API Error:", errorMessage);
       throw new Error(errorMessage);

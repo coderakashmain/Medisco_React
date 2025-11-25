@@ -1,31 +1,25 @@
-// src/APIs/GetSpecializationByServiceApi.js
 import axios from "axios";
 
-export const getSpecializationByService = async (token, serviceId) => {
+export const getAllSpecialization = async (token) => {
   const HOST = import.meta.env.VITE_HOST;
-  const API_URL = `${HOST}/user/specializationbyservice/${serviceId}`;
+  const API_URL = `${HOST}/admin/specialization`;
 
   try {
-    let response;
-    if(token){
-       response = await axios.get(API_URL, {
+    const response = await axios.get(API_URL, {
       headers: {
         Authorization: `Bearer ${token}`,
         "Content-Type": "application/json",
       },
     });
-    }else{
-         response = await axios.get(API_URL);
-    }
-    
 
     return response.data;
+
   } catch (error) {
     if (error.response) {
       const errorMessage =
         error.response.data?.error?.message ||
         error.response.data?.message ||
-        "Failed to fetch specializations";
+        "Failed to fetch specialization list";
 
       console.error("API Error:", errorMessage);
       throw new Error(errorMessage);

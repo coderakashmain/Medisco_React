@@ -943,8 +943,8 @@ const Home = () => {
               Simple & Affordable Options for Everyone
             </h2>
           </div>
-          <div className="grid grid-cols-12 gap-25">
-            <div className="lg:col-span-4 col-span-12">
+          <div className="grid place-items-center">
+            <div className="w-full max-w-2xl">
               <div
                 className="bg-white p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >

@@ -31,8 +31,6 @@ const QrCodeProvider = ({ children }) => {
 
 
   
-
-  useEffect(() => {
     const fetchQrcode = async () => {
       if (!userdata?.token) return;
 
@@ -47,6 +45,8 @@ const QrCodeProvider = ({ children }) => {
         setQrcodeLoading(false);
       }
     };
+  useEffect(() => {
+
 
     fetchQrcode();
   }, [userdata]);
@@ -60,6 +60,7 @@ const QrCodeProvider = ({ children }) => {
       qrCode,
       qrcodeLoading,
       qrcodeError,
+      fetchQrcode,
       setQrCode
     }),
     [userdata, usertokenLoading, qrCode, qrcodeLoading, qrcodeError]

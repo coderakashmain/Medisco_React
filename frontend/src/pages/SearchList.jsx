@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useRef, useState } from 'react'
+import React, { lazy, useEffect, useMemo, useRef, useState } from 'react'
 import { createSearchParams, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
@@ -21,6 +21,19 @@ import Tooltip from '@mui/material/Tooltip';
 const Loading = lazy(() => import('../components/Loading'))
 import { motion } from 'framer-motion';
 import FilterAltIcon from '@mui/icons-material/FilterAlt';
+import { getSpecializationByService } from '../APIs/getSpecializationByService';
+import {
+    FormControl,
+    InputLabel,
+    Select,
+    MenuItem,
+    Checkbox,
+    ListItemText,
+    OutlinedInput,
+    Divider
+} from "@mui/material";
+
+
 
 const SearchList = () => {
     const navigate = useNavigate();
@@ -36,6 +49,8 @@ const SearchList = () => {
     const [loading, setLoading] = useState(false);
     const { isMobile, width, isLargeDesktop } = useScreen();
     const [searchCollapsed, setSearchCollapsed] = useState(false);
+    const [specializationList, setSpecializationList] = useState([]);
+    const [selectedSpecializations, setSelectedSpecializations] = useState([]);
 
     const [searchData, setSearchData] = useState(() => {
         if (searchdata) {
@@ -55,6 +70,45 @@ const SearchList = () => {
 
     });
 
+    useEffect(() => {
+
+
+        const fetchSpecialization = async () => {
+            try {
+
+                const serviceId = Number(searchData?.service_id);
+
+                if (!serviceId || isNaN(serviceId)) {
+                    console.warn("Invalid service_id:", searchData?.service_id);
+                    return;
+                }
+                const list = await getSpecializationByService(null, serviceId);
+
+                setSpecializationList(list.data);
+
+            } catch (error) {
+                console.error(error.message)
+            }
+        }
+
+
+        if (searchData?.service_id) {
+
+            fetchSpecialization();
+        }
+
+    }, [searchData?.service_id])
+
+
+    const filteredResultList = useMemo(() => {
+        if (selectedSpecializations.length === 0) return resultList;
+
+        return resultList.filter((hospital) =>
+            hospital.specialization.some(spec =>
+                selectedSpecializations.includes(String(spec.specialized_id))
+            )
+        );
+    }, [resultList, selectedSpecializations]);
 
 
 
@@ -93,10 +147,10 @@ const SearchList = () => {
         sessionStorage.setItem('searchItems', JSON.stringify(searchData));
         if (!searchData?.service_id) return;
 
-          let name = decodeURIComponent(searchData.service_name);
+        let name = decodeURIComponent(searchData.service_name);
 
 
-    name = name.replace(/\//g, " ");
+        name = name.replace(/\//g, " ");
 
 
 
@@ -181,11 +235,11 @@ const SearchList = () => {
             return;
         }
 
-         let name = decodeURIComponent(matched.service_name);
+        let name = decodeURIComponent(matched.service_name);
 
 
         name = name.replace(/\//g, " ");
-        
+
         navigate(
             `/search_result/${searchData.state || 'ns'}/${searchData.city || 'ns'}/${searchData.organization_name || 'ns'}/${name}`,
             { replace: true }
@@ -267,7 +321,7 @@ const SearchList = () => {
 
                                     </div>
                                 </div>
-                                
+
                                 <div className="search-space-left-box-1 border border-lightgary  p-7 rounded ">
                                     <i className="fa-solid fa-location-dot "></i>
                                     <select
@@ -303,7 +357,7 @@ const SearchList = () => {
 
 
                             <div className="search-space-right-box ">
-                                
+
 
                                 <div className=" search-space-left-box-2 border border-lightgary rounded p-7">
                                     <i className="fa-solid fa-location-dot "></i>
@@ -349,18 +403,98 @@ const SearchList = () => {
 
 
                 <div className="" id='search-result' ref={searchResultRef}>
-                    <div className="flex items-center justify-between mb-30  gap-10">
-                        <h2 className="text-1xl font-bold  text-secondary">Search Results</h2>
-                        <IconButton style={{ background: !searchCollapsed ? "" : 'var(--color-primary)' }} onClick={() => setSearchCollapsed(!searchCollapsed)} >
-                            <Tooltip title="Filter">
-                                <FilterAltIcon className={` ${searchCollapsed ? 'text-white' : 'text-primary'}`} />
-                            </Tooltip>
-                        </IconButton>
+                    <div style={{gap : isMobile ? 4 : 10}} className="flex  justify-between mb-30   ">
+                        <h2 className="text-1xl font-bold text-nowrap  text-secondary">Search Results</h2>
+                        <div className='flex items-center gap-10 '>
+                            {specializationList?.length > 1 && (
+                                <FormControl
+                                    size="small"
+                                    sx={{ width: isMobile ? "8rem" : "20rem"  }}
+                                >
+                                    <InputLabel sx={{ fontSize: "0.8rem" }}>
+                                        Filter Specializations
+                                    </InputLabel>
+
+                                    <Select
+                                        multiple
+                                        value={selectedSpecializations}
+                                        onChange={(e) => {
+                                            const value = e.target.value;
+
+                                          
+                                            if (value.includes("__clear__")) return;
+
+                                            setSelectedSpecializations(value);
+                                        }}
+                                        input={<OutlinedInput label="Filter Specializations" />}
+                                        renderValue={(selected) =>
+                                            selected.length === 0
+                                                ? "Select Specialization"
+                                                : specializationList
+                                                    .filter((item) => selected.includes(String(item.specialized_id)))
+                                                    .map((item) => item.name)
+                                                    .join(", ")
+                                        }
+                                        sx={{
+                                            fontSize: "0.8rem",
+                                            height: "2.2rem"
+                                        }}
+                                    >
+
+                                        
+                                        <MenuItem
+                                            value="__clear__"
+                                            onClick={(e) => {
+                                                e.preventDefault();
+                                                e.stopPropagation();
+                                                setSelectedSpecializations([]);
+                                            }}
+                                            sx={{
+                                                fontSize: "0.75rem",
+                                                fontWeight: "bold",
+                                                color: "red",
+                                                justifyContent: "center"
+                                            }}
+                                        >
+                                            ✖ Clear Selection
+                                        </MenuItem>
+
+                                        <Divider />
+
+                                        {specializationList.map((item) => (
+                                            <MenuItem
+                                                key={item.specialized_id}
+                                                value={String(item.specialized_id)}
+                                                sx={{ fontSize: "0.8rem" }}
+                                            >
+                                                <Checkbox
+                                                    size="small"
+                                                    checked={selectedSpecializations.includes(String(item.specialized_id))}
+                                                />
+                                                <ListItemText
+                                                    primary={item.name}
+                                                    primaryTypographyProps={{ fontSize: "0.8rem" }}
+                                                />
+                                            </MenuItem>
+                                        ))}
+                                    </Select>
+                                </FormControl>
+                            )}
+
+                            <div className='flex items-center  justify-center'>
+
+                                <IconButton style={{ background: !searchCollapsed ? "" : 'var(--color-primary)' }} onClick={() => setSearchCollapsed(!searchCollapsed)} >
+                                    <Tooltip title="Filter">
+                                        <FilterAltIcon className={` ${searchCollapsed ? 'text-white' : 'text-primary'}`} />
+                                    </Tooltip>
+                                </IconButton>
+                            </div>
+                        </div>
                     </div>
                     <div className="search-result-list-box">
 
                         {!loading ? (<Pagination
-                            DataList={resultList}
+                            DataList={filteredResultList}
                             limit={12}
                             targateRef={searchResultRef}
                         >
@@ -387,8 +521,22 @@ const SearchList = () => {
                                                         {/* Content */}
                                                         <div className="search-result-right-content-box  mt-10  ">
                                                             <h2 className="lg:text-3xl text-center md:text-2xl sm:text-2xl text-xl font-bold text-secondary">{data.hospital_name}</h2>
-                                                            <p className="text-xs mb-10 text-center mt-5 text-primary">{findeServiceName(data.service_type)}</p>
-                                                            {data?.service_desc && (<p className="text-sm mt-10"><span className="font-bold text-secondary"> </span>{sliceText(data?.service_desc, 60)}</p>)}
+                                                            <div className=' mb-10 select-none  mt-5 flex items-center justify-center flex-wrap gap-5'>
+
+                                                                <p className="text-xs font-semibold text-primary">{findeServiceName(data.service_type)}</p>
+                                                                {data.specialization.length > 0 && data.specialization.map((item) => (
+                                                                    <Tooltip title={item.description} arrow>
+                                                                        <span
+                                                                            key={item.specialized_id}
+                                                                            style={{ padding: "3px 10px" }}
+                                                                            className="bg-primary text-white text-xs rounded-full shadow-sm"
+                                                                        >
+                                                                            {item.name}
+                                                                        </span>
+                                                                    </Tooltip>
+                                                                ))}
+                                                            </div>
+                                                            {/* {data?.about && (<p className="text-sm mt-10"><span className="font-bold text-secondary"> </span>{sliceText(data?.about, 60)}</p>)} */}
                                                             <p className="uppercase text-xs md:text-sm font-semibold mt-15 flex items-center gap-4 "><LocationCityIcon className='text-primary' />{data?.address} || {data.pincode}</p>
                                                         </div>
                                                     </div>
@@ -401,7 +549,7 @@ const SearchList = () => {
                                                                 <span className='text-black flex items-center'> {data?.service_rating || '0'}  Rating</span>
                                                             </span>
                                                         </p>
-                                                        <button onClick={() => handleNavigate(data)} className="bg-primary button rounded text-sm  px-20  cursor-pointer text-nowrap !text-white">View</button>
+                                                        <button onClick={() => handleNavigate(data)} className="bg-primary button rounded text-sm  px-20 py-5  cursor-pointer text-nowrap !text-white">View</button>
                                                     </div>
                                                 </div>
                                             </li>

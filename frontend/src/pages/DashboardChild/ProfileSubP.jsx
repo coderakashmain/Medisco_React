@@ -116,7 +116,7 @@ const ProfileSubP = React.memo(() => {
         </div>
         <h5 className='text-primary font-bold mt-20 select-none'>About Service</h5>
 
-        {profileDetails?.data?.about ? (<p style={{ background: '#f3f3f3', padding: '13px', borderRadius: '5px' }} className='text-sm  mt-10 text-gary font-semibold border border-lightgary text-black p-6 flex justify-between'>
+        {profileDetails?.data?.about.trim() ? (<p style={{ background: '#f3f3f3', padding: '13px', borderRadius: '5px' }} className='text-sm  mt-10 text-gary font-semibold border border-lightgary text-black p-6 flex justify-between'>
           <span>{profileDetails.data.about}</span> <EditSquareIcon sx={{ fontSize: 15 }} onClick={() => setUpdateAbout(true)} className='text-primary cursor-pointer' />
         </p>) : (
           <p style={{ background: '#f3f3f3', padding: '13px', borderRadius: '5px' }} className=' flex justify-between text-primary mt-10  font-semibold text-sm  border border-primary'>
@@ -296,7 +296,7 @@ const ProfileSubP = React.memo(() => {
 
         <PopUp>
 
-          <div className={`profile-edit-box relative md:w-[80%] lg:w-[60%]  bg-white shadow  rounded-[10px]  `}>
+          <div className={`profile-edit-box relative w-[97vw] md:w-[80%] lg:w-[60%]  bg-white shadow  rounded-[10px]  `}>
 
             <Suspense fallback={<FallbackLoader fixed={true} />}>
               <UpdateAbout setUpdateAbout={setUpdateAbout} />
@@ -311,7 +311,7 @@ const ProfileSubP = React.memo(() => {
 
         <PopUp>
 
-          <div className={`profile-edit-box relative md:w-[80%] lg:w-[60%]  bg-white shadow  rounded-[10px] max-h-[80vh] scroll `}>
+          <div className={`profile-edit-box w-[97vw]  relative md:w-[80%] lg:w-[60%]  bg-white shadow  rounded-[10px] max-h-[80vh] scroll `}>
 
             <Suspense fallback={<FallbackLoader fixed={true} />}>
               <UpdateSpecialization specializationList={specializationList} setUpdateSpecialization={setUpdateSpecialization}

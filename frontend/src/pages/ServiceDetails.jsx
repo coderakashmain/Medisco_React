@@ -168,8 +168,9 @@ const ServiceDetails = () => {
               </div>
 
             </div>
-
-            {serviceDetails?.service_desc && (<p className=' text-sm max-md:text-xs mt-20 break-words'> {serviceDetails?.service_desc} </p>)}
+                
+            
+            {serviceDetails?.about && (<p className=' font-semibold text-gary text-sm max-md:text-xs mt-20 break-words'>  <span className='text-primary'>৹</span> {serviceDetails?.about}</p>)}
 
 
             <p className='mt-40  font-semibold text-sm max-md:text-xs flex items-center gap-4'><LocationCityIcon className='text-primary' /> {serviceDetails.address} </p>

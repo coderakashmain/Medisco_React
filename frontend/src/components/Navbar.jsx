@@ -15,9 +15,9 @@ import DropdownOff from './DropdownOff'
 import FallbackLoader from './FallbackLoader'
 import AddBusinessRoundedIcon from '@mui/icons-material/AddBusinessRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
-
-import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
 import { useCustomerData } from '../Context/CustomerData'
+import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -69,6 +69,7 @@ const Navbar = () => {
     window.location.href = "/";
     localStorage.clear();
     setUserdata(null);
+    setCustomerData(null);
   })
 
   return (

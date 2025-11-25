@@ -67,7 +67,8 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLo
                 ` ${host}/user/login`,
                 {
                     email: loginData.email,
-                    password: loginData.password
+                    password: loginData.password,
+                    type : customerLogin ? "Customer" : 'Service Provider'
                 }
             );
 

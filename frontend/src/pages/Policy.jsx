@@ -1,6 +1,13 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 const Policy = () => {
+   useEffect(() => {
+   window.scrollTo({
+     top: 0,
+     
+   });
+ }, []);
+ 
   return (
     <div className="sm:pt-100 pt-80 sm:pt-40 pb-30 lg:pt-80 bg-white min-h-screen">
       <div className="container mx-auto px-4 max-w-5xl">

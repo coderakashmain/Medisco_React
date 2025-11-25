@@ -7,7 +7,7 @@ import { getSpecializationByService } from "../../APIs/getSpecializationByServic
 const UpdateSpecialization = React.memo(
     ({ setUpdateSpecialization, specializationList }) => {
         const { setSnackbar } = useSnackbar();
-        const { profileDetails, userdata,fetchProfile } = useUserDataContext();
+        const { profileDetails, userdata, setProfileDetails} = useUserDataContext();
         // Pre-select already chosen specializations
         const [selected, setSelected] = useState(
             profileDetails?.data?.specialization?.map(item => item.specialized_id) || []
@@ -24,7 +24,7 @@ const UpdateSpecialization = React.memo(
             );
         };
 
-         
+
 
         // Submit API
         const handleSubmit = async () => {
@@ -33,14 +33,23 @@ const UpdateSpecialization = React.memo(
 
                 const res = await updateSpecialization(userdata?.token, selected);
 
-               
+
                 setSnackbar({ open: true, message: 'Specialization updated.', type: 'success' })
                 setUpdateSpecialization(false);
-               fetchProfile();
-                
+
+                const updatedSpecializationObjects = specializationList.filter(item =>
+                    selected.includes(item.specialized_id)
+                );
+                setProfileDetails(prev => ({
+                    ...prev,
+                    data: {
+                        ...prev.data,
+                        specialization: updatedSpecializationObjects
+                    }
+                }));
             } catch (error) {
                 console.error("Failed:", error.message);
-                setSnackbar({open : true, message : error.message , type : 'error'})
+                setSnackbar({ open: true, message: error.message, type: 'error' })
             } finally {
                 setLoading(false);
             }
@@ -71,7 +80,7 @@ const UpdateSpecialization = React.memo(
                         >
                             <input
                                 type="checkbox"
-                              
+
                                 checked={selected.includes(item.specialized_id)}
                                 onChange={() => handleToggle(item.specialized_id)}
                             />
