@@ -1,69 +1,73 @@
 <!DOCTYPE html>
-<html lang="zxx">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="./src/assets/img/favicon_blue.png" />
+    <link rel="icon" type="image/png" href="./src/assets/img/favicon_blue.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta
-      name="keywords"
-      content="MeDiScopluss, medical discount card, affordable healthcare, hospital discounts, pharmacy savings, diagnostic offers, wellness packages, healthcare access, healthcare savings platform, patient benefits"
-    />
 
-    <meta
-      name="description"
-      content="MeDiSco is a healthcare savings platform offering medical discount cards for hospitals, pharmacies, diagnostics, wellness centers, and more — making quality healthcare affordable for everyone."
-    />
+    <!-- SEO -->
+    <meta name="keywords" content="MeDiScopluss, medical discount card, affordable healthcare, hospital discounts, pharmacy savings, diagnostic offers, wellness packages, healthcare access, healthcare savings platform, patient benefits" />
+    <meta name="description" content="MeDiSco is a healthcare savings platform offering medical discount cards for hospitals, pharmacies, diagnostics, wellness centers, and more — making quality healthcare affordable for everyone." />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta
-      name="twitter:title"
-      content="MeDiSco – Affordable Healthcare Discount Cards"
-    />
-    <meta
-      name="twitter:description"
-      content="Save more on hospitals, pharmacies, diagnostics, and wellness services with MeDiSco medical discount cards. Simple, affordable, and accessible healthcare for all."
-    />
+    <meta name="twitter:title" content="MeDiSco – Affordable Healthcare Discount Cards" />
+    <meta name="twitter:description" content="Save more on hospitals, pharmacies, diagnostics, and wellness services with MeDiSco medical discount cards. Simple, affordable, and accessible healthcare for all." />
     <meta name="twitter:image" content="assets/img/social-image.png" />
 
     <title>MeDiScopluss - Affordable Healthcare Discount Cards</title>
 
+   
+
+    <!-- Preconnect for Google Fonts (critical) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+
+    <!-- Optimized Google Fonts (swap prevents blocking) -->
     <link
-      href="./src/fonts.googleapis.com/css22dc9.css?family=Sora:wght@100..800&amp;family=Urbanist:ital,wght@0,100..900;1,100..900&amp;display=swap"
+      href="https://fonts.googleapis.com/css2?family=Sora:wght@100..800&family=Urbanist:ital,wght@0,100..900;1,100..900&display=swap"
       rel="stylesheet"
-    />
-    <!-- Icons -->
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="./src/assets/icons/flaticon/flaticon.css"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="./src/assets/icons/fontawesome/css/all.min.css"
-    />
-    <link
-      type="text/css"
-      rel="stylesheet"
-      href="./src/assets/icons/themify-icons/css/themify-icons.css"
     />
 
-    <!-- CSS only -->
+
+
+    <!-- Preload main CSS -->
+    <link rel="preload" href="./src/assets/css/style.css" as="style" />
+
+    <!-- Make CSS non-blocking -->
+    <link rel="stylesheet" href="./src/assets/css/style.css" media="all" />
+
+    <!-- Icons CSS -->
+    <link rel="preload" href="./src/assets/icons/flaticon/flaticon.css" as="style" />
+    <link rel="stylesheet" href="./src/assets/icons/flaticon/flaticon.css" />
+
+    <link rel="stylesheet" href="./src/assets/icons/fontawesome/css/all.min.css" />
+    <link rel="stylesheet" href="./src/assets/icons/themify-icons/css/themify-icons.css" />
+
+    <!-- Swiper CSS (low priority, so load async) -->
+    <link rel="preload" href="/plugins/swiper/swiper-bundle.min.css" as="style" />
     <link rel="stylesheet" href="/plugins/swiper/swiper-bundle.min.css" />
 
-    <!-- style -->
-    <link rel="stylesheet" href="./src/assets/css/style.css" />
   </head>
+
   <body>
     <div id="root"></div>
+
+
+
+    <!-- React/Vite entry -->
     <script type="module" src="/src/main.jsx"></script>
-    <script src="/js/jquery.min.js"></script>
-    <script src="/plugins/swiper/swiper-bundle.min.js"></script>
-    <script src="/plugins/counter/waypoints-min.js"></script>
-    <script src="/js/circle-progres.js"></script>
-    <script src="/js/dz.carousel.js"></script>
-    <script src="/js/custom.js"></script>
-    <script src="/js/preloader.js"></script>
-    <script src="/js/dz.ajax.js"></script>
+
+    <!-- All JS DEFERRED (no render-blocking) -->
+    <script src="/js/jquery.min.js" defer></script>
+    <script src="/plugins/swiper/swiper-bundle.min.js" defer></script>
+    <script src="/plugins/counter/waypoints-min.js" defer></script>
+    <script src="/js/circle-progres.js" defer></script>
+    <script src="/js/dz.carousel.js" defer></script>
+    <script src="/js/custom.js" defer></script>
+    <script src="/js/preloader.js" defer></script>
+    <script src="/js/dz.ajax.js" defer></script>
+
+
+
   </body>
 </html>

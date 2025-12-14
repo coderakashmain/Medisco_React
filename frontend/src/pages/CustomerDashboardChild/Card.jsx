@@ -7,6 +7,7 @@ import FallbackLoader from '../../components/FallbackLoader';
 import { updateCardNo } from '../../APIs/updateCardNo';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import { useCustomerData } from '../../Context/CustomerData';
+import { useNavigate } from 'react-router-dom';
 const Card = () => {
     const { isMobile } = useScreen();
     const { qrCode, fetchQrcode } = useQrcode();
@@ -14,9 +15,8 @@ const Card = () => {
     const [loading, setLoading] = useState(false);
     const [cardNo, setCardNo] = useState(null);
     const { setSnackbar } = useSnackbar();
-    const { customerData } = useCustomerData();
-
-
+    const { customerData, profileDetails } = useCustomerData();
+    const navigate = useNavigate();
     const handlechange = (e) => {
         let input = e.target.value.replace(/\D/g, "");
 
@@ -33,7 +33,7 @@ const Card = () => {
         e.preventDefault();
 
         if (!cardNo) return;
-        const cleanNumber = cardNo.replace(/\s/g, ""); 
+        const cleanNumber = cardNo.replace(/\s/g, "");
 
         if (cleanNumber.length !== 16) {
             return setSnackbar({
@@ -63,14 +63,39 @@ const Card = () => {
             });
         }
     }
+
+    const handleClick = () => {
+        navigate("/#payment-button");
+    };
     return (
         <section style={{ minHeight: '500px' }} className={`h-full w-full ${isMobile ? "pt-10 " : ' p-20  sm:p-10'} pb-20`}>
-            <div className='flex justify-between items-center'>
-                <h1 className='mb-20 text-xl font-semibold'>Card</h1>
+            <div className='flex justify-between items-center mb-20'>
+                <h1 className=' text-xl font-semibold'>Card</h1>
 
-                {!qrCode?.data?.card_no && (<button onClick={() => setActiveCard(true)} className='bg-primary active px-10 py-5 rounded text-white text-sm cursor-pointer'>
-                    Activate Card
-                </button>)}
+                <div className='flex gap-5'>
+                    {!qrCode?.data?.card_no && (<button onClick={handleClick} style={{ background: 'purple', borderRadius: '1rem' }} className=' font-bold active px-10 py-5 rounded text-white text-sm cursor-pointer'>
+                        Buy a Plan
+                    </button>)}
+                    {!qrCode?.data?.card_no && (<button onClick={() => {
+                        const aadhaar = profileDetails?.data?.adhaar_no;
+
+                        if (!aadhaar || aadhaar.trim().toLowerCase() === "xxxx") {
+                            setSnackbar({
+                                open: true,
+                                message: "Update your Aadhaar card first!",
+                                type: "error"
+                            });
+                            return;
+                        }
+
+                        setActiveCard(true);
+                    }} className='bg-primary font-bold active px-10 py-5 rounded text-white text-sm cursor-pointer'>
+                        Activate Card
+                    </button>)}
+
+                </div>
+
+
 
             </div>
 

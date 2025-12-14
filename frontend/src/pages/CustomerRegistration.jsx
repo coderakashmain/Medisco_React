@@ -9,7 +9,7 @@ import FallbackLoader from '../components/FallbackLoader'
 import { useSnackbar } from '../Context/SnackbarContext'
 import axios from 'axios'
 
-const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin, setOtpVerify }) => {
+const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin, setOtpVerify, bpLogin,bdoLogin }) => {
     const { isMobile } = useScreen();
     const [error, setError] = useState('');
     const { setSnackbar } = useSnackbar();
@@ -39,7 +39,8 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
         pincode: '',
         longitude: `${userLocation?.lng}` || '',
         latitude: `${userLocation?.lat}` || '',
-        referral_code: ''
+        referral_code: '',
+        type: ""
 
 
     })
@@ -77,13 +78,44 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
 
         setError('');
         setLoading(true);
+        let path;
+        if (bpLogin || bdoLogin) {
+            path = `${host}/user/business-register`;
+        } else {
+            path = `${host}/user/customer-register`;
+        }
 
+        let payload = { ...userdetails };
+
+        if (bpLogin) {
+            // BP login → send ONLY type
+            payload = {
+                ...userdetails,
+                type:  "BP"
+            };
+            delete payload.referral_code;
+        }else if(bdoLogin){
+             payload = {
+                ...userdetails,
+                type:  "BDO"
+            };
+            delete payload.referral_code;
+        }
+        
+        else {
+            // Normal user → send ONLY referral_code
+            payload = {
+                ...userdetails,
+                referral_code: userdetails.referral_code || ""
+            };
+            delete payload.type;
+        }
         try {
-            const response = await axios.post(`${host}/user/customer-register`, userdetails);
+            const response = await axios.post(path, payload);
             const userdata = response.data;
 
 
-            sessionStorage.setItem("email", userdetails.contact_email);
+            sessionStorage.setItem("email", userdetails.email);
             sessionStorage.setItem("userId", response?.data?.data.user_id);
             setSnackbar({ open: true, message: 'OTP send to your Email.', type: 'success' })
 
@@ -212,7 +244,7 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
                                 </a>
                                 <h3 className="text-2xl font-semibold text-secondary">Lets' Connect with Us.</h3>
 
-                                <p className="text-base text-body-color text-gary text-sm">Create your Customer Account </p>
+                                <p className="text-base text-body-color text-gary text-sm">Create your {bpLogin ? "BP" : bdoLogin ? "BDO" : "Customer"}  Account </p>
                                 {error && (<p className='text-xs text-[#FC4F4F] pt-10'>{error}</p>)}
                             </div>
                         </div>
@@ -357,18 +389,18 @@ const CustomerRegistration = React.memo(({ setCustomerRegister, setCustomerLogin
                             <i onClick={() => setPasswordShow(!passwordShow)} className={`fa-solid ${passwordShow ? "fa-eye-slash" : 'fa-eye'}  text-gary  cursor-pointer pr-10`}></i>
                         </div>
                         <p style={{ fontSize: '10px', marginTop: '2px' }} className='text-xs text-gary '> *Password atleast six charecters must include uppercase, lowercase, number & special character.</p>
+                         {!bpLogin && !bdoLogin && (  <>
+                            <p className=" text-sm mb-10 mt-10">Referral code (optional) </p>
+                         <div className='border border-lightgary rounded flex flex-row gap-10 overflow-hidden bg-[#F4F4FF] items-center mt-10  mb-30'>
 
-                        <p className=" text-sm mb-10 mt-10">Referral code (optional) </p>
-                        <div className='border border-lightgary rounded flex flex-row gap-10 overflow-hidden bg-[#F4F4FF] items-center mt-10  mb-30'>
+                                <input
+                                    name='referral_code'
+                                    value={userdetails.referral_code}
+                                    onChange={handleChange}
+                                    type='text' className="w-full text-sm  py-10 px-10   outline-none" placeholder="" />
 
-                            <input
-                                name='referral_code'
-                                value={userdetails.referral_code}
-                                onChange={handleChange}
-                                type='text' className="w-full text-sm  py-10 px-10   outline-none" placeholder="" />
-
-                        </div>
-
+                            </div>
+                        </>)}
                         <div className="mb-10">
                             <button type="submit"
                                 disabled={loading}

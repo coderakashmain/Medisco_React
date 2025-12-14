@@ -124,6 +124,18 @@ const Footer = () => {
                     >Contact Us</a
                     >
                   </li>
+                  <li className='mt-10'>
+                    <NavLink
+                      to="/broucher"
+                      className="text-secondary font-sora hover:text-primary duration-500 capitalize"
+                    >Broucher</NavLink >
+                  </li>
+                  <li className='mt-10'>
+                    <NavLink
+                      to="/partnerpolicy"
+                      className="text-secondary font-sora hover:text-primary duration-500 capitalize"
+                    >Business Partner policy</NavLink >
+                  </li>
                 </ul>
               </div>
             </div>

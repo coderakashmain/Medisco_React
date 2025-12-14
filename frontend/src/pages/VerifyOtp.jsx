@@ -5,7 +5,7 @@ import axios from 'axios';
 import { useUserDataContext } from '../Context/Userdata';
 import { useSnackbar } from '../Context/SnackbarContext';
 
-const VerifyOtp = React.memo(({ setVerifypopup ,customerLogin,customerRegister}) => {
+const VerifyOtp = React.memo(({ setVerifypopup ,customerLogin,customerRegister,bdoLogin,bpLogin}) => {
     const [loading, setLoading] = useState(false);
     const [OTPValue, setOTPValue] = useState('');
     const [OTPError, setOTPError] = useState('');
@@ -44,9 +44,16 @@ const VerifyOtp = React.memo(({ setVerifypopup ,customerLogin,customerRegister})
            
             setSnackbar({ open: true, message: 'OTP Verified.', type: 'success' })
             setMessage('Otp Verified.')
-            if(customerLogin || customerRegister){
+            if((customerLogin || customerRegister) && !bdoLogin && !bpLogin){
                  localStorage.setItem('customerData', JSON.stringify(response.data));
                 window.location.href = "/customer_dashboard";
+            }else if(bdoLogin) {
+                  localStorage.setItem('bdodata', JSON.stringify(response.data));
+                window.location.href = "/professionalbdo_dashboard";
+            }
+            else if(bpLogin) {
+                      localStorage.setItem('bpdata', JSON.stringify(response.data));
+                window.location.href = "/professionalbp_dashboard";
             }else{
                 localStorage.setItem('userdata', JSON.stringify(response.data));
                   window.location.href = "/dashboard";
@@ -63,8 +70,8 @@ const VerifyOtp = React.memo(({ setVerifypopup ,customerLogin,customerRegister})
 
         } catch (error) {
             setMessage('');
-         setOTPError(error.response?.data?.error?.otp || "Something went wrong");
-            console.error("Registration  failed:", error.response?.data || error.message);
+         setOTPError(error.response?.data?.error?.otp || error.response?.data?.error?.message  || "Something went wrong");
+            console.error("Registration  failed:", error.response?.data.error.message || error.message);
         } finally {
             setLoading(false);
         }

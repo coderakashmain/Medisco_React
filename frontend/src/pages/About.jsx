@@ -71,8 +71,8 @@ const About = () => {
                 key={index}
                 className="flex items-start space-x-3 bg-gray-50 p-4 rounded-lg shadow-sm hover:shadow-md transition"
               >
-                <span className="text-primary text-lg">✔ </span>
-                <p> - {item}</p>
+               
+                <p> <span className="text-primary text-lg">✔ &nbsp;</span>{item}</p>
               </div>
             ))}
           </div>

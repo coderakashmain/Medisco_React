@@ -14,11 +14,12 @@ import { useScreen } from '../Context/ScreenProvider';
 import defaultOrganizationlogo from '../assets/img/defaultOrganizationlogo.png'
 import LocationCityIcon from '@mui/icons-material/LocationCity';
 import MapView from '../components/MapView';
+import { Tooltip } from '@mui/material';
 
 const ServiceDetails = () => {
   const location = useLocation();
   const { services } = useServiceListContex();
-  const { isMobile,width } = useScreen();
+  const { isMobile, width } = useScreen();
   const [serviceDetails, setServiceDetails] = useState(null);
   const servicedetailsRef = useRef();
 
@@ -39,7 +40,11 @@ const ServiceDetails = () => {
     }
 
 
+
+
   }, [location.state]);
+
+
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -122,7 +127,7 @@ const ServiceDetails = () => {
             </div>
 
 
-            {!isMobile || ! width > 991 && (serviceDetails?.latitude && serviceDetails?.latitude !== '00') && (serviceDetails?.longitude && serviceDetails?.longitude!== '00') && (<div className="flex-1">
+            {!isMobile || !width > 991 && (serviceDetails?.latitude && serviceDetails?.latitude !== '00') && (serviceDetails?.longitude && serviceDetails?.longitude !== '00') && (<div className="flex-1">
               <MapView lat={serviceDetails?.latitude} lng={serviceDetails?.longitude} />
             </div>)}
 
@@ -141,6 +146,28 @@ const ServiceDetails = () => {
                 <div>
                   <h2 className='md:text-xl text-sm  font-semibold color-secondary'>{serviceDetails.hospital_name}</h2>
                   <p className='text-sm max-md:text-xs  mt-5 text-primary'>{findeServiceName(serviceDetails.service_type)}</p>
+                  <div className='flex gap-5 flex-wrap mt-5'>
+                    {serviceDetails.specialization.length > 0 && serviceDetails.specialization.map((item) => (
+                      <Tooltip title={
+                        <div
+                          dangerouslySetInnerHTML={{ __html: item.description }}
+                          style={{
+                            fontSize: "0.75rem",
+                            maxWidth: "200px",
+                            lineHeight: "1.4"
+                          }}
+                        />
+                      } arrow>
+                        <span
+                          key={item.specialized_id}
+                          style={{ padding: "3px 10px" }}
+                          className="bg-primary text-white text-xs rounded-full shadow-sm"
+                        >
+                          {item.name}
+                        </span>
+                      </Tooltip>
+                    ))}
+                  </div>
                 </div>
 
 
@@ -168,8 +195,8 @@ const ServiceDetails = () => {
               </div>
 
             </div>
-                
-            
+
+
             {serviceDetails?.about && (<p className=' font-semibold text-gary text-sm max-md:text-xs mt-20 break-words'>  <span className='text-primary'>৹</span> {serviceDetails?.about}</p>)}
 
 
@@ -222,11 +249,11 @@ const ServiceDetails = () => {
 
           </div>
 
-        </div>  
+        </div>
 
-         {(isMobile || width > 991) && (serviceDetails?.latitude && serviceDetails?.latitude !== '00') && (serviceDetails?.longitude && serviceDetails?.longitude!== '00') && ( <div style={{borderRadius : '10px'}} className={`${isMobile ? "mt-10 h-252" : "mt-40 p-10 h-400"} width-full   shadow bg-white  rounded pb-10`}>
-              <MapView lat={serviceDetails?.latitude} lng={serviceDetails?.longitude} />
-            </div>)}
+        {(isMobile || width > 991) && (serviceDetails?.latitude && serviceDetails?.latitude !== '00') && (serviceDetails?.longitude && serviceDetails?.longitude !== '00') && (<div style={{ borderRadius: '10px' }} className={`${isMobile ? "mt-10 h-252" : "mt-40 p-10 h-400"} width-full   shadow bg-white  rounded pb-10`}>
+          <MapView lat={serviceDetails?.latitude} lng={serviceDetails?.longitude} />
+        </div>)}
 
       </div>
 

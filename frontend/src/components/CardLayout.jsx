@@ -16,7 +16,7 @@ const CardLayout = () => {
 
   return (
     <>
-   {qrCode?.data?.card_no ? ( <div style={{ borderRadius: '1rem' , boxShadow: "0 8px 30px rgba(0, 0, 0, 0.15)" , width  : width <370 ? "100%" : isMobile ? '320px' : '400px', height : width < 370 ? "100%" :  isMobile ? '220px' : '252px'}} className='select-none rounded bg-primary  flex flex-col shadow' >
+   {qrCode?.data?.card_no ? ( <div style={{ borderRadius: '7px' , boxShadow: "0 8px 30px rgba(0, 0, 0, 0.15)" , width  : width <370 ? "100%" : isMobile ? 'full' : '400px', height : width < 370 ? "100%" :  isMobile ? '220px' : '252px'}} className='select-none rounded bg-primary  flex flex-col shadow' >
       <div style={{ height: '27%' }} className='flex justify-between items-center py-5 pl-5'>
         <img  style={{width : isMobile ?  120 : ''}} loading='lazy' src={logo} alt="logo" />
         <aside className='text-white pr-5 select-none'>

@@ -1,7 +1,7 @@
 
 
 
-import React, { lazy, Suspense, useEffect, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import Avatar from '../../components/Avatar'
 import '../DashboardChild/ProfileSubP.css'
 import { useCustomerData } from '../../Context/CustomerData';
@@ -17,11 +17,12 @@ import { UpdateCustomerProfileApi } from '../../APIs/UpdateCustomerProfileApi';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import { useScreen } from '../../Context/ScreenProvider';
 import { useServiceListContex } from '../../Context/Services';
+import FileUploadRoundedIcon from '@mui/icons-material/FileUploadRounded';
+import { UploadPhoto } from '../../APIs/UploadPhoto';
+import { SaveAadhar } from '../../APIs/SaveAadhar';
 
+const CustomerProfileEdit = ({ setEditable, setProfileDetails, customerData, profileDetails }) => {
 
-const CustomerProfileEdit = ({ setEditable }) => {
-    const { customerData, profileDetails, setProfileDetails } = useCustomerData();
-  
     const { setSnackbar } = useSnackbar();
     const { isMobile } = useScreen();
     const { statesList } = useStatesContext();
@@ -32,6 +33,10 @@ const CustomerProfileEdit = ({ setEditable }) => {
     const [success, setSuccess] = useState("");
     const [isOtherCity, setIsOtherCity] = useState(false);
     const { districtsList, districtLoading, setState } = useDistrictsContext();
+    const [selectedFiles, setSelectedFiles] = useState(null);
+    const [imagePath, setImagePath] = useState(null);
+
+    const fileInputRef = useRef(null);
     const [editData, setEditData] = useState({
         name: profileDetails?.data.first_name || '',
         email: profileDetails?.data.email || '',
@@ -47,7 +52,7 @@ const CustomerProfileEdit = ({ setEditable }) => {
     });
 
 
-   
+
 
     useEffect(() => {
         setState(profileDetails?.data.state);
@@ -80,6 +85,43 @@ const CustomerProfileEdit = ({ setEditable }) => {
 
 
 
+    const handleFileSelect = async (e) => {
+        const file = e.target.files[0];
+        if (!file) return;
+        if (!file.type.startsWith("image/")) {
+            setSnackbar({open : true, message : "Please select an image file only", type : 'error'})
+            e.target.value = "";
+            return;
+        }
+
+        setSelectedFiles(file);
+    };
+
+    const handlepdfUpload = async () => {
+        if (!selectedFiles) return ;
+
+
+
+
+        try {
+            const res = await UploadPhoto(customerData?.token, selectedFiles, "service");
+            setImagePath(res.data);
+        
+            saveAadhar(res.data)
+            setSelectedFiles(null);
+        } catch (err) {
+            console.error(err);
+            alert('');
+            setSnackbar({ open: true, message: 'Upload failed', type: 'error' });
+        } finally {
+
+        }
+    };
+
+    const saveAadhar = async (path) => {
+         
+        await SaveAadhar(customerData.token, path);
+    }
 
 
 
@@ -121,11 +163,13 @@ const CustomerProfileEdit = ({ setEditable }) => {
         setLoading(true);
         setApiError("");
         setSuccess("");
+        handlepdfUpload();
 
-        if( profileDetails?.data.email !== editData.email){
-             setSnackbar({ open: true, message: 'You can not change your email.', type: 'warning' })
-             return;
+        if (profileDetails?.data.email !== editData.email) {
+            setSnackbar({ open: true, message: 'You can not change your email.', type: 'warning' })
+            return;
         }
+       
 
         try {
             const res = await UpdateCustomerProfileApi(customerData?.token, editData);
@@ -176,8 +220,8 @@ const CustomerProfileEdit = ({ setEditable }) => {
                         <div  >
 
                             <button onClick={() => { setEditable(false) }} className='close-btn  '><i className="fa-solid fa-xmark"></i></button>
-                            {!isMobile  && (<div className='flex gap-5 items-center' style={{ transform: 'translate(-22px)' }}>
-                                {!locationLoading && !error  &&(<p className='text-xs'>Track your current Location</p>)}
+                            {!isMobile && (<div className='flex gap-5 items-center' style={{ transform: 'translate(-22px)' }}>
+                                {!locationLoading && !error && (<p className='text-xs'>Track your current Location</p>)}
                                 {locationLoading && (<Loading size="15px" />)}
                                 {error && (<p className='text-red text-xs'>{error}</p>)}
                                 {locationMesage && click > 0 && (<p className='text-xs' style={{ color: 'green' }}>({locationMesage})</p>)}
@@ -208,7 +252,7 @@ const CustomerProfileEdit = ({ setEditable }) => {
                                 <input type="text" onChange={handleChange} disabled name='email' value={editData.email} className={`rounded select-none outline-none p-7 text-sm px-10  opacity-50 cursor-notAllow`} id="email" />
 
                             </li>
-                          
+
                             <li>
                                 <label htmlFor="mobileno">Mobile No</label>
                                 <input onChange={handleChange} value={editData.mobileno} name='mobileno' type="number" className={`rounded outline-none p-7 text-sm px-10  `} id='mobileno' />
@@ -277,10 +321,28 @@ const CustomerProfileEdit = ({ setEditable }) => {
                                 <input type="number" onChange={handleChange} name='pincode' value={editData.pincode} className={`rounded outline-none p-7 text-sm px-10 `} id='pincode' />
 
                             </li>
-                      
+
                             <li>
                                 <label htmlFor="adhaar_no">Aadhaar No</label>
-                                <input type="number" onChange={handleChange} name='adhaar_no' value={editData.adhaar_no} className={`rounded outline-none p-7 text-sm px-10 `} id='adhaar_no' />
+                                <div className='flex items-center  bg-primary rounded mt-10'>
+
+                                    <input style={{ margin: 0 }} type="number" onChange={handleChange} name='adhaar_no' value={editData.adhaar_no} className={`rounded outline-none p-7 text-sm px-10 `} id='adhaar_no' />
+                                    <Tooltip title="Upload Aadhaar">
+                                        <div onClick={() => fileInputRef.current.click()} className=' flex  items-center px-5 text-white cursor-pointer active '>
+                                            <FileUploadRoundedIcon />
+                                            <input
+                                                ref={fileInputRef}
+                                                type='file'
+                                                accept='image/*'
+                                                className='hidden'
+                                                onChange={handleFileSelect}
+                                            />
+                                        </div>
+                                    </Tooltip>
+                                </div>
+                                {selectedFiles&&(
+                                    <p style={{fontSize : '10px'}} className='text-xs text-gary'>{selectedFiles.name}</p>
+                                )}
 
                             </li>
                             <li>
@@ -288,7 +350,7 @@ const CustomerProfileEdit = ({ setEditable }) => {
                                 <input type="text" onChange={handleRefChange} name='pan_no' value={editData.pan_no} className={`rounded outline-none p-7 text-sm px-10 `} id='pan_no' />
 
                             </li>
-                           
+
 
 
                         </ul>

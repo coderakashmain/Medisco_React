@@ -17,6 +17,10 @@ import AddBusinessRoundedIcon from '@mui/icons-material/AddBusinessRounded';
 import PersonRoundedIcon from '@mui/icons-material/PersonRounded';
 import { useCustomerData } from '../Context/CustomerData'
 import KeyboardArrowDownRoundedIcon from '@mui/icons-material/KeyboardArrowDownRounded';
+const bdodata =   JSON.parse(localStorage.getItem("bdodata"));
+
+
+const bpdata =   JSON.parse(localStorage.getItem("bpdata")) ;
 
 
 const Navbar = () => {
@@ -32,6 +36,8 @@ const Navbar = () => {
   const [forgotePassword, setForgotePassword] = useState(false);
   const [customerLogin,setCustomerLogin] = useState(false);
   const [customerRegister,setCustomerRegister] = useState(false);
+  const [bpLogin,setBPlogin] = useState(false);
+  const [bdoLogin,setBdologin] = useState(false);
 
   const [dropDownOpen, setDropdownOpen] = useState(false);
   const dropdownRef = useRef(null);
@@ -111,12 +117,15 @@ const Navbar = () => {
                 <li className="navbar-dropdown">
                   <HashLink smooth to="/#contact">contact</HashLink>
                 </li>
+                <li className="navbar-dropdown">
+                  <HashLink smooth to="/broucher">broucher</HashLink>
+                </li>
               </ul>
             </nav>
 
             <div className="flex gap-15 align-center">
               <div className="header-menu-right h-full flex items-center gap-15 cursor-pointer">
-                {userdata || customerData ? (
+                {userdata || customerData || bpdata || bdodata ? (
                   <div className='font-semibold relative' onClick={() => setProfileDropdown(!ProfileDropdown)} >
 
                   <div >
@@ -134,6 +143,12 @@ const Navbar = () => {
                           if(userdata){
 
                             navigate('/dashboard')
+                          } 
+                          if(bpdata){
+                                navigate('/professionalbp_dashboard')
+                          }
+                          if(bdodata){
+                                navigate('/professionalbdo_dashboard')
                           }
                           if(customerData){
                             navigate('/customer_dashboard')
@@ -176,6 +191,25 @@ const Navbar = () => {
                               setDropdownOpen(false)
                             }}
                             className="login-btn font-normal font-semibold text-sm text-black  hover:bg-primary rounded hover:text-white px-12 py-10 text-nowrap"><AddBusinessRoundedIcon sx={{ fontSize : 20}}/><span style={{marginLeft  : 10}}>Join   as Service Provider</span> </li>
+                          <li
+
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setLoginP(!logingP)
+                              setDropdownOpen(false)
+                              setBPlogin(true)
+                            }}
+                            className="login-btn font-normal font-semibold text-sm text-black  hover:bg-primary rounded hover:text-white px-12 py-10 text-nowrap"><AddBusinessRoundedIcon sx={{ fontSize : 20}}/><span style={{marginLeft  : 10}}>Join   as BP</span> </li>
+                          <li
+
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              setLoginP(!logingP)
+                              setDropdownOpen(false)
+                              setBdologin(true)
+                            }}
+                            className="login-btn font-normal font-semibold text-sm text-black  hover:bg-primary rounded hover:text-white px-12 py-10 text-nowrap"><AddBusinessRoundedIcon sx={{ fontSize : 20}}/><span style={{marginLeft  : 10}}>Join   as BDO</span> </li>
+                            
 
                         </ul>
 
@@ -190,7 +224,7 @@ const Navbar = () => {
 
                 {(logingP || customerLogin) && (<Suspense fallback={<FallbackLoader fixed={true} />}><Login customerLogin={customerLogin}
                 setCustomerRegister={setCustomerRegister}
-                setCustomerLogin={setCustomerLogin} setLoginP={setLoginP} setForgotePassword={setForgotePassword} setSignIn={setSignIn} /></Suspense>)}
+                setCustomerLogin={setCustomerLogin} setBdoLogin={setBdologin} bdoLogin={bdoLogin} setBPlogin={setBPlogin} bpLogin={bpLogin} setLoginP={setLoginP} setForgotePassword={setForgotePassword} setSignIn={setSignIn} /></Suspense>)}
 
                 {/* <!-- Registration popUp --> */}
 
@@ -206,7 +240,7 @@ const Navbar = () => {
                 {customerRegister  && (
                   <Suspense fallback={<FallbackLoader fixed={true} />}>
 
-                    <CustomerRegistration setCustomerRegister={setCustomerRegister} setCustomerLogin={setCustomerLogin} setOtpVerify={setOtpVerify} />
+                    <CustomerRegistration bdoLogin={bdoLogin} bpLogin={bpLogin} setCustomerRegister={setCustomerRegister} setCustomerLogin={setCustomerLogin} setOtpVerify={setOtpVerify} />
                   </Suspense>
 
                 )}
@@ -215,7 +249,7 @@ const Navbar = () => {
 
                 {otpVerify && (
                   <Suspense fallback={<FallbackLoader fixed={true} />}>
-                    <VerifyOtp customerRegister={customerRegister} setVerifypopup={setOtpVerify} />
+                    <VerifyOtp bdoLogin={bdoLogin} bpLogin={bpLogin} customerRegister={customerRegister} setVerifypopup={setOtpVerify} />
 
 
                   </Suspense>
@@ -290,6 +324,9 @@ const Navbar = () => {
               </li>
               <li>
                 <HashLink to="/#">Contact</HashLink>
+              </li>
+              <li>
+                <HashLink to="/broucher">Broucher</HashLink>
               </li>
             </ul>
             <a href="JavaScript:void(0)" id="res-cross"></a>

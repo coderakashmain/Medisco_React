@@ -65,7 +65,7 @@ const ProfileSubP = React.memo(() => {
     }
     fetchSpecialization();
 
-  }, [userdata])
+  }, [userdata,profileDetails?.data?.service_type])
 
 
 

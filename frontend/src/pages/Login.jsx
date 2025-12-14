@@ -5,7 +5,7 @@ import axios from 'axios';
 import FallbackLoader from '../components/FallbackLoader';
 const VerifyOtp = lazy(() => import("./VerifyOtp"));
 import { useSnackbar } from '../Context/SnackbarContext';
-const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLogin, setCustomerLogin, setCustomerRegister }) => {
+const Login = React.memo(({ setLoginP, setForgotePassword,setBPlogin,bpLogin,setBdoLogin,bdoLogin, setSignIn, customerLogin, setCustomerLogin, setCustomerRegister }) => {
     const { setSnackbar } = useSnackbar();
     const [message, setMessage] = useState('');
     const [loginError, setLoginError] = useState('');
@@ -37,6 +37,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLo
 
     // }, [])
 
+ 
 
 
     const loginUser = async (e) => {
@@ -68,7 +69,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLo
                 {
                     email: loginData.email,
                     password: loginData.password,
-                    type : customerLogin ? "Customer" : 'Service Provider'
+                    type : customerLogin ? "Customer" : bpLogin ? "BP" : bdoLogin ? "BDO" : 'Service Provider'
                 }
             );
 
@@ -109,6 +110,13 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLo
                     localStorage.setItem('customerData', JSON.stringify(userData));
                     window.location.href = '/customer_dashboard';
 
+                }
+                else if(bpLogin){
+                      localStorage.setItem('bpdata', JSON.stringify(userData));
+                    window.location.href = '/professionalbp_dashboard';
+                } else if(bdoLogin) {
+                      localStorage.setItem('bdodata', JSON.stringify(userData));
+                    window.location.href = '/professionalbdo_dashboard';
                 } else {
 
                     localStorage.setItem('userdata', JSON.stringify(userData));
@@ -150,10 +158,20 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLo
                         <form onSubmit={loginUser}>
 
                             <div className=" sticky">
-                                <button onClick={() => {
+                                <button onClick={(e) => {
+                                    e.preventDefault();
                                     if (customerLogin) {
                                         setCustomerLogin(false);
-                                    } else {
+                                    } 
+                                    else if(bpLogin){
+                                        setBPlogin(false);
+                                        setLoginP(false)
+                                    }
+                                    else if(bdoLogin){
+                                        setBdoLogin(false);
+                                        setLoginP(false)
+                                    }
+                                    else{
 
                                         setLoginP(false)
                                     }
@@ -163,7 +181,7 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLo
                                         <img src={logo} alt="logo" className="max-w-[160px]" />
                                     </a>
                                     <h3 className="text-2xl font-semibold text-secondary">Welcome Back!</h3>
-                                    <p className="text-base text-body-color text-gary text-sm">Log in to your {customerLogin ? "Customer" : "Service Provider"} Account</p>
+                                    <p className="text-base text-body-color text-gary text-sm">Log in to your {customerLogin ? "Customer" : bpLogin? " BP" :bdoLogin ? "BDO" : "Service Provider"} Account</p>
                                     {loginError && (<p className='text-xs text-[#FC4F4F]'>{loginError}</p>)}
                                     {message && (<p className='text-xs text-primary'>{message}</p>)}
                                 </div>
@@ -213,7 +231,16 @@ const Login = React.memo(({ setLoginP, setForgotePassword, setSignIn, customerLo
                                 if (customerLogin) {
                                     setCustomerLogin(false);
                                     setCustomerRegister(true)
-                                } else {
+                                } 
+                                else if(bpLogin){
+                                    setCustomerRegister(true)
+
+                                }
+                                else if(bdoLogin){
+                                    setCustomerRegister(true)
+
+                                }
+                                else {
                                     setSignIn(true);
                                     setLoginP(false);
                                 }

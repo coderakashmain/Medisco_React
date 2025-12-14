@@ -1,6 +1,5 @@
 import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 import axios from "axios";
-import { useCustomerData } from '../../Context/CustomerData'
 import { useScreen } from '../../Context/ScreenProvider';
 import FallbackLoader from '../../components/FallbackLoader';
 import NotFound from '../NotFound';
@@ -17,8 +16,7 @@ import { UploadPhoto } from '../../APIs/UploadPhoto';
 import Loading from '../../components/Loading';
 
 
-const CustomerProfile = () => {
-    const { customerDataloading, profileDetails: customerProfileDetails, customerData, setProfileDetails } = useCustomerData();
+const CustomerProfile = React.memo(({ customerDataloading, customerProfileDetails, customerData, setProfileDetails }) => {
     const { isMobile, width } = useScreen();
     const [editable, setEditable] = useState(false);
     const [forgotePassword, setForgotePassword] = useState(false);
@@ -169,10 +167,21 @@ const CustomerProfile = () => {
 
                         </div>
                     </div>
-                    <div className=' flex-nowrap select-none hidden'>
+                    <div className=' flex-nowrap select-none'>
+                        <div className='hidden'>
+
                         <h4 className='font-semibold select-none max-sm:text-sm text-md text-nowrap text-end'>Total Savings on Bills</h4>
                         <p className='text-success text-end mt-5 font-bold '> <ShowChartIcon />₹ 23239</p>
                         <p className=' rounded text-sm border inline-block float-right border-primary px-10 py-5 mt-10 font-bold text-primary cursor-pointer  text-xs sm:text-sm text-nowrap'>VIEW DETAILS</p>
+                        </div>
+                        {
+                            customerData?.data.referral_code && (
+                                <div className=''> 
+                                    <h4 className='font-semibold select-none max-sm:text-sm text-md text-nowrap text-end'>Your Referral Code</h4>
+                                    <p className='float-right text-primary text-end mt-5 font-bold bg-[#F4F4FF]  px-5 border rounded inline-block'>{customerProfileDetails?.data?.code}</p>
+                                </div>
+                            )
+                        }
 
                     </div>
                 </div>
@@ -253,7 +262,7 @@ const CustomerProfile = () => {
                     <div className={`profile-edit-box relative md:w-[80%] lg:w-[80%] w-full  bg-white shadow ${isMobile ? "max-h-[80vh]" : 'max-h-[90vh]'}  rounded-[10px] scroll`}>
 
                         <Suspense fallback={<FallbackLoader fixed={true} />}>
-                            <CustomerProfileEdit setEditable={setEditable} />
+                            <CustomerProfileEdit profileDetails={customerProfileDetails} customerData={customerData} setProfileDetails={setProfileDetails} setEditable={setEditable} />
                         </Suspense>
                     </div>
                 </PopUp>
@@ -302,6 +311,6 @@ const CustomerProfile = () => {
             )}
         </>
     )
-}
+})
 
 export default CustomerProfile

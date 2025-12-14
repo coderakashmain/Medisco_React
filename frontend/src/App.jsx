@@ -16,11 +16,19 @@ import ScreenProvider from './Context/ScreenProvider';
 import ErrorBoundary from './pages/ErrorBoundary';
 import CustomerData from './Context/CustomerData';
 import QrCodeProvider from './Context/QrCodeProvider';
+import { useCustomerData } from './Context/CustomerData';
+import { useBpData } from './Context/BpData';
+import { useBdoData } from './Context/BdoData';
 
 
 
 
 
+
+
+const BdoDashboard = lazy(() => import("./pages/BdoDashboard/BdoDashboard"));
+const BpDashboard = lazy(() => import("./pages/BpDashboard/BpDashboard"));
+const DownloadBrochure = lazy(() => import("./pages/DownloadBrochure"));
 const BusinessPartnerPolicy = lazy(() => import("./pages/BusinessPartnerPolicy"));
 const RefundPolicy = lazy(() => import("./pages/RefundPolicy"));
 const Terms = lazy(() => import("./pages/Terms"));
@@ -43,12 +51,16 @@ const SearchList = lazy(() => import("./pages/SearchList"));
 
 
 
+
 function App() {
+  const { customerDataloading, profileDetails: customerProfileDetails, customerData, setProfileDetails } = useCustomerData();
+  const { bpData, profileDetails: bpProfileDetails, bpDataloading, setProfileDetails: setBpProfileDetails } = useBpData();
+  const { bdoData, profileDetails: bdoProfileDetails, bdoDataloading, setProfileDetails: setBdoProfileDetails } = useBdoData();
 
   const router = createBrowserRouter([
     {
       path: '/',
-      element: <><ScreenProvider><SnackbarProvider><LocationProvider><Userdata><CustomerData> <Services><States><Districts><GlobalRouter /></Districts></States></Services></CustomerData></Userdata></LocationProvider></SnackbarProvider></ScreenProvider></>,
+      element: <><ScreenProvider><SnackbarProvider><LocationProvider><Userdata> <Services><States><Districts><GlobalRouter /></Districts></States></Services></Userdata></LocationProvider></SnackbarProvider></ScreenProvider></>,
       children: [
         {
           path: '',
@@ -100,7 +112,11 @@ function App() {
               children: [
                 {
                   path: '',
-                  element: <><CustomerProfile /></>
+                  element: <><CustomerProfile customerDataloading={customerDataloading}
+                  customerProfileDetails={customerProfileDetails}
+                  customerData={customerData}
+                  setProfileDetails={setProfileDetails}
+                  /></>
                 },
                 {
                   path: 'card',
@@ -112,6 +128,35 @@ function App() {
                 },
 
 
+              ]
+            },
+            {
+              path: '/professionalbp_dashboard',
+              element: <><Suspense fallback={<FallbackLoader fixed={true} />}><BpDashboard /></Suspense></>,
+              children :[
+                {
+                  path : "",
+                  element : <><CustomerProfile customerDataloading={bpDataloading}
+                  customerProfileDetails={bpProfileDetails}
+                  customerData={bpData}
+                  setProfileDetails={setBpProfileDetails}
+                  /></>
+                }
+              ]
+        
+            },
+            {
+              path: '/professionalbdo_dashboard',
+              element: <><Suspense fallback={<FallbackLoader fixed={true} />}><BdoDashboard /></Suspense></>,
+             children :[
+                {
+                  path : "",
+                  element : <><CustomerProfile customerDataloading={bdoDataloading}
+                  customerProfileDetails={bdoProfileDetails}
+                  customerData={bdoData}
+                  setProfileDetails={setBdoProfileDetails}
+                  /></>
+                }
               ]
             },
             {
@@ -133,6 +178,10 @@ function App() {
             {
               path : '/partnerpolicy',
               element : <Suspense fallback = {<FallbackLoader fixed={true}/>}><BusinessPartnerPolicy/></Suspense>
+            },
+            {
+              path : '/broucher',
+              element : <Suspense fallback = {<FallbackLoader fixed={true}/>}><DownloadBrochure/></Suspense>
             },
           ]
         },

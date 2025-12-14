@@ -403,13 +403,13 @@ const SearchList = () => {
 
 
                 <div className="" id='search-result' ref={searchResultRef}>
-                    <div style={{gap : isMobile ? 4 : 10}} className="flex  justify-between mb-30   ">
+                    <div style={{ gap: isMobile ? 4 : 10 }} className="flex  justify-between mb-30   ">
                         <h2 className="text-1xl font-bold text-nowrap  text-secondary">Search Results</h2>
                         <div className='flex items-center gap-10 '>
                             {specializationList?.length > 1 && (
                                 <FormControl
                                     size="small"
-                                    sx={{ width: isMobile ? "8rem" : "20rem"  }}
+                                    sx={{ width: isMobile ? "8rem" : "20rem" }}
                                 >
                                     <InputLabel sx={{ fontSize: "0.8rem" }}>
                                         Filter Specializations
@@ -421,7 +421,7 @@ const SearchList = () => {
                                         onChange={(e) => {
                                             const value = e.target.value;
 
-                                          
+
                                             if (value.includes("__clear__")) return;
 
                                             setSelectedSpecializations(value);
@@ -441,7 +441,7 @@ const SearchList = () => {
                                         }}
                                     >
 
-                                        
+
                                         <MenuItem
                                             value="__clear__"
                                             onClick={(e) => {
@@ -523,9 +523,18 @@ const SearchList = () => {
                                                             <h2 className="lg:text-3xl text-center md:text-2xl sm:text-2xl text-xl font-bold text-secondary">{data.hospital_name}</h2>
                                                             <div className=' mb-10 select-none  mt-5 flex items-center justify-center flex-wrap gap-5'>
 
-                                                                <p className="text-xs font-semibold text-primary">{findeServiceName(data.service_type)}</p>
+                                                                {/* <p className="text-xs font-semibold text-primary">{findeServiceName(data.service_type)}</p> */}
                                                                 {data.specialization.length > 0 && data.specialization.map((item) => (
-                                                                    <Tooltip title={item.description} arrow>
+                                                                    <Tooltip title={
+                                                                        <div
+                                                                            dangerouslySetInnerHTML={{ __html: item.description }}
+                                                                            style={{
+                                                                                fontSize: "0.75rem",
+                                                                                maxWidth: "200px",
+                                                                                lineHeight: "1.4"
+                                                                            }}
+                                                                        />
+                                                                    } arrow>
                                                                         <span
                                                                             key={item.specialized_id}
                                                                             style={{ padding: "3px 10px" }}

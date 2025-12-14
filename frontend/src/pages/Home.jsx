@@ -1,4 +1,4 @@
-import React, { lazy, useEffect, useRef, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useRef, useState } from 'react'
 
 import "swiper/css";
 import "swiper/css/navigation";
@@ -30,7 +30,7 @@ import circleimage from '../assets/img/circle-image.png'
 import pricingplanshap from '../assets/img/pricing-plan-shap.png'
 import pricingplanshap1 from '../assets/img/pricing-plan-shap-1.png'
 import { useServiceListContex } from '../Context/Services';
-import { createSearchParams, NavLink, useNavigate } from 'react-router-dom';
+import { createSearchParams, NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { useStatesContext } from '../Context/States';
 import { useDistrictsContext } from '../Context/Districts';
 import Loading from '../components/Loading';
@@ -39,6 +39,8 @@ import ReviewSlider from '../components/ReviewSlider';
 import BrandSlider from '../components/BrandSlider';
 import DropdownOff from '../components/DropdownOff';
 import { useScreen } from '../Context/ScreenProvider';
+const PaymentShow = lazy(() => import("../components/PaymentShow"));
+import FallbackLoader from '../components/FallbackLoader';
 
 const Home = () => {
   const [searchData, setSearchData] = useState({
@@ -51,11 +53,23 @@ const Home = () => {
   const { setSnackbar } = useSnackbar();
   const navigate = useNavigate();
   const { services } = useServiceListContex();
+  const location = useLocation();
   const { statesList, stateLoading } = useStatesContext();
   const { districtsList, setState, districtLoading } = useDistrictsContext();
   const { isMobile, width } = useScreen();
   const [hideDropdown, setHideDropdown] = useState(false);
-  const [filterList, setFilterList] = useState([])
+  const [filterList, setFilterList] = useState([]);
+  const [paymentShowPage, setPaymentShowPage] = useState(false);
+
+
+  useEffect(() => {
+    if (location.hash) {
+      const element = document.getElementById(location.hash.replace("#", ""));
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  }, [location]);
 
 
 
@@ -449,7 +463,7 @@ const Home = () => {
                 </p>
 
                 <p className='text-base leading-28 text-gary font-normal xl:mt-25 mt-20 leading-30'>Through the Mediscopluss Discount Card, members can avail special discounts and offers on hospital services, diagnostic tests, and medicines at partner healthcare centers across various cities and towns.</p>
-                
+
               </div>
             </div>
           </div>
@@ -477,7 +491,7 @@ const Home = () => {
                   </li>
                   <p className='ml-15'>To create local job opportunities in the healthcare and related service sectors.
                   </p>
-                  
+
 
                 </ul>
                 <div className="flex items-center">
@@ -807,8 +821,9 @@ const Home = () => {
               <div
                 className="text-end relative before:absolute before:w-[71%] before:h-full before:bg-primary before:-left-38 before:z-[-1] before:rotate-[5deg] before:top-[13%] mt-50 lg:mr-40 max-lg:before:hidden"
               >
-                <figure className="overflow-hidden">
-                  <img src={whyusphoto1} alt="img" loading='lazy' className="w-full" />
+                <figure className="w-full rounded overflow-hidden">
+                  {/* <img src={whyusphoto1} alt="img" loading='lazy' className="w-full" /> */}
+                   <iframe className='w-full' height={isMobile ? '250' : '415'} src="https://www.youtube.com/embed/yx6dcWqnK9k?si=EMGj3c-hQhIy637b" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
                 </figure>
                 {/* <div
                   className="absolute xl:top-[-15%] xl:left-[-10%] lg:top-[-11%] lg:left-[-11%] top-[-12%] left-[-6%] xl:size-200 size-170 bg-white rounded-full flex items-center justify-center max-md:size-165"
@@ -931,7 +946,7 @@ const Home = () => {
       <section
         className="overflow-hidden relative bg-[#F4F4FF] lg:py-120 md:py-80 py-60 bg-[url(../img/graph.png)] " id='section-pricing'
       >
-        <div className="container">
+        <div className="container" >
           <div className="text-center lg:mx-auto lg:w-[60%] w-full pb-50">
             <span
               className="pb-10 block font-sora font-semibold font-sora text-primary xxl:text-xxl xl:text-xl sm:text-lg text-base"
@@ -943,9 +958,10 @@ const Home = () => {
               Simple & Affordable Options for Everyone
             </h2>
           </div>
-          <div className="grid place-items-center">
-            <div className="w-full max-w-2xl">
+        <div className="grid grid-cols-12 gap-25 ">
+            <div className="lg:col-span-6 col-span-12" >
               <div
+                
                 className="bg-white p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
                 <img
@@ -972,6 +988,7 @@ const Home = () => {
                 <span>Discounts available on</span>
 
                 <ul
+               
                   className="list-style border-t border-[#D8D8D8] pt-26 mt-21 pb-30 relative before:absolute before:w-1/2 before:bg-primary before:-top-px before:h-px"
                 >
                   <li
@@ -980,6 +997,7 @@ const Home = () => {
                     Doctor Consultation
                   </li>
                   <li
+                   id='payment-button'
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
                     Hospitals & Nursing Homes
@@ -998,6 +1016,7 @@ const Home = () => {
 
                   </li>
                   <li
+                  
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
                     Ayurvedic & Wellness Centers
@@ -1011,15 +1030,15 @@ const Home = () => {
                   </li>
 
                 </ul>
-                <a href="pricing-table.html" className="btn two"
+                <p  onClick={() => setPaymentShowPage(true)} className="btn two"
                 ><span
                 >Pick This Plan<i
                   className="fa-solid fa-arrow-right"
                 ></i></span
-                  ></a>
+                  ></p>
               </div>
             </div>
-            {/* <div className="lg:col-span-4 col-span-12">
+            <div className="lg:col-span-6 col-span-12">
               <div
                 className="pricing-plan two bg-primary p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
@@ -1030,10 +1049,10 @@ const Home = () => {
                   alt="img"
                 />
                 <h5 className="font-bold pb-5 text-white font-sora text-xl">
-                  Standard Plan
+                  Family Plan
                 </h5>
                 <h3 className="text-5.2xl font-bold pb-10 text-white font-sora">
-                  ₹1490<span className="pl-6 text-base">/Year</span>
+                  2499<span className="pl-6 text-base">/Year</span>
                 </h3>
                 <span className="text-white">Extended Savings</span>
                 <ul
@@ -1042,34 +1061,35 @@ const Home = () => {
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                    All benefits of the Basic Plan
+                   Maximum 4 family members can be included
                   </li>
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                    Bigger discounts on hospital services
+                   No age limit for any member
                   </li>
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                    Dental & vision care savings
+                  Card activation within 4 working days
+
                   </li>
                   <li
                     className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                    Priority access at partnered centers
+                   Can be used unlimited times during the validity period
                   </li>
 
                 </ul>
-                <a href="pricing-table.html" className="btn two"
+                <p  onClick={() => setPaymentShowPage(true)} className="btn two"
                 ><span
                 >Pick This Plan<i
                   className="fa-solid fa-arrow-right"
                 ></i></span
-                  ></a>
+                  ></p>
               </div>
             </div>
-            <div className="lg:col-span-4 col-span-12">
+            {/* <div className="lg:col-span-4 col-span-12">
               <div
                 className="bg-white p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
@@ -1169,6 +1189,10 @@ const Home = () => {
 
         <BrandSlider />
       </div>
+
+      {paymentShowPage && (<Suspense fallback={<FallbackLoader fixed={true} />}>
+        <PaymentShow setPaymentShowPage={setPaymentShowPage} />
+      </Suspense>)}
 
 
 
