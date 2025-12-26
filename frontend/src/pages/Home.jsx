@@ -1054,30 +1054,75 @@ const Home = () => {
                 <h3 className="text-5.2xl font-bold pb-10 text-white font-sora">
                   2499<span className="pl-6 text-base">/Year</span>
                 </h3>
-                <span className="text-white">Extended Savings</span>
+                {/* <span className="text-white">Extended Savings</span> */}
                 <ul
                   className="list-style border-t border-[#D8D8D8] pt-26 mt-21 pb-30 relative"
                 >
                   <li
-                    className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
+                    className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
                    Maximum 4 family members can be included
                   </li>
                   <li
-                    className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
+                    className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
                    No age limit for any member
                   </li>
                   <li
-                    className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
+                    className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
                   Card activation within 4 working days
 
                   </li>
                   <li
-                    className="font-normal pb-21 font-sora pl-20 relative text-white max-xxl:text-sm"
+                    className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
                    Can be used unlimited times during the validity period
+                  </li>
+
+                </ul>
+                <span className='!text-white'>Discounts available on</span>
+
+                <ul
+               
+                  className="list-style  border-t border-[#D8D8D8] pt-26 mt-21 pb-30 relative before:absolute before:w-1/2 before:bg-primary before:-top-px before:h-px"
+                >
+                  <li
+                    className="font-normal pb-21 font-sora pl-20 !text-white relative text-secondary max-xxl:text-sm"
+                  >
+                    Doctor Consultation
+                  </li>
+                  <li
+                   id='payment-button'
+                    className="font-normal pb-21 font-sora !text-white pl-20 relative text-secondary max-xxl:text-sm"
+                  >
+                    Hospitals & Nursing Homes
+
+                  </li>
+                  <li
+                    className="font-normal pb-21 !text-white font-sora pl-20 relative text-secondary max-xxl:text-sm"
+                  >
+                    Diagnostic Labs
+
+                  </li>
+                  <li
+                    className="font-normal pb-21 !text-white font-sora pl-20 relative text-secondary max-xxl:text-sm"
+                  >
+                    Medical Stores
+
+                  </li>
+                  <li
+                  
+                    className="font-normal pb-21 !text-white font-sora pl-20 relative text-secondary max-xxl:text-sm"
+                  >
+                    Ayurvedic & Wellness Centers
+
+                  </li>
+                  <li
+                    className="font-normal pb-21 !text-white font-sora pl-20 relative text-secondary max-xxl:text-sm"
+                  >
+                    Physiotherapy & Clinics
+
                   </li>
 
                 </ul>

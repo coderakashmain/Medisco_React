@@ -1,13 +1,16 @@
-import React, { lazy, Suspense, useState } from 'react'
+import React, { lazy, Suspense, useEffect, useState } from 'react'
 import { useScreen } from '../../Context/ScreenProvider'
 import CardLayout from '../../components/CardLayout';
 import { useQrcode } from '../../Context/QrCodeProvider';
 const PopUp = lazy(() => import('../../components/PopUp'))
+const AddMember = lazy(() => import('./AddMember'))
 import FallbackLoader from '../../components/FallbackLoader';
 import { updateCardNo } from '../../APIs/updateCardNo';
 import { useSnackbar } from '../../Context/SnackbarContext';
 import { useCustomerData } from '../../Context/CustomerData';
 import { useNavigate } from 'react-router-dom';
+import { getFamilyMembers } from '../../APIs/GetFamilyMembersApi';
+import MemberCard from './MemberCard';
 const Card = () => {
     const { isMobile } = useScreen();
     const { qrCode, fetchQrcode } = useQrcode();
@@ -17,6 +20,33 @@ const Card = () => {
     const { setSnackbar } = useSnackbar();
     const { customerData, profileDetails } = useCustomerData();
     const navigate = useNavigate();
+    const [addMemberPage, setAddMemberPage] = useState(false);
+    const [memberList, setMemberList] = useState([])
+
+    const fetchMemberList = async () => {
+        const memberlist = await getFamilyMembers(customerData?.token)
+        setMemberList(memberlist.data);
+        sessionStorage.setItem("memberlist", JSON.stringify(memberlist));
+    }
+
+    useEffect(() => {
+        if (customerData?.token) {
+            const data = sessionStorage.getItem("memberlist");
+
+            const memberlist = JSON.parse(data);
+            if (memberlist) {
+                setMemberList(memberlist.data);
+            } else {
+
+                fetchMemberList();
+            }
+        }
+
+    }, [])
+
+
+
+
     const handlechange = (e) => {
         let input = e.target.value.replace(/\D/g, "");
 
@@ -64,19 +94,32 @@ const Card = () => {
         }
     }
 
+    const hanldeFamillyAdd = () => {
+        setAddMemberPage(true);
+    };
+
     const handleClick = () => {
         navigate("/#payment-button");
     };
+    const planId = profileDetails?.data?.plan_id;
+    const maxMembers = planId === 1 ? 1 : 4;
+
+    const canAddMember =
+        profileDetails?.data?.card_no &&
+        memberList.length < maxMembers;
     return (
         <section style={{ minHeight: '500px' }} className={`h-full w-full ${isMobile ? "pt-10 " : ' p-20  sm:p-10'} pb-20`}>
             <div className='flex justify-between items-center mb-20'>
                 <h1 className=' text-xl font-semibold'>Card</h1>
 
                 <div className='flex gap-5'>
-                    {!qrCode?.data?.card_no && (<button onClick={handleClick} style={{ background: 'purple', borderRadius: '1rem' }} className=' font-bold active px-10 py-5 rounded text-white text-sm cursor-pointer'>
+                    {!profileDetails?.data?.plan && (<button onClick={handleClick} style={{ background: 'purple', borderRadius: '1rem' }} className=' font-bold active px-10 py-5 rounded text-white text-sm cursor-pointer'>
                         Buy a Plan
                     </button>)}
-                    {!qrCode?.data?.card_no && (<button onClick={() => {
+                    {canAddMember&& (<button onClick={hanldeFamillyAdd} className='bg-primary font-bold active px-10 py-5 rounded text-white text-sm cursor-pointer'>
+                        Add Family Member
+                    </button>)}
+                    {!qrCode?.data?.card_no && profileDetails?.data.plan && (<button onClick={() => {
                         const aadhaar = profileDetails?.data?.adhaar_no;
 
                         if (!aadhaar || aadhaar.trim().toLowerCase() === "xxxx") {
@@ -99,7 +142,137 @@ const Card = () => {
 
             </div>
 
-            <CardLayout />
+            <div className={`flex flex-wrap gap-20 ${qrCode?.data?.card_no ? "flex-row" : 'flex-col'}`}>
+                <CardLayout />
+
+                {profileDetails?.data?.plan && (
+                    <div style={{ maxWidth: "25rem", flex: 1 }} className="select-none">
+                        <div
+                            style={{
+                                background: "#ffffff",
+                                borderRadius: "14px",
+                                padding: "22px",
+                                border: "1px solid #E5E7EB",
+                                boxShadow: "0 10px 25px rgba(0,0,0,0.06)",
+                            }}
+                        >
+                            {/* Header */}
+                            <div style={{ marginBottom: "18px" }}>
+                                <h1
+                                    style={{
+                                        fontSize: "16px",
+                                        fontWeight: 600,
+                                        color: "#1F2937",
+                                        letterSpacing: "0.2px",
+                                    }}
+                                >
+                                    Plan Details
+                                </h1>
+                                <div
+                                    style={{
+                                        height: "2px",
+                                        width: "36px",
+                                        background: "var(--color-primary)",
+                                        borderRadius: "4px",
+                                        marginTop: "6px",
+                                    }}
+                                />
+                            </div>
+
+                            {/* Content */}
+                            <div style={{ fontSize: "13px", color: "#374151" }}>
+                                {/* Plan Name */}
+                                <div className="flex justify-between" style={{ marginBottom: "10px" }}>
+                                    <span style={{ color: "#6B7280" }}>Plan Name</span>
+                                    <span style={{ fontWeight: 600 }}>
+                                        {profileDetails?.data.plan_name}
+                                    </span>
+                                </div>
+
+                                {/* Price */}
+                                <div className="flex justify-between" style={{ marginBottom: "10px" }}>
+                                    <span style={{ color: "#6B7280" }}>Plan Price</span>
+                                    <span style={{ fontWeight: 600 }}>
+                                        ₹{profileDetails?.data.price}
+                                    </span>
+                                </div>
+
+                                {/* Members */}
+                                <div className="flex justify-between" style={{ marginBottom: "14px" }}>
+                                    <span style={{ color: "#6B7280" }}>Members Allowed</span>
+                                    <span style={{ fontWeight: 600 }}>
+                                        {profileDetails?.data.plan_id === 1 && "1"}
+                                        {profileDetails?.data.plan_id === 2 && "4"}
+                                    </span>
+                                </div>
+
+                                {/* Status */}
+                                <div className="flex justify-between items-center">
+                                    <span style={{ color: "#6B7280" }}>Plan Status</span>
+
+                                    {profileDetails?.data.valid_plan === "Yes" ? (
+                                        <span
+                                            style={{
+                                                background: "#DCFCE7",
+                                                color: "#15803D",
+                                                padding: "4px 14px",
+                                                borderRadius: "999px",
+                                                fontSize: "11px",
+                                                fontWeight: 600,
+                                            }}
+                                        >
+                                            Active
+                                        </span>
+                                    ) : (
+                                        <span
+                                            style={{
+                                                background: "#FEE2E2",
+                                                color: "#B91C1C",
+                                                padding: "4px 14px",
+                                                borderRadius: "999px",
+                                                fontSize: "11px",
+                                                fontWeight: 600,
+                                            }}
+                                        >
+                                            Not Active
+                                        </span>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+
+            </div>
+
+            <div className="mt-40">
+                <h2 className="font-semibold select-none text-xl mb-6">
+                    Members
+                </h2>
+
+                <div className="space-y-10 mt-10">
+                    {memberList.length > 0 ? memberList.map(member => (
+                        <div key={member.id} className='mb-10'>
+
+                            <MemberCard member={member} />
+                        </div>
+                    )) : (<div style={{
+                        borderRadius: '4rem',
+                        padding: "10px 0",
+                        fontSize: "13px",
+                        // color: "#444",
+                        color: "#777",
+                        background: "#f3f3f3",
+                    }}
+                        className='text-center flex itemc-center justify-center select-none'
+                    >
+                        No member
+                    </div>)}
+                </div>
+            </div>
+
+
+
 
 
             {activecard && (
@@ -141,6 +314,16 @@ const Card = () => {
                 </Suspense>
 
 
+            )}
+
+            {addMemberPage && (
+                <Suspense fallback={<FallbackLoader fixed={true} />}>
+
+                    <AddMember customerData={customerData} onClose={() => {
+                        setAddMemberPage(false);
+                        fetchMemberList()
+                    }} />
+                </Suspense>
             )}
         </section>
     )

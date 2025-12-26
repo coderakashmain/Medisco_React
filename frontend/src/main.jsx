@@ -7,6 +7,7 @@ import ErrorBoundary from './pages/ErrorBoundary.jsx'
 import CustomerData from "./Context/CustomerData.jsx";
 import BpData from "./Context/BpData.jsx";
 import BdoData from "./Context/BdoData.jsx";
+import MemoryProvider from "./Context/MemoryContext.jsx";
 
 window.addEventListener("error", (event) => {
   if (event.message?.includes("Failed to fetch dynamically imported module")) {
@@ -18,6 +19,7 @@ window.addEventListener("error", (event) => {
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <ErrorBoundary>
+      <MemoryProvider>
       <CustomerData>
         <BpData>
           <BdoData>
@@ -25,6 +27,7 @@ ReactDOM.createRoot(document.getElementById("root")).render(
           </BdoData>
         </BpData>
       </CustomerData>
+      </MemoryProvider>
     </ErrorBoundary>
   </React.StrictMode>
 );

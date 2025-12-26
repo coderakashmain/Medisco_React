@@ -26,6 +26,13 @@ import { useBdoData } from './Context/BdoData';
 
 
 
+
+
+
+const BdoCommission = lazy(() => import("./pages/BdoDashboard/BdoCommission"));
+const BdoCustomerList = lazy(() => import("./pages/BdoDashboard/BdoCustomerList"));
+const BpCustomerList = lazy(() => import("./pages/BpDashboard/BpCustomerList"));
+const BpCommission = lazy(() => import("./pages/BpDashboard/BpCommission"));
 const BdoDashboard = lazy(() => import("./pages/BdoDashboard/BdoDashboard"));
 const BpDashboard = lazy(() => import("./pages/BpDashboard/BpDashboard"));
 const DownloadBrochure = lazy(() => import("./pages/DownloadBrochure"));
@@ -141,6 +148,14 @@ function App() {
                   customerData={bpData}
                   setProfileDetails={setBpProfileDetails}
                   /></>
+                },
+                {
+                  path : 'commission',
+                  element : <><Suspense fallback={<FallbackLoader fixed={true} />}><BpCommission/></Suspense></>
+                },
+                {
+                  path : 'customer_list',
+                  element : <><Suspense fallback={<FallbackLoader fixed={true} />}><BpCustomerList/></Suspense></>
                 }
               ]
         
@@ -156,6 +171,14 @@ function App() {
                   customerData={bdoData}
                   setProfileDetails={setBdoProfileDetails}
                   /></>
+                },
+                {
+                  path : 'commission',
+                  element : <><Suspense fallback={<FallbackLoader fixed={true} />}><BdoCommission/></Suspense></>
+                },
+                {
+                  path : 'customer_list',
+                  element : <><Suspense fallback={<FallbackLoader fixed={true} />}><BdoCustomerList/></Suspense></>
                 }
               ]
             },

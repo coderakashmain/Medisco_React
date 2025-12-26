@@ -29,7 +29,7 @@ const CustomerProfile = React.memo(({ customerDataloading, customerProfileDetail
     const HOST = import.meta.env.VITE_HOST;
     const API_URL = `${HOST}/user/update-profile-image`;
 
-
+    
 
 
     const handleFileSelect = async (e) => {
