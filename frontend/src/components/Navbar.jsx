@@ -74,8 +74,8 @@ const Navbar = () => {
   const handleLogout = (() => {
     window.location.href = "/";
     localStorage.clear();
-    setUserdata(null);
-    setCustomerData(null);
+    // setUserdata(null);
+    // setCustomerData(null);
   })
 
   return (

@@ -12,13 +12,13 @@ export const useCustomerData = () => {
 
 const CustomerData = ({ children }) => {
   const [customerData, setCustomerData] = useState(null);
-  const [customerDataloading, setcustomerDataloading] = useState(false);
+  const [customerDataloading, setcustomerDataloading] = useState(true);
   const [profileDetails, setProfileDetails] = useState(null);
   const [profileLoading, setProfileLoading] = useState(false);
   const [profileError, setProfileError] = useState("");
 
   useEffect(() => {
-    setcustomerDataloading(true);
+
     const localdata = localStorage.getItem("customerData");
 
     if (localdata) {

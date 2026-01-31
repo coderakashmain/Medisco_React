@@ -61,6 +61,8 @@ const Home = () => {
   const [filterList, setFilterList] = useState([]);
   const [paymentShowPage, setPaymentShowPage] = useState(false);
 
+  const customerdata = localStorage.getItem('customerData')
+  
 
   useEffect(() => {
     if (location.hash) {
@@ -823,7 +825,7 @@ const Home = () => {
               >
                 <figure className="w-full rounded overflow-hidden">
                   {/* <img src={whyusphoto1} alt="img" loading='lazy' className="w-full" /> */}
-                   <iframe className='w-full' height={isMobile ? '250' : '415'} src="https://www.youtube.com/embed/yx6dcWqnK9k?si=EMGj3c-hQhIy637b" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
+                  <iframe className='w-full' height={isMobile ? '250' : '415'} src="https://www.youtube.com/embed/yx6dcWqnK9k?si=EMGj3c-hQhIy637b" title="YouTube video player" frameBorder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowFullScreen></iframe>
                 </figure>
                 {/* <div
                   className="absolute xl:top-[-15%] xl:left-[-10%] lg:top-[-11%] lg:left-[-11%] top-[-12%] left-[-6%] xl:size-200 size-170 bg-white rounded-full flex items-center justify-center max-md:size-165"
@@ -958,10 +960,10 @@ const Home = () => {
               Simple & Affordable Options for Everyone
             </h2>
           </div>
-        <div className="grid grid-cols-12 gap-25 ">
+          <div className="grid grid-cols-12 gap-25 ">
             <div className="lg:col-span-6 col-span-12" >
               <div
-                
+
                 className="bg-white p-30 relative z-[1] hover:shadow-[0px_0px_30px_0px_rgba(0,0,0,0.1)] duration-500"
               >
                 <img
@@ -988,7 +990,7 @@ const Home = () => {
                 <span>Discounts available on</span>
 
                 <ul
-               
+
                   className="list-style border-t border-[#D8D8D8] pt-26 mt-21 pb-30 relative before:absolute before:w-1/2 before:bg-primary before:-top-px before:h-px"
                 >
                   <li
@@ -997,7 +999,7 @@ const Home = () => {
                     Doctor Consultation
                   </li>
                   <li
-                   id='payment-button'
+                    id='payment-button'
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
                     Hospitals & Nursing Homes
@@ -1016,7 +1018,7 @@ const Home = () => {
 
                   </li>
                   <li
-                  
+
                     className="font-normal pb-21 font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
                     Ayurvedic & Wellness Centers
@@ -1030,7 +1032,13 @@ const Home = () => {
                   </li>
 
                 </ul>
-                <p  onClick={() => setPaymentShowPage(true)} className="btn two"
+                <p onClick={() => {
+                  if(customerdata){
+                    navigate("/customer_dashboard/Plans")
+                  }else{
+                    setSnackbar({open : true , message : 'Login to your customer account first!',type : 'warning'})
+                  }
+                }} className="btn two"
                 ><span
                 >Pick This Plan<i
                   className="fa-solid fa-arrow-right"
@@ -1061,30 +1069,30 @@ const Home = () => {
                   <li
                     className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                   Maximum 4 family members can be included
+                    Maximum 4 family members can be included
                   </li>
                   <li
                     className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                   No age limit for any member
+                    No age limit for any member
                   </li>
                   <li
                     className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                  Card activation within 4 working days
+                    Card activation within 4 working days
 
                   </li>
                   <li
                     className="font-normal pb-10 font-sora pl-20 relative text-white max-xxl:text-sm"
                   >
-                   Can be used unlimited times during the validity period
+                    Can be used unlimited times during the validity period
                   </li>
 
                 </ul>
                 <span className='!text-white'>Discounts available on</span>
 
                 <ul
-               
+
                   className="list-style  border-t border-[#D8D8D8] pt-26 mt-21 pb-30 relative before:absolute before:w-1/2 before:bg-primary before:-top-px before:h-px"
                 >
                   <li
@@ -1093,7 +1101,7 @@ const Home = () => {
                     Doctor Consultation
                   </li>
                   <li
-                   id='payment-button'
+                    id='payment-button'
                     className="font-normal pb-21 font-sora !text-white pl-20 relative text-secondary max-xxl:text-sm"
                   >
                     Hospitals & Nursing Homes
@@ -1112,7 +1120,7 @@ const Home = () => {
 
                   </li>
                   <li
-                  
+
                     className="font-normal pb-21 !text-white font-sora pl-20 relative text-secondary max-xxl:text-sm"
                   >
                     Ayurvedic & Wellness Centers
@@ -1126,7 +1134,13 @@ const Home = () => {
                   </li>
 
                 </ul>
-                <p  onClick={() => setPaymentShowPage(true)} className="btn two"
+                <p onClick={() => {
+                  if(customerdata){
+                    navigate("/customer_dashboard/Plans")
+                  }else{
+                    setSnackbar({open : true , message : 'Login to your customer account first!',type : 'warning'})
+                  }
+                }}  className="btn two"
                 ><span
                 >Pick This Plan<i
                   className="fa-solid fa-arrow-right"

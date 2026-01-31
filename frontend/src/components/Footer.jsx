@@ -150,39 +150,38 @@ const Footer = () => {
                 </h5>
                 <ul>
                   <li className="pb-16">
-                    <a
-                      href="services-details.html"
+                    <p
+                      
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
                     >
-                      Discount Cards</a
+                      Discount Cards</p>
+                  </li>
+                  <li className="pb-16">
+                    <p
+                      
+                      className="text-secondary font-sora hover:text-primary duration-500 capitalize"
+                    >Hospital Partnerships</p
                     >
                   </li>
                   <li className="pb-16">
-                    <a
-                      href="services-details.html"
+                    <p
+                      
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                    >Hospital Partnerships</a
+                    >Pharmacy Savings</p
                     >
                   </li>
                   <li className="pb-16">
-                    <a
-                      href="services-details.html"
+                    <p
+                      
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                    >Pharmacy Savings</a
-                    >
-                  </li>
-                  <li className="pb-16">
-                    <a
-                      href="services-details.html"
-                      className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                    >Diagnostic Discounts</a
+                    >Diagnostic Discounts</p
                     >
                   </li>
                   <li>
-                    <a
-                      href="appointment.html"
+                    <p
+                    
                       className="text-secondary font-sora hover:text-primary duration-500 capitalize"
-                    >Wellness Packages</a
+                    >Wellness Packages</p
                     >
                   </li>
                 </ul>

@@ -17,7 +17,7 @@ const CustomerDashboard = () => {
 if (customerDataloading) {
   return <FallbackLoader />;
 }
-if (!customerData ) {
+if (!customerData && !customerDataloading ) {
   return <NotFound />;
 }
 

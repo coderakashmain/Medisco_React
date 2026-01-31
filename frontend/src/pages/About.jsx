@@ -27,7 +27,7 @@ const About = () => {
 
           <p>
             <strong className="text-primary">Mediscopluss (Medical Discount Card Network) </strong> 
-            a division of Sobeit Technology is a social initiative designed to make healthcare more accessible, affordable, 
+             is a social initiative designed to make healthcare more accessible, affordable, 
             and transparent for everyone. Our goal is to build a strong network connecting 
             patients, hospitals, diagnostic centers, pharmacies, and charitable organizations 
             under one platform.
